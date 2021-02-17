@@ -42,10 +42,10 @@ dependencies:
 
 
 dev_dependencies:
-  #flutter_test:
-    #sdk: flutter
-  #integration_test:
-    #sdk: flutter
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
   build_runner: any #may need to review this
   json_serializable: any #may need to review this
 

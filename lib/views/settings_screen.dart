@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:omnitrix_database_flutter/services/auth.dart';
+import 'package:omnitrix_database_flutter/services/globalVariables.dart';
+
 
 /// TODO: Add confirmation dialog for logout button
 class SettingsScreen extends StatefulWidget {
@@ -102,6 +104,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.white70,
                   thickness: 0.1,
                 ),
+                SwitchListTile(
+                    title: Text("Is this the real life? Is this just fantasy? ", style: TextStyle(fontSize: 18,color: Colors.white)),
+                    value: realLife,
+                    onChanged: (bool value) {
+                      setState(() {
+                        realLife = value;
+                      });
+                    },
+                  secondary: const Icon(Icons.change_history, color: Colors.white,),
+                  activeColor: Colors.blue,
+                  inactiveThumbColor: Colors.green,
+                ),
                 Padding(
                   padding: EdgeInsets.only(top:30),
                   child: FlatButton(
@@ -111,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     child: Text(
                       'Logout',
-                      style: TextStyle(color: Colors.white, fontSize: 26),
+                        style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)
                     ),
                     onPressed: () async {
                       await _auth.signOut();

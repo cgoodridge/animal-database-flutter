@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  bool realLife = false;
   runApp(MyApp());
 }
 
@@ -84,6 +85,27 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0.1,
         onPressed: () {
           // Add your onPressed code here!
+          AlertDialog(
+            title: Text("Add new Alien"),
+            content: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Species',
+                    hintStyle: TextStyle(color: Colors.white,),
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                  validator: (val) => val.isEmpty ? "Enter an email" : null,
+                  onChanged: (val) {
+                    //setState(() => email = val);
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              FlatButton(onPressed: () {}, child: Text("Test"),)
+            ],
+          );
         },
         child: Container(
           width: 100,

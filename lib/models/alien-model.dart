@@ -10,6 +10,7 @@ class Alien {
   final String codename;
   final String description;
 
+
   /// Color Variables
   final String environment;
   /// End of color variables
@@ -36,6 +37,7 @@ class Alien {
         isActive = map['isActive'],
         imgUrl = map['imgURL'];
 
+
   Alien.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
 
@@ -52,6 +54,6 @@ class Alien {
         'description': description,
         'environment': environment,
         'isActive': isActive,
-        'imgUrl': imgUrl,
+        'imgURL': imgUrl,
       };
 }

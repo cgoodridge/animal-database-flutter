@@ -10,7 +10,9 @@ import 'package:omnitrix_database_flutter/views/alien_details.dart';
 
 
 String activeAlien = "";
+bool favouriteIcon = false;
 Color shadowColor;
+
 @JsonSerializable()
 /// NOTE: When we begin to integrate animal data from A-Z animals, due to
 /// copyright issues, the app CANNOT be monetized
@@ -23,6 +25,7 @@ class _AlienListScreenState extends State<AlienListScreen> {
 
   final AuthService _auth = AuthService();
   final Set<Alien> _saved = new Set<Alien>();
+
 
 
   @override
@@ -121,15 +124,13 @@ class _AlienListScreenState extends State<AlienListScreen> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
 
-        return (_width > 500)? _buildGridList(context, snapshot.data.documents) : _buildList(context, snapshot.data.documents);
+        return (_width > 600)? _buildGridList(context, snapshot.data.documents) : _buildList(context, snapshot.data.documents);
       },
     );
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
-      //itemExtent: 5,
-      //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
       children:snapshot.map((data) => _buildListItem(context, data)).toList()
     );
   }
@@ -144,12 +145,34 @@ class _AlienListScreenState extends State<AlienListScreen> {
     );
   }
 
-  
+  Future<DocumentSnapshot> isFavourited(String docId) async
+  {
+    final snapshot = await Firestore.instance.collection('favourites').document(docId).get();
+
+    if (snapshot.exists)
+    {
+      return snapshot;
+    }
+    else{
+      return null;
+    }
+
+  }
+
+  Widget returnFilledIcon(BuildContext context)
+  {
+    return Icon(CupertinoIcons.bookmark_fill);
+  }
+  Widget returnOutlinedIcon(BuildContext context)
+  {
+    return Icon(CupertinoIcons.bookmark);
+  }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final alien = Alien.fromSnapshot(data);
-    final bool alreadySaved = _saved.contains(alien);
+    final alienSaved = _saved.contains(alien);
 
+    //print(_saved.first);
     CollectionReference favorite = Firestore.instance.collection('favourites');
 
     if (alien.isActive) { activeAlien = alien.species.toString(); }
@@ -209,15 +232,33 @@ class _AlienListScreenState extends State<AlienListScreen> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal:2.0),
                               child: IconButton(
-                                  icon: Icon(CupertinoIcons.bookmark),
+                                  //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
+                                  icon: alienSaved? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
                                   iconSize: 18,
-                                  onPressed: () {
-                                    ///TODO: Add check to see if alien is already favourited
+                                onPressed: () async {
+                                  ///TODO: Add check to see if alien is already favourited
+
+                                  print(alienSaved);
+
+                                  if (await isFavourited(data.documentID) == null)
+                                  {
                                     Map<String, dynamic> alienData = alien.toJson();
                                     //print(alienData);
-                                    favorite.document(data.documentID).setData(alienData);
-                                  },
+                                    await favorite.document(data.documentID).setData(alienData);
+                                    if (alienSaved) {
+                                      _saved.remove(alien);
+                                    } else {
+                                      _saved.add(alien);
+                                    }
+                                  }
+
+                                  else{
+                                    //remove
+                                    //print(data.documentID);
+                                    favorite.document(data.documentID).delete();
+                                  }
+                                },
                               ),
                             ),
                             Padding(
@@ -258,5 +299,4 @@ class _AlienListScreenState extends State<AlienListScreen> {
       )
     );
   }
-
 }
