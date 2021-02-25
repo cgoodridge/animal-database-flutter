@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:omnitrix_database_flutter/models/collection_model.dart';
 import 'package:omnitrix_database_flutter/models/models.dart';
 import 'package:omnitrix_database_flutter/services/auth.dart';
 import 'package:omnitrix_database_flutter/views/alien_details.dart';
@@ -14,6 +15,7 @@ String activeAlien = "";
 
 Color shadowColor;
 
+// TODO: Add other sort options
 enum sortOption { alpha, reverseAlpha, recentlyAdded }
 
 @JsonSerializable()
@@ -26,8 +28,35 @@ class AlienListScreen extends StatefulWidget {
 
 class _AlienListScreenState extends State<AlienListScreen> {
 
+  final TextEditingController searchController = new TextEditingController();
+
+
   final AuthService _auth = AuthService();
   sortOption _selection = sortOption.alpha;
+
+  List _allResults = [];
+
+  bool isSearching = false;
+
+  @override
+  void initState()
+  {
+    super.initState();
+    searchController.addListener(() {onSearchChanged();});
+  }
+
+  @override
+  void dispose()
+  {
+    searchController.removeListener(() {onSearchChanged();});
+    searchController.dispose();
+    super.dispose();
+  }
+
+  onSearchChanged()
+  {
+    print(searchController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +82,34 @@ class _AlienListScreenState extends State<AlienListScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Align(
+                    !isSearching ? Align(
                       alignment: Alignment.centerLeft,
                       child: Image.asset('assets/images/omnitrix.png', width: 40,),
+                    ) : SizedBox(),
+                    Flexible(
+                        child: !isSearching ? Text("codon stream", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),) :
+                        TextField(
+                          controller: searchController,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.search, color: Colors.white,),
+                              hintText: "Search Codon Stream",
+                              hintStyle: TextStyle(color: Colors.white)
+                          ),
+                        ),
                     ),
-                    Text("codon stream", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),),
+
                     Align(
                         alignment: Alignment.centerRight,
-                        child: Icon(Icons.search, color: Colors.white),
+                        child: IconButton(
+                          color: Colors.white,
+                          icon: !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
+                          onPressed: () {
+                            // Expand search Field
+                            setState(() {
+                              isSearching = !isSearching;
+                            });
+                          },),
                         /*
                         child: FlatButton.icon(
                           icon: Icon(Icons.search, color: Colors.white,),
@@ -144,22 +193,25 @@ class _AlienListScreenState extends State<AlienListScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder2<QuerySnapshot, QuerySnapshot>(
-      streams:Tuple2(/// TODO : REVIEW HOW DATE IS SORTED
+      streams:Tuple2(
         ((_selection == sortOption.alpha) ? Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()
               : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('aliens').orderBy('species', descending: true).snapshots()
-                :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('aliens').orderBy('dateAdded', descending: false).snapshots():null),
-                  Firestore.instance.collection('favourites').snapshots(),
+                :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('aliens').orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()),
+
+                Firestore.instance.collection('playlistNames').snapshots(),
       ),
+
       builder: (context, snapshots) {
-        if (!snapshots.item1.hasData) {
+        if (!snapshots.item1.hasData || !snapshots.item2.hasData) {
             return CircularProgressIndicator();
           }
         else {
+          //print(snapshots.item1.data.);
+
           return (_width > 600)? _buildGridList(context, snapshots.item1.data.documents, snapshots.item2.data.documents) : _buildList(context, snapshots.item1.data.documents, snapshots.item2.data.documents);
         }
       },
@@ -167,8 +219,13 @@ class _AlienListScreenState extends State<AlienListScreen> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+
     return ListView(
-      children:snapshot.map((data) => _buildListItem(context, data, faves)).toList(),
+
+      children:[
+        ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
+      ],
+
     );
   }
 
@@ -192,32 +249,52 @@ class _AlienListScreenState extends State<AlienListScreen> {
     faves.document(data.documentID).delete();
   }
 
+  Future<void> _showMyDialog(Alien alien, CollectionReference faves, DocumentSnapshot data) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (_) {
+        return PlaylistForm(alien: alien, favorite: faves, data: data);
+      },
+    );
+  }
+
+
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
     final alien = Alien.fromSnapshot(data);
     bool isInFaves = false;
     bool faveIcon = false;
 
+
     Alien faveList;
     //This works, but we'll look for a more efficient way to do it later
+
     for (var data in faves)
     {
-      var dataRes = Alien.fromSnapshot(data);
-      faveList = dataRes;
-
-      if (alien.codename == dataRes.codename)
-        {
-          isInFaves = true;
-          faveIcon = true;
-        }
-      else
-      {
-        isInFaves = false;
-      }
+      Map<String, dynamic> values = data.data;
+      //print(values);
       //return alienVal;
     }
+    // for (var data in faves)
+    // {
+    //   var dataRes = Alien.fromSnapshot(data);
+    //   faveList = dataRes;
+    //
+    //   if (alien.codename == dataRes.codename)
+    //     {
+    //       isInFaves = true;
+    //       faveIcon = true;
+    //     }
+    //   else
+    //   {
+    //     isInFaves = false;
+    //   }
+    //   //return alienVal;
+    // }
 
 
-    CollectionReference favorite = Firestore.instance.collection('favourites');
+    CollectionReference favorite = Firestore.instance.collection('playlistNames');
 
     if (alien.isActive) { activeAlien = alien.species.toString(); }
 
@@ -273,6 +350,8 @@ class _AlienListScreenState extends State<AlienListScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            //
+
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal:2.0),
                               child: IconButton(
@@ -285,8 +364,11 @@ class _AlienListScreenState extends State<AlienListScreen> {
                                   setState(() {
                                     faveIcon = !faveIcon;
                                   });
-                                  // Faves FINALLY freaking work
 
+
+                                  _showMyDialog(alien, favorite, data);
+                                  // Faves FINALLY freaking work
+                                  /*
                                   if (isInFaves)
                                     {
                                       removeFromFaves(alien, favorite, data);
@@ -295,25 +377,16 @@ class _AlienListScreenState extends State<AlienListScreen> {
                                     {
                                       addToFaves(alien, favorite, data);
                                     }
-                                  /*
-                                  if (await isFavourited(data.documentID) == null)
-                                  {
-                                    Map<String, dynamic> alienData = alien.toJson();
-                                    await favorite.document(data.documentID).setData(alienData);
-                                  }
-
-                                  else{
-                                    //remove
-                                    //print(data.documentID);
-                                    favorite.document(data.documentID).delete();
-                                  }
                                   */
                                 },
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal:8.0),
-                              child: alien.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
+
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal:6.0),
+                                child: alien.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
+                              ),
                             )
                           ],
                         )
@@ -350,3 +423,100 @@ class _AlienListScreenState extends State<AlienListScreen> {
     );
   }
 }
+
+class PlaylistForm extends StatefulWidget {
+  final Alien alien;
+  final CollectionReference favorite;
+  final DocumentSnapshot data;
+
+  PlaylistForm({ Key key, this.alien, this.favorite, this.data}): super(key: key);
+
+  @override
+  _PlaylistFormState createState() => _PlaylistFormState();
+}
+
+class _PlaylistFormState extends State<PlaylistForm> {
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController playlistName = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+
+    return AlertDialog(
+      title: Text('Save to Playlist'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Form(
+            key: formKey,
+            child: TextFormField(
+              controller: playlistName,
+              validator: (value){
+                return value.isNotEmpty? null : "Invalid Field";
+              },
+              decoration: InputDecoration(
+                  hintText: "Playlist Name"
+              ),
+            ),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text('Submit'),
+          onPressed: () {
+            saveToPlaylist(widget.alien, widget.favorite, widget.data);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+
+  }
+
+  void saveToPlaylist(Alien alien, CollectionReference faves, DocumentSnapshot data) async
+  {
+
+    //DocumentSnapshot playlistNames = Firestore.instance.collection('playlistNames');
+    var playlistNames = Firestore.instance.collection('playlistNames').getDocuments();
+    var stringVal;
+
+    QuerySnapshot snapshot = await Firestore.instance.collection("playlistNames").getDocuments();
+
+
+    snapshot.documents.forEach((document) {
+      if (document.exists) {
+        //print('Documents exist');
+        Map<String, dynamic> val = document.data;
+        var tempVal =  val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'),'');
+        print(tempVal);
+        setState(() {
+          stringVal = tempVal;
+        });
+      }
+      else {
+        print('document does not exist');
+      }
+    });
+
+    //print(stringVal.toString());
+
+    if (formKey.currentState.validate())
+    {
+      Map<String, dynamic> alienData = alien.toJson();
+      if (stringVal.toString() == playlistName.text)
+        {
+          print(true);
+        } else {
+        //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
+        await Firestore.instance.collection("favourites").document("playlists").collection(playlistName.text).document(data.documentID).setData(alienData);
+        await Firestore.instance.collection("playlistNames").document().setData({"name": playlistName.text});
+      }
+
+
+
+    }
+
+  }
+}
+

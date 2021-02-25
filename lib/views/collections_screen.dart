@@ -1,19 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:omnitrix_database_flutter/models/models.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:omnitrix_database_flutter/models/collection_model.dart';
 import 'alien_details.dart';
+import 'collection_details.dart';
 
 String activeAlien = "";
 Color shadowColor;
 class CollectionsScreen extends StatefulWidget {
   @override
   _CollectionsScreenState createState() => _CollectionsScreenState();
+
 }
 
 class _CollectionsScreenState extends State<CollectionsScreen> {
+
   @override
   Widget build(BuildContext context) {
 
@@ -58,13 +66,10 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                   ],
                 ),
                 SizedBox(height: 16,),
-
               ],
             ),
           ),
-          Expanded(
-            child: SizedBox(height: 200.0, child: _buildBody(context)),
-          ),
+          Expanded(child: SizedBox(height: 260.0, child: _buildBody(context))),
         ]);
   }
 
@@ -85,23 +90,28 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection('favourites')
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return CircularProgressIndicator();
+      stream:Firestore.instance.collection('playlistNames').snapshots(),
 
-        return (_width > 500)? _buildGridList(context, snapshot.data.documents) : _buildList(context, snapshot.data.documents);
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        else {
+          return (_width > 600)? _buildGridList(context, snapshot.data.documents) : _buildList(context, snapshot.data.documents);
+        }
       },
     );
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
-      //itemExtent: 5,
-      //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-        children:snapshot.map((data) => _buildListItem(context, data)).toList()
-    );
+        //itemExtent: 5,
+        shrinkWrap: true,
+        //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+          children:[
+            ...snapshot.map((data) => _buildListItem(context, data)).toList(),
+          ]
+      );
   }
 
   Widget _buildGridList(BuildContext context, List<DocumentSnapshot> snapshot) {
@@ -114,126 +124,52 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
     );
   }
 
-
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final alien = Alien.fromSnapshot(data);
+    final collection = Collection.fromSnapshot(data);
 
-    CollectionReference favorite = Firestore.instance.collection('favourites');
-
-    if (alien.isActive) { activeAlien = alien.species.toString(); }
-
-    if (alien.environment == "space") { shadowColor = Colors.white; }
-    else if (alien.environment == "land") { shadowColor = Colors.brown; }
-    else if (alien.environment == "ice") { shadowColor = Colors.blueAccent; }
-    else if (alien.environment == "water") { shadowColor = Colors.blue; }
-
+    //CollectionReference favorite = Firestore.instance.collection('favourites');
 
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: Container(
-          height: 220,
-          child: Card(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.white54, width: 0.35),
-              borderRadius: BorderRadius.circular(25.0),
+        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+        child: Column(
+          children: [
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Text(collection.name, style: GoogleFonts.sarpanch(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w300),)
             ),
-            color: Color(0xff363636),
-            elevation: 5,
-            child: Row(
-              children: [
-                Container(
-                  height: 220,
-                  width: 180,
-                  child: Card(
-                    //shadowColor: Colors.green,
-                    shadowColor: shadowColor,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    margin: EdgeInsets.zero,
-                    elevation: 20,
-                    color: Color(0xff242424),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(alien.species, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
-                          Text("Codename: \n" + alien.codename, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
-                          /*
-                        Text("Description: " + alien.description,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: GoogleFonts.lato(color: Colors.white54),
-                        ),
-                        */
-                          SizedBox(height:16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:2.0),
-                                child: IconButton(
-                                  icon: data.exists? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
-                                  color: Colors.white,
-                                  iconSize: 18,
-                                  onPressed: () async {
-                                    ///TODO: Add check to see if alien is already favourited
-                                    ///
-                                    ///
-                                    if (data.exists)
-                                      {
-                                        //remove
-                                        favorite.document(data.documentID).delete();
-                                      }
-                                    else{
-                                      Map<String, dynamic> alienData = alien.toJson();
-                                      //print(alienData);
-                                      await favorite.document(data.documentID).setData(alienData);
-                                    }
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:8.0),
-                                child: alien.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
-                              )
-                            ],
+            SizedBox(height: 8,),
+            Container(
+              height: 220,
+              width: 350,
+              child: Card(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.white54, width: 0.35),
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                color: Color(0xff363636),
+                elevation: 5,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CollectionDetails(
+                            collection: collection,
                           )
-                        ],
                       ),
+                    );
+                  },
+                  child: Container(
+                    child: Column(
+                      children: [
+                      ],
                     ),
                   ),
-                ),
-                Container(
-                  height: 200,
-                  width: 175,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AlienDetails(
-                              alien: alien,
-                            )
-                        ),
-                      );
-                    },
-
-                    child: Image.network(
-                      alien.imgUrl,
-                      fit: BoxFit.contain,
-                      height: 150,
-                    ),
-
-                  ),
-                ),
-              ],
+                )
+              ),
             ),
-          ),
+          ],
         )
     );
   }

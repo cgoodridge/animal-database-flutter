@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
     return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Omnitrix Database',
         theme: ThemeData(
 
@@ -173,8 +174,6 @@ class _FormDialogState extends State<FormDialog> {
   String imgURL;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
 
       return AlertDialog(
       content: Container(
