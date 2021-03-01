@@ -12,10 +12,10 @@ import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 
 String activeAlien = "";
-
 Color shadowColor;
 
 // TODO: Add other sort options
+// TODO: Replace list views with listview.builder
 enum sortOption { alpha, reverseAlpha, recentlyAdded }
 
 @JsonSerializable()
@@ -221,11 +221,9 @@ class _AlienListScreenState extends State<AlienListScreen> {
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
 
     return ListView(
-
       children:[
         ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
       ],
-
     );
   }
 
@@ -260,22 +258,34 @@ class _AlienListScreenState extends State<AlienListScreen> {
   }
 
 
-
   Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
     final alien = Alien.fromSnapshot(data);
     bool isInFaves = false;
     bool faveIcon = false;
-
-
+    var playlistName;
     Alien faveList;
     //This works, but we'll look for a more efficient way to do it later
 
+    if (alien.collections != null)
+    {
+        faveIcon = true;
+    }
+
+
     for (var data in faves)
     {
-      Map<String, dynamic> values = data.data;
-      //print(values);
+      Map<String, dynamic> val = data.data;
+      playlistName =  val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'),'');
+      //print(playlistName);
+
       //return alienVal;
     }
+
+    //QuerySnapshot snapshot = Firestore.instance.collection("playlistNames").getDocuments();
+
+    CollectionReference favorite = Firestore.instance.collection('playlistNames').document("playlists").collection("collectionPath");
+
+
     // for (var data in faves)
     // {
     //   var dataRes = Alien.fromSnapshot(data);
@@ -294,7 +304,6 @@ class _AlienListScreenState extends State<AlienListScreen> {
     // }
 
 
-    CollectionReference favorite = Firestore.instance.collection('playlistNames');
 
     if (alien.isActive) { activeAlien = alien.species.toString(); }
 
@@ -360,10 +369,8 @@ class _AlienListScreenState extends State<AlienListScreen> {
                                   icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
                                   iconSize: 18,
-                                onPressed: () async {
-                                  setState(() {
-                                    faveIcon = !faveIcon;
-                                  });
+                                onPressed: () {
+
 
 
                                   _showMyDialog(alien, favorite, data);
@@ -381,7 +388,6 @@ class _AlienListScreenState extends State<AlienListScreen> {
                                 },
                               ),
                             ),
-
                             Flexible(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal:6.0),
@@ -444,43 +450,109 @@ class _PlaylistFormState extends State<PlaylistForm> {
 
     return AlertDialog(
       title: Text('Save to Playlist'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Form(
-            key: formKey,
-            child: TextFormField(
-              controller: playlistName,
-              validator: (value){
-                return value.isNotEmpty? null : "Invalid Field";
-              },
-              decoration: InputDecoration(
-                  hintText: "Playlist Name"
+      content: Container(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Form(
+              key: formKey,
+              child: TextFormField(
+                controller: playlistName,
+                validator: (value){
+                  return value.isNotEmpty? null : "Invalid Field";
+                },
+                decoration: InputDecoration(
+                    hintText: "Playlist Name"
+                ),
               ),
             ),
-          ),
-        ],
+            SizedBox(
+                height: 140,
+                child: _buildCollection(context)
+            ),
+          ],
+        ),
       ),
       actions: <Widget>[
         TextButton(
           child: Text('Submit'),
           onPressed: () {
-            saveToPlaylist(widget.alien, widget.favorite, widget.data);
+            saveToNewCollection(widget.alien, widget.favorite, widget.data);
             Navigator.of(context).pop();
           },
         ),
       ],
     );
-
   }
 
-  void saveToPlaylist(Alien alien, CollectionReference faves, DocumentSnapshot data) async
+  Widget _buildCollection(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+    // TODO: get actual snapshot from Cloud Firestore
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('playlistNames').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || !snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        else {
+          //print(snapshots.item1.data.);
+          return _buildCollectionList(context, snapshot.data.documents);
+        }
+      },
+    );
+  }
+
+  Widget _buildCollectionList(BuildContext context, List<DocumentSnapshot> snapshot) {
+
+    return ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      children:[
+        ...snapshot.map((data) => _buildCollectionListItem(context, data)).toList()
+      ],
+    );
+  }
+
+  Widget _buildCollectionListItem(BuildContext context, DocumentSnapshot data){
+    final collection = Collection.fromSnapshot(data);
+
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Column(
+        children: [
+          Text(collection.name),
+          Container(
+            width: 100,
+            height: 100,
+            child: InkWell(
+              onTap: (){
+                saveToExistingCollection(widget.alien, collection.name, widget.data);
+                Navigator.of(context).pop();
+              },
+              child: Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.white54, width: 0.35),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                color: Color(0xff2c2c2c),
+                child: Text("Text", style: TextStyle(color: Colors.white),)
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void saveToNewCollection(Alien alien, CollectionReference faves, DocumentSnapshot data) async
   {
 
-    //DocumentSnapshot playlistNames = Firestore.instance.collection('playlistNames');
-    var playlistNames = Firestore.instance.collection('playlistNames').getDocuments();
     var stringVal;
-
+    List colName = [];
+    colName.add(playlistName.text);
     QuerySnapshot snapshot = await Firestore.instance.collection("playlistNames").getDocuments();
 
 
@@ -508,15 +580,28 @@ class _PlaylistFormState extends State<PlaylistForm> {
         {
           print(true);
         } else {
+
         //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
         await Firestore.instance.collection("favourites").document("playlists").collection(playlistName.text).document(data.documentID).setData(alienData);
         await Firestore.instance.collection("playlistNames").document().setData({"name": playlistName.text});
+        await Firestore.instance.collection('aliens').document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
       }
-
-
-
     }
-
   }
+
+  void saveToExistingCollection(Alien alien, String collectionName, DocumentSnapshot data) async
+  {
+    var stringVal;
+    List colName = [];
+    colName.add(collectionName);
+
+    Map<String, dynamic> alienData = alien.toJson();
+
+    await Firestore.instance.collection("favourites").document("playlists").collection(collectionName).document(data.documentID).setData(alienData);
+    await Firestore.instance.collection("aliens").document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
+
+    print("Alien added to " + collectionName);
+  }
+
 }
 

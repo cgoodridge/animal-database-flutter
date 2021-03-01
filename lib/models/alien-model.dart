@@ -10,6 +10,7 @@ class Alien {
   final String origin;
   final String codename;
   final String description;
+  final List collections;
   final Timestamp date;
 
   /// Color Variables
@@ -37,6 +38,7 @@ class Alien {
         origin = map['origin'],
         codename = map['codename'],
         description = map['description'],
+        collections = map['collections'],
         environment = map['environment'],
         isActive = map['isActive'],
         imgUrl = map['imgURL'],

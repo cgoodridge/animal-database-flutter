@@ -105,6 +105,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
+
         //itemExtent: 5,
         shrinkWrap: true,
         //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),

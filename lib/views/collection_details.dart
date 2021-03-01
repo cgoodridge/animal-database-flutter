@@ -208,6 +208,7 @@ class CollectionDetails extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+    //print(snapshot.length);
 
     return ListView(
 
@@ -252,7 +253,7 @@ class CollectionDetails extends StatelessWidget {
     for (var data in faves)
     {
       Map<String, dynamic> values = data.data;
-      print(values);
+      //print(values);
       //return alienVal;
     }
     // for (var data in faves)
