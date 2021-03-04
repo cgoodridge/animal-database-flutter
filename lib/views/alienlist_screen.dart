@@ -35,6 +35,7 @@ class _AlienListScreenState extends State<AlienListScreen> {
   sortOption _selection = sortOption.alpha;
 
   List _allResults = [];
+  List _resultsList = [];
 
   bool isSearching = false;
 
@@ -53,9 +54,41 @@ class _AlienListScreenState extends State<AlienListScreen> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+  }
+
   onSearchChanged()
   {
+    searchResultsList();
     print(searchController.text);
+  }
+
+  // TODO: Review search code, could be problematic in the future
+  searchResultsList()
+  {
+    var showResults = [];
+
+    if (searchController.text != "")
+      {
+        for (var alienSnapshot in _allResults)
+          {
+            var species = Alien.fromSnapshot(alienSnapshot).species.toLowerCase();
+
+            if (species.contains(searchController.text.toLowerCase()))
+              {
+                showResults.add(alienSnapshot);
+              }
+          }
+      }
+    else
+      {
+        showResults = List.from(_allResults);
+      }
+    setState(() {
+      _resultsList = showResults;
+    });
   }
 
   @override
@@ -73,6 +106,11 @@ class _AlienListScreenState extends State<AlienListScreen> {
 
   Widget _buildViewSmall(BuildContext context)
   {
+    if(!isSearching)
+      {
+        searchController.text = "";
+      }
+
     return Column(
         children: [
           Container(
@@ -212,6 +250,8 @@ class _AlienListScreenState extends State<AlienListScreen> {
         else {
           //print(snapshots.item1.data.);
 
+          _allResults = snapshots.item1.data.documents;
+
           return (_width > 600)? _buildGridList(context, snapshots.item1.data.documents, snapshots.item2.data.documents) : _buildList(context, snapshots.item1.data.documents, snapshots.item2.data.documents);
         }
       },
@@ -219,12 +259,26 @@ class _AlienListScreenState extends State<AlienListScreen> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+    // setState(() {
+    // });
 
+    return isSearching ? ListView.builder(
+      itemCount: _resultsList.length,
+      itemBuilder: (BuildContext context, int index) =>
+          _buildListItem(context, _resultsList[index], faves),
+    ) : ListView(
+      children:[
+        ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
+      ],
+    );
+    /*
     return ListView(
       children:[
         ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
       ],
     );
+     */
+
   }
 
   Widget _buildGridList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {

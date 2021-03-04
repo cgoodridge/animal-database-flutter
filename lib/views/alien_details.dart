@@ -32,6 +32,19 @@ class AlienDetails extends StatelessWidget {
               padding: const EdgeInsets.only(top: 64.0),
               child: Align(
                   child: Image.network(alien.imgUrl, height: 350,)
+                /*
+                  child: Container(
+                    constraints: BoxConstraints(maxHeight: 500),
+                    child: ModelViewer(
+                      src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                      alt: "A 3D model of an astronaut",
+                      ar: true,
+                      autoRotate: true,
+                      cameraControls: true,
+                    ),
+                  ),
+
+                 */
               ),
             ),
             Divider(
