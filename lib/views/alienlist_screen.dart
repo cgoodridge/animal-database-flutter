@@ -65,7 +65,7 @@ class _AlienListScreenState extends State<AlienListScreen> {
     print(searchController.text);
   }
 
-  // TODO: Review search code, could be problematic in the future
+
   searchResultsList()
   {
     var showResults = [];
