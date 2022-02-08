@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:omnitrix_database_flutter/services/auth.dart';
-import 'package:omnitrix_database_flutter/services/globalVariables.dart';
+import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/services/globalVariables.dart';
 
 
 /// TODO: Add confirmation dialog for logout button

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "553317843027",
+    "project_id": "natgeo-database",
+    "storage_bucket": "natgeo-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553317843027:android:c569d8139ae16aa2e446a6",
+        "android_client_info": {
+          "package_name": "com.app.sanctuary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553317843027-879hv7ifl1v63qpbrltitq7k5uk2nei2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4qCbs2GPkpixTKx_yqbc_187GWKkYE08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553317843027-879hv7ifl1v63qpbrltitq7k5uk2nei2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:omnitrix_database_flutter/models/models.dart';
+import 'package:sanctuary/models/models.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
-import 'package:omnitrix_database_flutter/models/collection_model.dart';
-import 'alien_details.dart';
+import 'package:sanctuary/models/collection_model.dart';
+import 'animal_details.dart';
 import 'collection_details.dart';
 
 String activeAlien = "";

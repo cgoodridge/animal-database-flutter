@@ -1,4 +1,4 @@
-package com.caverose.omnitrix_database_flutter
+package com.app.sanctuary
 
 import io.flutter.embedding.android.FlutterActivity
 

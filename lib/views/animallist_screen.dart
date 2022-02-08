@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:omnitrix_database_flutter/models/collection_model.dart';
-import 'package:omnitrix_database_flutter/models/models.dart';
-import 'package:omnitrix_database_flutter/services/auth.dart';
-import 'package:omnitrix_database_flutter/views/alien_details.dart';
+import 'package:sanctuary/models/collection_model.dart';
+import 'package:sanctuary/models/models.dart';
+import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/views/animal_details.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 
 
@@ -21,12 +21,12 @@ enum sortOption { alpha, reverseAlpha, recentlyAdded }
 @JsonSerializable()
 /// NOTE: When we begin to integrate animal data from A-Z animals, due to
 /// copyright issues, the app CANNOT be monetized
-class AlienListScreen extends StatefulWidget {
+class AnimalListScreen extends StatefulWidget {
   @override
-  _AlienListScreenState createState() => _AlienListScreenState();
+  _AnimalListScreenState createState() => _AnimalListScreenState();
 }
 
-class _AlienListScreenState extends State<AlienListScreen> {
+class _AnimalListScreenState extends State<AnimalListScreen> {
 
   final TextEditingController searchController = new TextEditingController();
 
@@ -72,13 +72,13 @@ class _AlienListScreenState extends State<AlienListScreen> {
 
     if (searchController.text != "")
       {
-        for (var alienSnapshot in _allResults)
+        for (var animalSnapshot in _allResults)
           {
-            var species = Alien.fromSnapshot(alienSnapshot).species.toLowerCase();
+            var commonName = Animal.fromSnapshot(animalSnapshot).commonName.toLowerCase();
 
-            if (species.contains(searchController.text.toLowerCase()))
+            if (commonName.contains(searchController.text.toLowerCase()))
               {
-                showResults.add(alienSnapshot);
+                showResults.add(animalSnapshot);
               }
           }
       }
@@ -125,13 +125,13 @@ class _AlienListScreenState extends State<AlienListScreen> {
                       child: Image.asset('assets/images/omnitrix.png', width: 40,),
                     ) : SizedBox(),
                     Flexible(
-                        child: !isSearching ? Text("codon stream", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),) :
+                        child: !isSearching ? Text("Project Sanctuary", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),) :
                         TextField(
                           controller: searchController,
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                               prefixIcon: Icon(Icons.search, color: Colors.white,),
-                              hintText: "Search Codon Stream",
+                              hintText: "Search Sanctuary",
                               hintStyle: TextStyle(color: Colors.white)
                           ),
                         ),
@@ -236,9 +236,9 @@ class _AlienListScreenState extends State<AlienListScreen> {
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder2<QuerySnapshot, QuerySnapshot>(
       streams:Tuple2(
-        ((_selection == sortOption.alpha) ? Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()
-              : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('aliens').orderBy('species', descending: true).snapshots()
-                :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('aliens').orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()),
+        ((_selection == sortOption.alpha) ? Firestore.instance.collection('animals').orderBy('common-name', descending: false).snapshots()
+              : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('animals').orderBy('common-name', descending: true).snapshots()
+                :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('animals').orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('animals').orderBy('common-name', descending: false).snapshots()),
 
                 Firestore.instance.collection('playlistNames').snapshots(),
       ),
@@ -270,6 +270,7 @@ class _AlienListScreenState extends State<AlienListScreen> {
       children:[
         ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
       ],
+
     );
     /*
     return ListView(
@@ -290,37 +291,37 @@ class _AlienListScreenState extends State<AlienListScreen> {
     );
   }
 
-  void addToFaves(Alien alien, CollectionReference faves, DocumentSnapshot data)
+  void addToFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
-    Map<String, dynamic> alienData = alien.toJson();
-    faves.document(data.documentID).setData(alienData);
+    Map<String, dynamic> animalData = animal.toJson();
+    faves.document(data.documentID).setData(animalData);
   }
 
-  void removeFromFaves(Alien alien, CollectionReference faves, DocumentSnapshot data)
+  void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
     faves.document(data.documentID).delete();
   }
 
-  Future<void> _showMyDialog(Alien alien, CollectionReference faves, DocumentSnapshot data) async {
+  Future<void> _showMyDialog(Animal animal, CollectionReference faves, DocumentSnapshot data) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (_) {
-        return PlaylistForm(alien: alien, favorite: faves, data: data);
+        return PlaylistForm(animal: animal, favorite: faves, data: data);
       },
     );
   }
 
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
-    final alien = Alien.fromSnapshot(data);
+    final animal = Animal.fromSnapshot(data);
     bool isInFaves = false;
     bool faveIcon = false;
     var playlistName;
-    Alien faveList;
+    Animal faveList;
     //This works, but we'll look for a more efficient way to do it later
 
-    if (alien.collections != null)
+    if (animal.collections != null)
     {
         faveIcon = true;
     }
@@ -345,7 +346,7 @@ class _AlienListScreenState extends State<AlienListScreen> {
     //   var dataRes = Alien.fromSnapshot(data);
     //   faveList = dataRes;
     //
-    //   if (alien.codename == dataRes.codename)
+    //   if (animal.codename == dataRes.codename)
     //     {
     //       isInFaves = true;
     //       faveIcon = true;
@@ -359,18 +360,18 @@ class _AlienListScreenState extends State<AlienListScreen> {
 
 
 
-    if (alien.isActive) { activeAlien = alien.species.toString(); }
-
-    if (alien.environment == "space") { shadowColor = Colors.white; }
-    else if (alien.environment == "land") { shadowColor = Colors.brown; }
-    else if (alien.environment == "ice") { shadowColor = Colors.blueAccent; }
-    else if (alien.environment == "water") { shadowColor = Colors.blue; }
+    // if (animal.isActive) { activeAlien = animal.species.toString(); }
+    //
+    // if (animal.environment == "space") { shadowColor = Colors.white; }
+    // else if (animal.environment == "land") { shadowColor = Colors.brown; }
+    // else if (animal.environment == "ice") { shadowColor = Colors.blueAccent; }
+    // else if (animal.environment == "water") { shadowColor = Colors.blue; }
 
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
       child: Container(
-        height: 220,
+        height: 500,
         child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           shape: RoundedRectangleBorder(
@@ -379,105 +380,191 @@ class _AlienListScreenState extends State<AlienListScreen> {
           ),
           color: Color(0xff363636),
           elevation: 5,
-          child: Row(
+          child: Column(
             children: [
-              Container(
-                height: 220,
-                width: 180,
-                child: Card(
-                  //shadowColor: Colors.green,
-                  shadowColor: shadowColor,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  margin: EdgeInsets.zero,
-                  elevation: 20,
-                  color: Color(0xff242424),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(alien.species, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
-                        Text("Codename: \n" + alien.codename, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
-                        /*
-                        Text("Description: " + alien.description,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: GoogleFonts.lato(color: Colors.white54),
+            Container(
+                  height: 300,
+                  width: 175,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AnimalDetails(
+                              animal: animal,
+                            )
                         ),
-                        */
-                        SizedBox(height:16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            //
+                      );
+                    },
+                    child: Image.network(
+                      animal.imgUrl,
+                      fit: BoxFit.contain,
+                      height: 200,
+                    ),
+                  ),
+                ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                      // constraints: BoxConstraints.expand(),
+                      height: 100,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [Colors.black, Colors.transparent])),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(animal.scientificName, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 24, fontWeight: FontWeight.w300),),
+                          Text("Common Name: " + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
+                          SizedBox(height:16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //
 
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal:2.0),
-                              child: IconButton(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal:2.0),
+                                child: IconButton(
                                   //icon: Icon(CupertinoIcons.bookmark),
                                   //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
                                   icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
                                   iconSize: 18,
-                                onPressed: () {
+                                  onPressed: () {
 
 
 
-                                  _showMyDialog(alien, favorite, data);
-                                  // Faves FINALLY freaking work
-                                  /*
-                                  if (isInFaves)
-                                    {
-                                      removeFromFaves(alien, favorite, data);
-                                    }
-                                  else
-                                    {
-                                      addToFaves(alien, favorite, data);
-                                    }
-                                  */
-                                },
+                                    _showMyDialog(animal, favorite, data);
+                                    // Faves FINALLY freaking work
+                                    /*
+                                            if (isInFaves)
+                                              {
+                                                removeFromFaves(alien, favorite, data);
+                                              }
+                                            else
+                                              {
+                                                addToFaves(alien, favorite, data);
+                                              }
+                                            */
+                                  },
+                                ),
                               ),
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:6.0),
-                                child: alien.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                height: 200,
-                width: 175,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AlienDetails(
-                            alien: alien,
-                          )
+                              // Flexible(
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.symmetric(horizontal:6.0),
+                              //     child: animal.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
+                              //   ),
+                              // )
+                            ],
+                          ),
+
+                        ],
                       ),
-                    );
-                  },
-                  child: Image.network(
-                    alien.imgUrl,
-                    fit: BoxFit.contain,
-                    height: 150,
-                  ),
-                ),
-              ),
+                    ),
+            ),
             ],
-          ),
+          )
+          // child: Row(
+          //   children: [
+          //     Container(
+          //       height: 220,
+          //       width: 180,
+          //       child: Card(
+          //         //shadowColor: Colors.green,
+          //         shadowColor: shadowColor,
+          //         clipBehavior: Clip.antiAliasWithSaveLayer,
+          //         margin: EdgeInsets.zero,
+          //         elevation: 20,
+          //         color: Color(0xff242424),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25.0),
+          //         ),
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(8.0),
+          //           child: Column(
+          //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //             children: [
+          //               Text(animal.scientificName, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
+          //               Text("Common Name: \n" + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
+          //               /*
+          //               Text("Description: " + alien.description,
+          //                 maxLines: 1,
+          //                 overflow: TextOverflow.ellipsis,
+          //                 softWrap: false,
+          //                 style: GoogleFonts.lato(color: Colors.white54),
+          //               ),
+          //               */
+          //               SizedBox(height:16),
+          //               Row(
+          //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //                 children: [
+          //                   //
+          //
+          //                   Padding(
+          //                     padding: const EdgeInsets.symmetric(horizontal:2.0),
+          //                     child: IconButton(
+          //                         //icon: Icon(CupertinoIcons.bookmark),
+          //                         //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
+          //                         icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
+          //                         color: Colors.white,
+          //                         iconSize: 18,
+          //                       onPressed: () {
+          //
+          //
+          //
+          //                         _showMyDialog(animal, favorite, data);
+          //                         // Faves FINALLY freaking work
+          //                         /*
+          //                         if (isInFaves)
+          //                           {
+          //                             removeFromFaves(alien, favorite, data);
+          //                           }
+          //                         else
+          //                           {
+          //                             addToFaves(alien, favorite, data);
+          //                           }
+          //                         */
+          //                       },
+          //                     ),
+          //                   ),
+          //                   // Flexible(
+          //                   //   child: Padding(
+          //                   //     padding: const EdgeInsets.symmetric(horizontal:6.0),
+          //                   //     child: animal.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
+          //                   //   ),
+          //                   // )
+          //                 ],
+          //               )
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     Container(
+          //       height: 200,
+          //       width: 175,
+          //       child: InkWell(
+          //         onTap: () {
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //                 builder: (context) => AnimalDetails(
+          //                   animal: animal,
+          //                 )
+          //             ),
+          //           );
+          //         },
+          //         child: Image.network(
+          //           animal.imgUrl,
+          //           fit: BoxFit.contain,
+          //           height: 150,
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ),
       )
     );
@@ -485,11 +572,11 @@ class _AlienListScreenState extends State<AlienListScreen> {
 }
 
 class PlaylistForm extends StatefulWidget {
-  final Alien alien;
+  final Animal animal;
   final CollectionReference favorite;
   final DocumentSnapshot data;
 
-  PlaylistForm({ Key key, this.alien, this.favorite, this.data}): super(key: key);
+  PlaylistForm({ Key key, this.animal, this.favorite, this.data}): super(key: key);
 
   @override
   _PlaylistFormState createState() => _PlaylistFormState();
@@ -532,7 +619,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
         TextButton(
           child: Text('Submit'),
           onPressed: () {
-            saveToNewCollection(widget.alien, widget.favorite, widget.data);
+            saveToNewCollection(widget.animal, widget.favorite, widget.data);
             Navigator.of(context).pop();
           },
         ),
@@ -582,7 +669,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
             height: 100,
             child: InkWell(
               onTap: (){
-                saveToExistingCollection(widget.alien, collection.name, widget.data);
+                saveToExistingCollection(widget.animal, collection.name, widget.data);
                 Navigator.of(context).pop();
               },
               child: Card(
@@ -601,7 +688,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
     );
   }
 
-  void saveToNewCollection(Alien alien, CollectionReference faves, DocumentSnapshot data) async
+  void saveToNewCollection(Animal animal, CollectionReference faves, DocumentSnapshot data) async
   {
 
     var stringVal;
@@ -629,32 +716,32 @@ class _PlaylistFormState extends State<PlaylistForm> {
 
     if (formKey.currentState.validate())
     {
-      Map<String, dynamic> alienData = alien.toJson();
+      Map<String, dynamic> animalData = animal.toJson();
       if (stringVal.toString() == playlistName.text)
         {
           print(true);
         } else {
 
         //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
-        await Firestore.instance.collection("favourites").document("playlists").collection(playlistName.text).document(data.documentID).setData(alienData);
+        await Firestore.instance.collection("favourites").document("playlists").collection(playlistName.text).document(data.documentID).setData(animalData);
         await Firestore.instance.collection("playlistNames").document().setData({"name": playlistName.text});
-        await Firestore.instance.collection('aliens').document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
+        await Firestore.instance.collection('animals').document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
       }
     }
   }
 
-  void saveToExistingCollection(Alien alien, String collectionName, DocumentSnapshot data) async
+  void saveToExistingCollection(Animal animal, String collectionName, DocumentSnapshot data) async
   {
     var stringVal;
     List colName = [];
     colName.add(collectionName);
 
-    Map<String, dynamic> alienData = alien.toJson();
+    Map<String, dynamic> animalData = animal.toJson();
 
-    await Firestore.instance.collection("favourites").document("playlists").collection(collectionName).document(data.documentID).setData(alienData);
-    await Firestore.instance.collection("aliens").document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
+    await Firestore.instance.collection("favourites").document("playlists").collection(collectionName).document(data.documentID).setData(animalData);
+    await Firestore.instance.collection("animals").document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
 
-    print("Alien added to " + collectionName);
+    print("Animal added to " + collectionName);
   }
 
 }

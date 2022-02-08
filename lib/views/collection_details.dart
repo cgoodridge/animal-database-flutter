@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:omnitrix_database_flutter/models/alien-model.dart';
-import 'package:omnitrix_database_flutter/models/collection_model.dart';
-import 'package:omnitrix_database_flutter/views/alien_details.dart';
+import 'package:sanctuary/models/animal-model.dart';
+import 'package:sanctuary/models/collection_model.dart';
+import 'package:sanctuary/views/animal_details.dart';
 
 // TODO: Add other sort options
 enum sortOption { alpha, reverseAlpha, recentlyAdded }
@@ -228,13 +228,13 @@ class CollectionDetails extends StatelessWidget {
     );
   }
 
-  void addToFaves(Alien alien, CollectionReference faves, DocumentSnapshot data)
+  void addToFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
-    Map<String, dynamic> alienData = alien.toJson();
+    Map<String, dynamic> alienData = animal.toJson();
     faves.document(data.documentID).setData(alienData);
   }
 
-  void removeFromFaves(Alien alien, CollectionReference faves, DocumentSnapshot data)
+  void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
     faves.document(data.documentID).delete();
   }
@@ -242,12 +242,12 @@ class CollectionDetails extends StatelessWidget {
 
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
-    final alien = Alien.fromSnapshot(data);
+    final animal = Animal.fromSnapshot(data);
     bool isInFaves = false;
     bool faveIcon = false;
 
 
-    Alien faveList;
+    Animal faveList;
     //This works, but we'll look for a more efficient way to do it later
 
     for (var data in faves)
@@ -276,12 +276,12 @@ class CollectionDetails extends StatelessWidget {
 
     CollectionReference favorite = Firestore.instance.collection('favourites');
 
-    if (alien.isActive) { activeAlien = alien.species.toString(); }
+  /*  if (animal.isActive) { activeAlien = animal.species.toString(); }
 
     if (alien.environment == "space") { shadowColor = Colors.white; }
     else if (alien.environment == "land") { shadowColor = Colors.brown; }
     else if (alien.environment == "ice") { shadowColor = Colors.blueAccent; }
-    else if (alien.environment == "water") { shadowColor = Colors.blue; }
+    else if (alien.environment == "water") { shadowColor = Colors.blue; }*/
 
 
     return Padding(
@@ -316,8 +316,8 @@ class CollectionDetails extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(alien.species, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
-                          Text("Codename: \n" + alien.codename, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
+                          Text(animal.order, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
+                          Text("Common Name: \n" + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
                           /*
                         Text("Description: " + alien.description,
                           maxLines: 1,
@@ -366,12 +366,12 @@ class CollectionDetails extends StatelessWidget {
                                 ),
                               ),
 
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal:6.0),
-                                  child: alien.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
-                                ),
-                              )
+                              // Flexible(
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.symmetric(horizontal:6.0),
+                              //     child: alien.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
+                              //   ),
+                              // )
                             ],
                           )
                         ],
@@ -387,14 +387,14 @@ class CollectionDetails extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AlienDetails(
-                              alien: alien,
+                            builder: (context) => AnimalDetails(
+                              animal: animal,
                             )
                         ),
                       );
                     },
                     child: Image.network(
-                      alien.imgUrl,
+                      animal.imgUrl,
                       fit: BoxFit.contain,
                       height: 150,
                     ),

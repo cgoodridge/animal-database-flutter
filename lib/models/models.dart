@@ -1,3 +1,3 @@
-export 'alien-model.dart';
+export 'animal-model.dart';
 export 'environment_model.dart';
 

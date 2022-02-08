@@ -1,6 +1,6 @@
-# omnitrix_database_flutter
+# Project Sanctuary
 
-The flutter version of the omnitrix database project
+The flutter version of the animal database project
 
 ## Getting Started
 

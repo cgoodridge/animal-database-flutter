@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:omnitrix_database_flutter/models/models.dart';
-import 'package:omnitrix_database_flutter/services/auth.dart';
+import 'package:sanctuary/models/models.dart';
+import 'package:sanctuary/services/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:omnitrix_database_flutter/models/user_model.dart';
-import 'package:omnitrix_database_flutter/services/auth.dart';
-import 'package:omnitrix_database_flutter/services/wrapper.dart';
-import 'package:omnitrix_database_flutter/views/alien_details.dart';
-import 'package:omnitrix_database_flutter/views/alienlist_screen.dart';
-import 'package:omnitrix_database_flutter/views/collections_screen.dart';
-import 'package:omnitrix_database_flutter/views/locations_screen.dart';
-import 'package:omnitrix_database_flutter/views/login_screen.dart';
-import 'package:omnitrix_database_flutter/views/settings_screen.dart';
+import 'package:sanctuary/models/user_model.dart';
+import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/services/wrapper.dart';
+import 'package:sanctuary/views/animal_details.dart';
+import 'package:sanctuary/views/animallist_screen.dart';
+import 'package:sanctuary/views/collections_screen.dart';
+import 'package:sanctuary/views/locations_screen.dart';
+import 'package:sanctuary/views/login_screen.dart';
+import 'package:sanctuary/views/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,7 +19,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  bool realLife = false;
   runApp(MyApp());
 }
 
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Omnitrix Database',
+        title: 'Project Sanctuary',
         theme: ThemeData(
 
           primarySwatch: Colors.blue,
@@ -47,10 +46,7 @@ class MyApp extends StatelessWidget {
             '/locations': (context) => LocationsScreen(),
             '/home': (context) => MyHomePage(),
             '/settings': (context) => SettingsScreen(),
-            AlienDetails.id: (context) => AlienDetails(),
-            //'contacts_screen': (context) => AccountScreen(),
-            //'balance_screen': (context) => BalanceScreen(),
-            //'transfer_screen': (context) => TransferScreen()
+            AnimalDetails.id: (context) => AnimalDetails(),
           }
         //home: MyHomePage(title: 'Flutter Demo Home Page'),
       ),
@@ -70,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //PickedFile image;
 
   final List<Widget> _navBarLocations = [
-    AlienListScreen(),
+    AnimalListScreen(),
     CollectionsScreen(),
     LocationsScreen(),
     SettingsScreen(),
@@ -125,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
 
-        backgroundColor: Color(0xff212121),
+        backgroundColor: Color(0xffad5454),
         unselectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -162,13 +158,23 @@ class FormDialog extends StatefulWidget {
 class _FormDialogState extends State<FormDialog> {
 
   final formKey = GlobalKey<FormState>();
-
-  final TextEditingController species = TextEditingController();
-  final TextEditingController codename = TextEditingController();
-  final TextEditingController environment = TextEditingController();
+  /*
+  * TODO: Add remaining fields
+  * */
+  final TextEditingController kingdomClass = TextEditingController();
+  final TextEditingController family = TextEditingController();
+  final TextEditingController genus = TextEditingController();
+  final TextEditingController kingdom = TextEditingController();
+  final TextEditingController order = TextEditingController();
+  final TextEditingController phylum = TextEditingController();
+  final TextEditingController scientificName = TextEditingController();
+  final TextEditingController commonName = TextEditingController();
+  final TextEditingController nameOfYoung = TextEditingController();
+  final TextEditingController diet = TextEditingController();
+  final TextEditingController lifespan = TextEditingController();
+  final TextEditingController lifestyle = TextEditingController();
   final TextEditingController description = TextEditingController();
-  final TextEditingController abilities = TextEditingController();
-  final TextEditingController origin = TextEditingController();
+  final TextEditingController location = TextEditingController();
 
   File imgFile;
   String imgURL;
@@ -192,30 +198,75 @@ class _FormDialogState extends State<FormDialog> {
                           child: (imgFile != null) ? Image.file(imgFile): CircleAvatar(radius: 50, backgroundColor: Colors.transparent,)
                       ),
                       TextFormField(
-                        controller: species,
+                        controller: kingdom,
                         validator: (value){
                           return value.isNotEmpty? null : "Invalid Field";
                         },
                         decoration: InputDecoration(
-                            hintText: "Species"
+                            hintText: "Kingdom"
                         ),
                       ),
                       TextFormField(
-                        controller: codename,
+                        controller: phylum,
                         validator: (value){
                           return value.isNotEmpty? null : "Invalid Field";
                         },
                         decoration: InputDecoration(
-                            hintText: "Codename"
+                            hintText: "Phylum"
                         ),
                       ),
                       TextFormField(
-                        controller: environment,
+                        controller: kingdomClass,
                         validator: (value){
                           return value.isNotEmpty? null : "Invalid Field";
                         },
                         decoration: InputDecoration(
-                            hintText: "Environment"
+                            hintText: "Class"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: order,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Order"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: family,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Family"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: genus,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Genus"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: scientificName,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Scientific Name"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: commonName,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Common Name"
                         ),
                       ),
                       TextFormField(
@@ -225,24 +276,6 @@ class _FormDialogState extends State<FormDialog> {
                         },
                         decoration: InputDecoration(
                             hintText: "Description"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: abilities,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Abilities"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: origin,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Origin"
                         ),
                       ),
                     ],
@@ -273,16 +306,18 @@ class _FormDialogState extends State<FormDialog> {
 
         imgURL = await (await imageUploadTask.onComplete).ref.getDownloadURL();
 
-        await Firestore.instance.collection("aliens").add({
-          'abilities' : abilities.text,
-          'codename' : codename.text,
+        await Firestore.instance.collection("animals").add({
+          'kingdom' : kingdom.text,
+          'phylum' : phylum.text,
+          'class' : kingdomClass.text,
+          'order' : order.text,
+          'family' : family.text,
+          'genus' : genus.text,
+          'scientific-name' : scientificName.text,
+          'common-name' : commonName.text,
+          'location': location.text,
           'dateAdded' : DateTime.now(),
-          'description' : description.text,
-          'environment' : environment.text,
-          'imgURL' : imgURL,
-          'isActive' : false,
-          'origin' : origin.text,
-          'species' : species.text,
+
         });
       }
 

@@ -1,17 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:omnitrix_database_flutter/models/alien-model.dart';
-import 'package:omnitrix_database_flutter/models/environment_model.dart';
+import 'package:sanctuary/models/animal-model.dart';
+import 'package:sanctuary/models/environment_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 
-class AlienDetails extends StatelessWidget {
+class AnimalDetails extends StatelessWidget {
   static const String id = 'event_details';
-  final Alien alien;
+  final Animal animal;
   final double widgetHeight = 350.0;
 
-  AlienDetails({this.alien});
+  AnimalDetails({this.animal});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class AlienDetails extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 64.0),
               child: Align(
-                  child: Image.network(alien.imgUrl, height: 350,)
+                  child: Image.network(animal.imgUrl, height: 350,)
                 /*
                   child: Container(
                     constraints: BoxConstraints(maxHeight: 500),
@@ -127,7 +126,7 @@ class AlienDetails extends StatelessWidget {
                                   children: [
                                     Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20.0),
-                                        child: Text(alien.description, style: TextStyle(height: 2,color: Colors.white70),)
+                                        child: Text(animal.description, style: TextStyle(height: 2,color: Colors.white70),)
                                     ),
                                   ]
                               ),
