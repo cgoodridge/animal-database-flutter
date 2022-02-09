@@ -105,8 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                   colors: [
-                    Colors.green,
-                    Colors.green[600],
+                    Colors.orange,
+                    Colors.orange,
                     //Colors.transparent,
                     //Color(0x11000000)
                   ],
@@ -121,8 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
 
-        backgroundColor: Color(0xffad5454),
-        unselectedItemColor: Colors.white,
+        backgroundColor: Color(0xffe3e3e3),
+        unselectedItemColor: Colors.black,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -143,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: Colors.orange,
         onTap: _onItemTapped,
       ),
     );
