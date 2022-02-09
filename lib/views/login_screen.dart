@@ -22,22 +22,19 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff2C2C2C),
-
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Column(
           children: [
             SizedBox(height: 20.0),
-            Text("Codon Stream", style: GoogleFonts.lato(fontWeight: FontWeight.w200, color: Colors.white,fontSize: 36),),
+            Text("Project Sanctuary", style: GoogleFonts.lato(fontWeight: FontWeight.w200, color: Colors.white,fontSize: 36),),
             SizedBox(height: 20.0),
-            Image.asset('assets/images/omnitrix.png', width: 200,),
+            Image.asset('assets/images/logo.png', width: 200,),
             Expanded(
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-
-
                     SizedBox(height: 20.0),
                     TextFormField(
                       decoration: InputDecoration(

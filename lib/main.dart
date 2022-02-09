@@ -17,8 +17,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+
   runApp(MyApp());
 }
 
@@ -77,11 +79,18 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
   }
+  void initState() {
+    super.initState();
 
+  }
 
   @override
   Widget build(BuildContext context) {
-
+    SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual, overlays: [
+      SystemUiOverlay.bottom, //This line is used for showing the bottom bar
+    ]
+    );
     return Scaffold(
       extendBody: true,
       body: _navBarLocations[_selectedIndex],
@@ -267,6 +276,42 @@ class _FormDialogState extends State<FormDialog> {
                         },
                         decoration: InputDecoration(
                             hintText: "Common Name"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: nameOfYoung,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Name of Young"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: diet,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "diet"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: lifespan,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Lifespan"
+                        ),
+                      ),
+                      TextFormField(
+                        controller: lifestyle,
+                        validator: (value){
+                          return value.isNotEmpty? null : "Invalid Field";
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Lifestyle"
                         ),
                       ),
                       TextFormField(

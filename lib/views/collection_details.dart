@@ -55,7 +55,7 @@ class CollectionDetails extends StatelessWidget {
 
     return Scaffold(
 
-        backgroundColor: Color(0xff2C2C2C),
+        backgroundColor: Color(0xfff5f5f5),
         //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
         body:_buildViewSmall(context)
 
@@ -81,19 +81,19 @@ class CollectionDetails extends StatelessWidget {
                         {
                           Navigator.pop(context);
                         },
-                        icon: Icon(Icons.arrow_back, color: Colors.white, size: 32,),
+                        icon: Icon(Icons.arrow_back, color: Colors.black, size: 32,),
 
                       ),
                     ) : SizedBox(),
                     Flexible(
-                      child: !isSearching ? Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),) :
+                      child: !isSearching ? Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),) :
                       TextField(
                         controller: searchController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search, color: Colors.white,),
-                            hintText: "Search Codon Stream",
-                            hintStyle: TextStyle(color: Colors.white)
+                            prefixIcon: Icon(Icons.search, color: Colors.black,),
+                            hintText: "Search Sanctuary",
+                            hintStyle: TextStyle(color: Colors.black)
                         ),
                       ),
                     ),
@@ -101,7 +101,7 @@ class CollectionDetails extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        color: Colors.white,
+                        color: Colors.black,
                         icon: !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
                         onPressed: () {
                           // Expand search Field
@@ -190,8 +190,8 @@ class CollectionDetails extends StatelessWidget {
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
       stream:
-        ((_selection == sortOption.alpha) ? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('species', descending: false).snapshots()
-            : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('species', descending: true).snapshots()
+        ((_selection == sortOption.alpha) ? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('class', descending: false).snapshots()
+            : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('order', descending: true).snapshots()
             :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()),
 
       builder: (context, snapshot) {
@@ -351,7 +351,7 @@ class CollectionDetails extends StatelessWidget {
 
 
 
-                                    // Faves FINALLY freaking work
+                                    // Faves FINALLY freaking works
                                     /*
                                   if (isInFaves)
                                     {

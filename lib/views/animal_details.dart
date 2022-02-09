@@ -4,7 +4,6 @@ import 'package:sanctuary/models/animal-model.dart';
 import 'package:sanctuary/models/environment_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-
 class AnimalDetails extends StatelessWidget {
   static const String id = 'event_details';
   final Animal animal;
@@ -30,20 +29,7 @@ class AnimalDetails extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 64.0),
               child: Align(
-                  child: Image.network(animal.imgUrl, height: 350,)
-                /*
-                  child: Container(
-                    constraints: BoxConstraints(maxHeight: 500),
-                    child: ModelViewer(
-                      src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
-                      alt: "A 3D model of an astronaut",
-                      ar: true,
-                      autoRotate: true,
-                      cameraControls: true,
-                    ),
-                  ),
-
-                 */
+                  child: Image.network(animal.imgUrl, fit: BoxFit.fitHeight,)
               ),
             ),
             Divider(
@@ -130,7 +116,6 @@ class AnimalDetails extends StatelessWidget {
                                     ),
                                   ]
                               ),
-
                               ListView(
                                   children: [
                                     ListTile(

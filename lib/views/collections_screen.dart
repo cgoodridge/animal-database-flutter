@@ -23,7 +23,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
     return Scaffold(
 
-        backgroundColor: Color(0xff2C2C2C),
+        backgroundColor: Color(0xfff5f5f5),
         //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
         body:_buildViewSmall(context)
 
@@ -43,12 +43,12 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Image.asset('assets/images/omnitrix.png', width: 40,),
+                      child: Image.asset('assets/images/logo.png', width: 40,),
                     ),
-                    Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),),
+                    Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Icon(Icons.search, color: Colors.white),
+                      child: Icon(Icons.search, color: Colors.black),
                       /*
                         child: FlatButton.icon(
                           icon: Icon(Icons.search, color: Colors.white,),
@@ -132,7 +132,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           children: [
             Align(
                 alignment: Alignment.centerLeft,
-                child: Text(collection.name, style: GoogleFonts.sarpanch(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w300),)
+                child: Text(collection.name, style: GoogleFonts.sarpanch(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w300),)
             ),
             SizedBox(height: 8,),
             Container(

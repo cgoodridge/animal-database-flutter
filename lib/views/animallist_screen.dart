@@ -30,7 +30,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   final TextEditingController searchController = new TextEditingController();
 
-
   final AuthService _auth = AuthService();
   sortOption _selection = sortOption.alpha;
 
@@ -75,7 +74,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         for (var animalSnapshot in _allResults)
           {
             var commonName = Animal.fromSnapshot(animalSnapshot).commonName.toLowerCase();
-
             if (commonName.contains(searchController.text.toLowerCase()))
               {
                 showResults.add(animalSnapshot);
@@ -93,13 +91,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       backgroundColor: Color(0xfff5f5f5),
-      //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
       body:_buildViewSmall(context)
-
     );
   }
 
@@ -122,7 +116,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                   children: [
                     !isSearching ? Align(
                       alignment: Alignment.centerLeft,
-                      child: Image.asset('assets/images/omnitrix.png', width: 40,),
+                      child: Image.asset('assets/images/logo.png', width: 40,),
                     ) : SizedBox(),
                     Flexible(
                         child: !isSearching ? Text("Project Sanctuary", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),) :
@@ -148,15 +142,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                               isSearching = !isSearching;
                             });
                           },),
-                        /*
-                        child: FlatButton.icon(
-                          icon: Icon(Icons.search, color: Colors.white,),
-                          label: Text(""),
-                          onPressed: () async {
-                            //await _auth.signOut();
-                          },
-                        )
-                        */
+
                     )
                   ],
                 ),
@@ -169,7 +155,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xff242424),
+                          color: Colors.black12,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(6.0),
@@ -178,9 +164,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Icon(Icons.circle, color: Colors.green, size: 12,),
+                                child: Text("Now Showing: " , style: GoogleFonts.lato(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w400),)
                               ),
-                              Text("Active Sample: " + activeAlien, style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w300),)
+
                             ],
                           ),
                         ),
@@ -248,7 +234,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             return CircularProgressIndicator();
           }
         else {
-          //print(snapshots.item1.data.);
 
           _allResults = snapshots.item1.data.documents;
 
@@ -259,8 +244,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
-    // setState(() {
-    // });
 
     return isSearching ? ListView.builder(
       itemCount: _resultsList.length,
@@ -270,16 +253,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       children:[
         ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
       ],
-
     );
-    /*
-    return ListView(
-      children:[
-        ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
-      ],
-    );
-     */
-
   }
 
   Widget _buildGridList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
@@ -312,7 +286,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     );
   }
 
-
   Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
     final animal = Animal.fromSnapshot(data);
     bool isInFaves = false;
@@ -326,7 +299,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         faveIcon = true;
     }
 
-
     for (var data in faves)
     {
       Map<String, dynamic> val = data.data;
@@ -336,10 +308,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       //return alienVal;
     }
 
-    //QuerySnapshot snapshot = Firestore.instance.collection("playlistNames").getDocuments();
-
     CollectionReference favorite = Firestore.instance.collection('playlistNames').document("playlists").collection("collectionPath");
-
 
     // for (var data in faves)
     // {
@@ -358,8 +327,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     //   //return alienVal;
     // }
 
-
-
     // if (animal.isActive) { activeAlien = animal.species.toString(); }
     //
     // if (animal.environment == "space") { shadowColor = Colors.white; }
@@ -367,68 +334,61 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     // else if (animal.environment == "ice") { shadowColor = Colors.blueAccent; }
     // else if (animal.environment == "water") { shadowColor = Colors.blue; }
 
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
       child: Container(
         height: 500,
         child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
+          semanticContainer: true,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Colors.white54, width: 0.35),
             borderRadius: BorderRadius.circular(25.0),
           ),
           color: Colors.white,
           elevation: 5,
-          child: Column(
-            children: [
-            Container(
-                  height: 300,
-                  width: 175,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AnimalDetails(
-                              animal: animal,
-                            )
-                        ),
-                      );
-                    },
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AnimalDetails(
+                      animal: animal,
+                    )
+                ),
+              );
+            },
+            child: Stack(
+              children: [
+              Container(
+                    height: 500,
+                    width: double.infinity,
                     child: Image.network(
                       animal.imgUrl,
-                      fit: BoxFit.contain,
-                      height: 200,
+                      fit: BoxFit.fitHeight,
+                      // height: 200,
                     ),
                   ),
-                ),
-            Expanded(
-              flex: 1,
-              child: Container(
+              Container(
                       // constraints: BoxConstraints.expand(),
-                      height: 100,
+                      height: 500,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [Colors.black, Colors.transparent])),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(animal.scientificName, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 24, fontWeight: FontWeight.w300),),
-                          Text("Common Name: " + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
+                          Text(animal.scientificName, style: GoogleFonts.sarpanch(color: Colors.orange, fontSize: 28, fontWeight: FontWeight.w300),),
+                          Text("Common Name: " + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 20),),
                           SizedBox(height:16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              //
-
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:4.0),
+                                padding: const EdgeInsets.symmetric(horizontal:16.0, vertical:16),
                                 child: IconButton(
-                                  //icon: Icon(CupertinoIcons.bookmark),
-                                  //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
                                   icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
                                   iconSize: 32,
@@ -460,8 +420,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                         ],
                       ),
                     ),
+              ],
             ),
-            ],
           )
         ),
       )

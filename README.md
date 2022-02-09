@@ -1,6 +1,6 @@
 # Project Sanctuary
 
-The flutter version of the animal database project
+Welcome to project sanctuary. An app that compiles the info of multiple species of animals across the planet
 
 ## Getting Started
 
