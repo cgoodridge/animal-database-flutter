@@ -96,7 +96,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
     return Scaffold(
 
-      backgroundColor: Color(0xff2C2C2C),
+      backgroundColor: Color(0xfff5f5f5),
       //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
       body:_buildViewSmall(context)
 
@@ -125,14 +125,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Image.asset('assets/images/omnitrix.png', width: 40,),
                     ) : SizedBox(),
                     Flexible(
-                        child: !isSearching ? Text("Project Sanctuary", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),) :
+                        child: !isSearching ? Text("Project Sanctuary", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),) :
                         TextField(
                           controller: searchController,
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.search, color: Colors.white,),
+                              prefixIcon: Icon(Icons.search, color: Colors.black,),
                               hintText: "Search Sanctuary",
-                              hintStyle: TextStyle(color: Colors.white)
+                              hintStyle: TextStyle(color: Colors.black)
                           ),
                         ),
                     ),
@@ -140,7 +140,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     Align(
                         alignment: Alignment.centerRight,
                         child: IconButton(
-                          color: Colors.white,
+                          color: Colors.black,
                           icon: !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
                           onPressed: () {
                             // Expand search Field
@@ -189,7 +189,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     Flexible(
                       flex: 2,
                         child: PopupMenuButton<sortOption>(
-                                icon: Icon(Icons.sort,color: Colors.white,),
+                                icon: Icon(Icons.sort,color: Colors.black,),
                                 onSelected: (sortOption result) { setState(() { _selection = result; }); },
                                 itemBuilder: (BuildContext context) => <PopupMenuEntry<sortOption>>[
                                   const PopupMenuItem<sortOption>(
@@ -378,7 +378,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             side: BorderSide(color: Colors.white54, width: 0.35),
             borderRadius: BorderRadius.circular(25.0),
           ),
-          color: Color(0xff363636),
+          color: Colors.white,
           elevation: 5,
           child: Column(
             children: [
@@ -425,17 +425,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                               //
 
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:2.0),
+                                padding: const EdgeInsets.symmetric(horizontal:4.0),
                                 child: IconButton(
                                   //icon: Icon(CupertinoIcons.bookmark),
                                   //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
                                   icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
-                                  iconSize: 18,
+                                  iconSize: 32,
                                   onPressed: () {
-
-
-
                                     _showMyDialog(animal, favorite, data);
                                     // Faves FINALLY freaking work
                                     /*
@@ -466,105 +463,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             ),
             ],
           )
-          // child: Row(
-          //   children: [
-          //     Container(
-          //       height: 220,
-          //       width: 180,
-          //       child: Card(
-          //         //shadowColor: Colors.green,
-          //         shadowColor: shadowColor,
-          //         clipBehavior: Clip.antiAliasWithSaveLayer,
-          //         margin: EdgeInsets.zero,
-          //         elevation: 20,
-          //         color: Color(0xff242424),
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(25.0),
-          //         ),
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: Column(
-          //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //             children: [
-          //               Text(animal.scientificName, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
-          //               Text("Common Name: \n" + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
-          //               /*
-          //               Text("Description: " + alien.description,
-          //                 maxLines: 1,
-          //                 overflow: TextOverflow.ellipsis,
-          //                 softWrap: false,
-          //                 style: GoogleFonts.lato(color: Colors.white54),
-          //               ),
-          //               */
-          //               SizedBox(height:16),
-          //               Row(
-          //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //                 children: [
-          //                   //
-          //
-          //                   Padding(
-          //                     padding: const EdgeInsets.symmetric(horizontal:2.0),
-          //                     child: IconButton(
-          //                         //icon: Icon(CupertinoIcons.bookmark),
-          //                         //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
-          //                         icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
-          //                         color: Colors.white,
-          //                         iconSize: 18,
-          //                       onPressed: () {
-          //
-          //
-          //
-          //                         _showMyDialog(animal, favorite, data);
-          //                         // Faves FINALLY freaking work
-          //                         /*
-          //                         if (isInFaves)
-          //                           {
-          //                             removeFromFaves(alien, favorite, data);
-          //                           }
-          //                         else
-          //                           {
-          //                             addToFaves(alien, favorite, data);
-          //                           }
-          //                         */
-          //                       },
-          //                     ),
-          //                   ),
-          //                   // Flexible(
-          //                   //   child: Padding(
-          //                   //     padding: const EdgeInsets.symmetric(horizontal:6.0),
-          //                   //     child: animal.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
-          //                   //   ),
-          //                   // )
-          //                 ],
-          //               )
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     Container(
-          //       height: 200,
-          //       width: 175,
-          //       child: InkWell(
-          //         onTap: () {
-          //           Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //                 builder: (context) => AnimalDetails(
-          //                   animal: animal,
-          //                 )
-          //             ),
-          //           );
-          //         },
-          //         child: Image.network(
-          //           animal.imgUrl,
-          //           fit: BoxFit.contain,
-          //           height: 150,
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ),
       )
     );
@@ -588,7 +486,6 @@ class _PlaylistFormState extends State<PlaylistForm> {
 
   @override
   Widget build(BuildContext context) {
-
     return AlertDialog(
       title: Text('Save to Playlist'),
       content: Container(
@@ -646,7 +543,6 @@ class _PlaylistFormState extends State<PlaylistForm> {
   }
 
   Widget _buildCollectionList(BuildContext context, List<DocumentSnapshot> snapshot) {
-
     return ListView(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -658,7 +554,6 @@ class _PlaylistFormState extends State<PlaylistForm> {
 
   Widget _buildCollectionListItem(BuildContext context, DocumentSnapshot data){
     final collection = Collection.fromSnapshot(data);
-
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Column(
@@ -690,13 +585,10 @@ class _PlaylistFormState extends State<PlaylistForm> {
 
   void saveToNewCollection(Animal animal, CollectionReference faves, DocumentSnapshot data) async
   {
-
     var stringVal;
     List colName = [];
     colName.add(playlistName.text);
     QuerySnapshot snapshot = await Firestore.instance.collection("playlistNames").getDocuments();
-
-
     snapshot.documents.forEach((document) {
       if (document.exists) {
         //print('Documents exist');
@@ -735,14 +627,10 @@ class _PlaylistFormState extends State<PlaylistForm> {
     var stringVal;
     List colName = [];
     colName.add(collectionName);
-
     Map<String, dynamic> animalData = animal.toJson();
-
     await Firestore.instance.collection("favourites").document("playlists").collection(collectionName).document(data.documentID).setData(animalData);
     await Firestore.instance.collection("animals").document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
 
     print("Animal added to " + collectionName);
   }
-
 }
-
