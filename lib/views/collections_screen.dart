@@ -128,45 +128,65 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
-        child: Column(
-          children: [
-            Align(
-                alignment: Alignment.centerLeft,
-                child: Text(collection.name, style: GoogleFonts.sarpanch(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w300),)
+        child: Container(
+          height: 250,
+          width: double.infinity,
+          child: Card(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.white54, width: 0.35),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            SizedBox(height: 8,),
-            Container(
-              height: 220,
-              width: 350,
-              child: Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.white54, width: 0.35),
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-                color: Color(0xff363636),
-                elevation: 5,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CollectionDetails(
-                            collection: collection,
-                          )
+            color: Color(0xffefefef),
+            elevation: 5,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CollectionDetails(
+                        collection: collection,
+                      )
+                  ),
+                );
+              },
+              child: Stack(
+                children: [
+                  Container(
+                    height: 500,
+                    width: double.infinity,
+                    child: Hero(
+                      tag: collection.name,
+                      child: Image.network(
+                        collection.imgURL,
+                        fit: BoxFit.fitHeight,
+                        // height: 200,
                       ),
-                    );
-                  },
-                  child: Container(
+                    ),
+                  ),
+                  Container(
+                    // constraints: BoxConstraints.expand(),
+                    height: 500,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [Colors.black, Colors.transparent])),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Text("Collection: " + collection.name, style: GoogleFonts.sarpanch(color: Colors.orange, fontSize: 24, fontWeight: FontWeight.w300),),
+                        SizedBox(height:16),
+
+
                       ],
                     ),
                   ),
-                )
+                ],
               ),
-            ),
-          ],
+            )
+          ),
         )
     );
   }

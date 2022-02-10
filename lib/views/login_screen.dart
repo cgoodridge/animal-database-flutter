@@ -13,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
+  bool passwordToggle = true;
   // text field state
   String email = '';
   String password = '';
@@ -21,25 +22,25 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff2C2C2C),
+      backgroundColor: Color(0xffffffff),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Column(
           children: [
-            SizedBox(height: 20.0),
-            Text("Project Sanctuary", style: GoogleFonts.lato(fontWeight: FontWeight.w200, color: Colors.white,fontSize: 36),),
-            SizedBox(height: 20.0),
+            SizedBox(height: 60.0),
+            Text("Project Sanctuary", style: GoogleFonts.orbitron(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 36),),
+            SizedBox(height: 60.0),
             Image.asset('assets/images/logo.png', width: 200,),
             Expanded(
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: 20.0),
+                    SizedBox(height: 40.0),
                     TextFormField(
                       decoration: InputDecoration(
                           hintText: 'Email',
-                          hintStyle: TextStyle(color: Colors.white,),
+                          hintStyle: TextStyle(color: Colors.black,),
                           prefixIcon: Icon(Icons.email_outlined),
                       ),
                       validator: (val) => val.isEmpty ? "Enter an email" : null,
@@ -47,14 +48,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() => email = val);
                       },
                     ),
-                    SizedBox(height: 10.0),
+                    SizedBox(height: 30.0),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        hintStyle: TextStyle(color: Colors.white,),
+                        hintStyle: TextStyle(color: Colors.black,),
                         prefixIcon: Icon(Icons.vpn_key_outlined),
+                        suffixIcon: passwordToggle ? IconButton(
+                          icon: Icon(Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              passwordToggle = !passwordToggle;
+                            });
+                          },)
+                            :
+                        IconButton(
+                          icon: Icon(Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              passwordToggle = !passwordToggle;
+                            });
+                          },)
+                        ,
                       ),
-                      obscureText: true,
+                      obscureText: passwordToggle,
                       onChanged: (val) {
                         setState(() => password = val);
                       },
@@ -62,12 +79,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 20.0),
                     FlatButton(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.green)
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: Colors.orange)
                         ),
                         child: Text(
                           'Sign In',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () async {
                           if(_formKey.currentState.validate()){
@@ -83,12 +100,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 12.0),
                     FlatButton(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.green)
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: Colors.orange)
                         ),
                         child: Text(
                           'Sign In Anon',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () async {
                           dynamic result = await _auth.signInAnon();
@@ -103,6 +120,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       error,
                       style: TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                    SizedBox(height: 12.0),
+                    Text(
+                      "Forgot Password",
+                      style: TextStyle(color: Colors.black, fontSize: 14.0),
                     ),
                   ],
                 ),

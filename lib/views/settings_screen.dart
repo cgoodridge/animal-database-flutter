@@ -17,7 +17,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff2C2C2C),
+      backgroundColor: Color(0xfff5f5f5),
       body: Container(
       child:
         ListView(
@@ -26,54 +26,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text("settings", style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),),
+                  child: Text("settings", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 34, fontWeight: FontWeight.bold),),
                 ),
                 Container(
                   padding: EdgeInsets.only(left:16, top:16, bottom: 16),
                   decoration: BoxDecoration(
-                    color: Color(0xff242424),
+                    color: Color(0xffe8e8e8),
                   ),
                   child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("Admin", style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 24, fontWeight: FontWeight.w300),),
+                      child: Text("Admin", style: GoogleFonts.sarpanch(color: Colors.orange, fontSize: 24, fontWeight: FontWeight.w300),),
                   ),
                 ),
                 ListTile(
-                  title: Text('Account', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  title: Text('Account', style: TextStyle(fontSize: 18,color: Colors.black)),
                 ),
                 Divider(
                   height: 1,
-                  color: Colors.white70,
+                  color: Colors.black54,
                   thickness: 0.1,
                 ),
                 ListTile(
-                  title: Text('Device', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  title: Text('Device', style: TextStyle(fontSize: 18,color: Colors.black)),
                 ),
                 Divider(
                   height: 1,
-                  color: Colors.white70,
+                  color: Colors.black54,
                   thickness: 0.1,
                 ),
                 ListTile(
-                  title: Text('Security', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  title: Text('Security', style: TextStyle(fontSize: 18,color: Colors.black)),
                 ),
                 Divider(
                   height: 1,
-                  color: Colors.white70,
+                  color: Colors.black54,
                   thickness: 0.1,
                 ),
                 Container(
                   padding: EdgeInsets.only(left:16, top:16, bottom: 16),
                   decoration: BoxDecoration(
-                    color: Color(0xff242424),
+                    color: Color(0xffe8e8e8),
                   ),
                   child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("General", style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 24, fontWeight: FontWeight.w300),),
+                      child: Text("General", style: GoogleFonts.sarpanch(color: Colors.orange, fontSize: 24, fontWeight: FontWeight.w300),),
                   ),
                 ),
                 ListTile(
-                  title: Text('Notifications', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  title: Text('Notifications', style: TextStyle(fontSize: 18,color: Colors.black)),
+                ),
+                Divider(
+                  height: 1,
+                  color: Colors.black54,
+                  thickness: 0.1,
+                ),
+                ListTile(
+                  title: Text('Display & Sound', style: TextStyle(fontSize: 18,color: Colors.black)),
                 ),
                 Divider(
                   height: 1,
@@ -81,51 +89,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   thickness: 0.1,
                 ),
                 ListTile(
-                  title: Text('Display & Sound', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  title: Text('Data Usage', style: TextStyle(fontSize: 18,color: Colors.black)),
                 ),
                 Divider(
                   height: 1,
-                  color: Colors.white70,
+                  color: Colors.black54,
                   thickness: 0.1,
                 ),
                 ListTile(
-                  title: Text('Data Usage', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  title: Text('About', style: TextStyle(fontSize: 18,color: Colors.black)),
                 ),
                 Divider(
                   height: 1,
-                  color: Colors.white70,
+                  color: Colors.black54,
                   thickness: 0.1,
                 ),
-                ListTile(
-                  title: Text('About', style: TextStyle(fontSize: 18,color: Colors.white)),
-                ),
-                Divider(
-                  height: 1,
-                  color: Colors.white70,
-                  thickness: 0.1,
-                ),
-                SwitchListTile(
-                    title: Text("Is this the real life? Is this just fantasy? ", style: TextStyle(fontSize: 18,color: Colors.white)),
-                    value: realLife,
-                    onChanged: (bool value) {
-                      setState(() {
-                        realLife = value;
-                      });
-                    },
-                  secondary: const Icon(Icons.change_history, color: Colors.white,),
-                  activeColor: Colors.blue,
-                  inactiveThumbColor: Colors.green,
-                ),
+
                 Padding(
                   padding: EdgeInsets.only(top:30),
                   child: FlatButton(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Colors.green)
+                        borderRadius: BorderRadius.circular(5),
+                        side: BorderSide(color: Colors.orange)
                     ),
                     child: Text(
-                      'Logout',
-                        style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)
+                      'LOGOUT',
+                        style: GoogleFonts.montserrat(color: Colors.black, fontSize: 22, fontWeight: FontWeight.normal)
                     ),
                     onPressed: () async {
                       await _auth.signOut();
