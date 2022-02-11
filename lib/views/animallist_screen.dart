@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   final TextEditingController searchController = new TextEditingController();
 
-  final AuthService _auth = AuthService();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   sortOption _selection = sortOption.alpha;
 
   List _allResults = [];
@@ -91,8 +94,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(_auth.currentUser());
+    // FirebaseUser user = await _auth.currentUser();
     return Scaffold(
-      backgroundColor: Color(0xfff5f5f5),
+      backgroundColor: Color(0xffffffff),
       body:_buildViewSmall(context)
     );
   }
@@ -100,6 +105,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   Widget _buildViewSmall(BuildContext context)
   {
+
     if(!isSearching)
       {
         searchController.text = "";
@@ -166,7 +172,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text("Now Showing: " , style: GoogleFonts.lato(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w400),)
                               ),
-
                             ],
                           ),
                         ),
@@ -343,7 +348,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           semanticContainer: true,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Colors.white54, width: 0.35),
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
           color: Colors.white,
           elevation: 5,
@@ -363,10 +368,13 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
               Container(
                     height: 500,
                     width: double.infinity,
-                    child: Image.network(
-                      animal.imgUrl,
-                      fit: BoxFit.fitHeight,
-                      // height: 200,
+                    child: Hero(
+                      tag: animal.commonName,
+                      child: Image.network(
+                        animal.imgUrl,
+                        fit: BoxFit.fitHeight,
+                        // height: 200,
+                      ),
                     ),
                   ),
               Container(
@@ -575,7 +583,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
 
         //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
         await Firestore.instance.collection("favourites").document("playlists").collection(playlistName.text).document(data.documentID).setData(animalData);
-        await Firestore.instance.collection("playlistNames").document().setData({"name": playlistName.text});
+        await Firestore.instance.collection("playlistNames").document().setData({"name": playlistName.text, "imgURL": animal.imgUrl});
         await Firestore.instance.collection('animals').document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
       }
     }

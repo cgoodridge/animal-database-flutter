@@ -4,6 +4,8 @@ import 'package:sanctuary/models/user_model.dart';
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser currentUser;
+
 
   User _userFromFirebaseUser(FirebaseUser user)
   {
@@ -39,6 +41,19 @@ class AuthService {
     }
   }
 
+  // Email and pass register
+  Future registerWithEmailAndPassword(String email, String password) async
+  {
+    try {
+      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      FirebaseUser user = result.user;
+      return _userFromFirebaseUser(user);
+    } catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
   // Register with email and pass
 
   // Sign out
@@ -51,4 +66,5 @@ class AuthService {
       return null;
     }
   }
+
 }

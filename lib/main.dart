@@ -204,7 +204,7 @@ class _FormDialogState extends State<FormDialog> {
                           onTap:() {
                             getImage();
                           },
-                          child: (imgFile != null) ? Image.file(imgFile): CircleAvatar(radius: 50, backgroundColor: Colors.transparent,)
+                          child: (imgFile != null) ? Image.file(imgFile): CircleAvatar(radius: 50, backgroundColor: Colors.orange, child: Icon(Icons.camera_alt, size: 50, color: Colors.black,),)
                       ),
                       TextFormField(
                         controller: kingdom,
@@ -293,7 +293,7 @@ class _FormDialogState extends State<FormDialog> {
                           return value.isNotEmpty? null : "Invalid Field";
                         },
                         decoration: InputDecoration(
-                            hintText: "diet"
+                            hintText: "Diet"
                         ),
                       ),
                       TextFormField(
@@ -335,11 +335,10 @@ class _FormDialogState extends State<FormDialog> {
               addRecord();
               Navigator.of(context).pop();
             },
-            child: Text("Submit")
+            child: Text("SAVE", style: TextStyle(fontSize: 22),)
         )
       ],
     );
-
   }
 
   void addRecord() async

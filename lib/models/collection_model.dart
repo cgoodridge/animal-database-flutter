@@ -4,19 +4,23 @@ import 'package:flutter/material.dart';
 class Collection {
 
   final String name;
+  final String imgURL;
 
   final DocumentReference reference;
 
   Collection.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
-        name = map['name'];
+      assert(map['imgURL'] != null),
+      name = map['name'],
+      imgURL = map['imgURL'];
 
 
   Collection.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
 
   @override
-  String toString() => "$name";
+  String toString() => "$name:$imgURL";
+
   // String toString() => Alien<$species:$abilities:$origin:$codename:$imgUrl>";
 
 
