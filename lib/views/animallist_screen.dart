@@ -416,7 +416,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                               // )
                             ],
                           ),
-
                         ],
                       ),
                     ),
