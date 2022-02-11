@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   final TextEditingController searchController = new TextEditingController();
 
-  final AuthService _auth = AuthService();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   sortOption _selection = sortOption.alpha;
 
   List _allResults = [];
@@ -91,6 +94,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(_auth.currentUser());
+    // FirebaseUser user = await _auth.currentUser();
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       body:_buildViewSmall(context)
@@ -100,6 +105,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   Widget _buildViewSmall(BuildContext context)
   {
+
     if(!isSearching)
       {
         searchController.text = "";
@@ -166,7 +172,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text("Now Showing: " , style: GoogleFonts.lato(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w400),)
                               ),
-
                             ],
                           ),
                         ),
