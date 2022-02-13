@@ -21,4 +21,13 @@ class DatabaseService {
     return userCollection.doc(uid).snapshots()
       .map(_userDataFromSnapshot);
   }
+
+  Future updateUserData(String firstName, String lastName) async {
+    return await userCollection.doc(uid)
+      .set({
+        'first-name': firstName,
+        'last-name': lastName,
+        'role': 'user'
+      });
+  }
 }

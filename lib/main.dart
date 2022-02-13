@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ): null,
               //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
               bottomNavigationBar: BottomNavigationBar(
-                backgroundColor: Color(0xffe3e3e3),
+                backgroundColor: Color(0xfff1f1f1),
                 unselectedItemColor: Colors.black,
                 type: BottomNavigationBarType.fixed,
                 items: const <BottomNavigationBarItem>[

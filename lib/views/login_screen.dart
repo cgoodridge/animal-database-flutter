@@ -25,12 +25,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
         child: Column(
           children: [
             SizedBox(height: 60.0),
-            Text("Project Sanctuary", style: GoogleFonts.orbitron(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 36),),
-            SizedBox(height: 60.0),
+            Text("Project Sanctuary", style: GoogleFonts.orbitron(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 30),),
+            SizedBox(height: 40.0),
             Image.asset('assets/images/logo.png', width: 200,),
             Expanded(
               child: Form(

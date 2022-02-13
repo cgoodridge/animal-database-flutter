@@ -34,11 +34,7 @@ class AnimalListScreen extends StatefulWidget {
 class _AnimalListScreenState extends State<AnimalListScreen> {
 
   final TextEditingController searchController = new TextEditingController();
-  final AuthService _auth = AuthService();
 
-  String firstName = '';
-
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
   sortOption _selection = sortOption.alpha;
 
   List _allResults = [];
@@ -51,7 +47,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   {
     super.initState();
     searchController.addListener(() {onSearchChanged();});
-    _getUserName();
   }
 
   @override
@@ -71,20 +66,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   {
     searchResultsList();
     print(searchController.text);
-  }
-
-  Future<void> _getUserName() async {
-    final user = Provider.of<CustomUser>(context);
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get()
-        .then((value) {
-          print(value.data()['first-name']);
-      setState(() {
-        firstName = value.data()['first-name'].toString();
-      });
-    });
   }
 
   searchResultsList()
@@ -111,19 +92,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     });
   }
 
-  findUser() async {
-    final user = Provider.of<CustomUser>(context);
-    print('User on the animal list screen ' + user.uid);
-    DocumentSnapshot userVal = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-    return userVal;
-  }
-
   @override
   Widget build(BuildContext context) {
-    // findUser();
-
-    // print(firstName);
-
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       body:_buildViewSmall(context)
@@ -133,15 +103,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   Widget _buildViewSmall(BuildContext context)
   {
 
-    if(!isSearching)
-      {
-        searchController.text = "";
-      }
+    if(!isSearching) {
+      searchController.text = "";
+    }
 
     return Column(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+            margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
             child: Column(
               children: [
                 Row(
@@ -152,7 +121,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Image.asset('assets/images/logo.png', width: 40,),
                     ) : SizedBox(),
                     Flexible(
-                        child: !isSearching ? Text("Project Sanctuary", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),) :
+                        child: !isSearching ? Text("Project Sanctuary", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),) :
                         TextField(
                           controller: searchController,
                           style: TextStyle(color: Colors.black),
@@ -174,8 +143,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                             setState(() {
                               isSearching = !isSearching;
                             });
-                          },),
-
+                          },
+                        ),
                     )
                   ],
                 ),
@@ -207,7 +176,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     Flexible(
                       flex: 2,
                         child: PopupMenuButton<sortOption>(
-                                icon: Icon(Icons.sort,color: Colors.black,),
+                                icon: Icon(Icons.sort,color: Colors.black, size: 34,),
                                 onSelected: (sortOption result) { setState(() { _selection = result; }); },
                                 itemBuilder: (BuildContext context) => <PopupMenuEntry<sortOption>>[
                                   const PopupMenuItem<sortOption>(
@@ -231,7 +200,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             ),
           ),
           Expanded(
-            child: SizedBox(height: 200.0, child: _buildBody(context)),
+            child: _buildBody(context),
           ),
         ]);
   }
@@ -263,12 +232,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
       builder: (context, snapshots) {
         if (!snapshots.item1.hasData || !snapshots.item2.hasData) {
-            return CircularProgressIndicator();
-          }
-        else {
-
+          return CircularProgressIndicator();
+        } else {
           _allResults = snapshots.item1.data.docs;
-
           return (_width > 600)? _buildGridList(context, snapshots.item1.data.docs, snapshots.item2.data.docs) : _buildList(context, snapshots.item1.data.docs, snapshots.item2.data.docs);
         }
       },
@@ -303,9 +269,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     faves.doc(data.id).set(animalData);
   }
 
-  void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
-  {
-    faves.doc(data.id).delete();
+  void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data) async {
+    await faves.doc(data.id).delete();
+    print('Remove from faves ' + data.id);
   }
 
   Future<void> _showMyDialog(Animal animal, CollectionReference faves, DocumentSnapshot data) async {
@@ -325,7 +291,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     var playlistName;
     Animal faveList;
     //This works, but we'll look for a more efficient way to do it later
-
+    print(animal);
     if (animal.collections != null)
     {
         faveIcon = true;
@@ -341,6 +307,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     }
 
     CollectionReference favorite = FirebaseFirestore.instance.collection('playlistNames').doc("playlists").collection("collectionPath");
+    CollectionReference fave = FirebaseFirestore.instance.collection('favourites').doc("playlists").collection("collectionPath");
 
     // for (var data in faves)
     // {
@@ -367,7 +334,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     // else if (animal.environment == "water") { shadowColor = Colors.blue; }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         height: 500,
         child: Card(
@@ -427,8 +394,13 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                   icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
                                   iconSize: 32,
-                                  onPressed: () {
-                                    _showMyDialog(animal, favorite, data);
+                                  onPressed: () async {
+                                    if (faveIcon) {
+                                      removeFromFaves(animal, favorite, data);
+                                    } else {
+                                      print('Add to faves');
+                                      _showMyDialog(animal, favorite, data);
+                                    }
                                     // Faves FINALLY freaking work
                                     /*
                                             if (isInFaves)

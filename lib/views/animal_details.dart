@@ -6,7 +6,7 @@ import 'package:sanctuary/models/environment_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AnimalDetails extends StatelessWidget {
-  static const String id = 'event_details';
+  static const String id = 'animal_details';
   final Animal animal;
   final double widgetHeight = 350.0;
 
@@ -21,7 +21,7 @@ class AnimalDetails extends StatelessWidget {
           color: Colors.white, //change your color here
         ),
         backgroundColor: Colors.black,
-        title: Text(animal.scientificName, style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),),
+        title: Text(animal.scientificName, style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),),
         // flexibleSpace: Container(
         //   decoration: const BoxDecoration(
         //     gradient: LinearGradient(

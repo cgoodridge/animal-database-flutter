@@ -24,6 +24,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String email = '';
   String password = '';
   String passwordConfirm = '';
+  String firstName = '';
+  String lastName = '';
   String error = '';
 
 
@@ -34,29 +36,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       backgroundColor: Color(0xffffffff),
       // resizeToAvoidBottomInset: false,
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
           children: [
             SizedBox(height: 60.0),
-            Text("Project Sanctuary", style: GoogleFonts.orbitron(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 36),),
-            SizedBox(height: 60.0),
-            Image.asset('assets/images/logo.png', width: 200,),
+            Text("Project Sanctuary", style: GoogleFonts.orbitron(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 30),),
+            SizedBox(height: 40.0),
+            Image.asset('assets/images/logo.png', width: 125,),
             Expanded(
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      SizedBox(height: 40.0),
+                      SizedBox(height: 30.0),
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'First Name',
                           hintStyle: TextStyle(color: Colors.black,),
                           prefixIcon: Icon(Icons.person),
                         ),
-                        validator: (val) => val.isEmpty ? "Enter a Name" : null,
+                        validator: (val) => val.isEmpty ? "Enter your first Name" : null,
                         onChanged: (val) {
-                          setState(() => email = val);
+                          setState(() => firstName = val);
                         },
                       ),
                       SizedBox(height: 30.0),
@@ -66,9 +68,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           hintStyle: TextStyle(color: Colors.black,),
                           prefixIcon: Icon(Icons.person),
                         ),
-                        validator: (val) => val.isEmpty ? "Enter a Name" : null,
+                        validator: (val) => val.isEmpty ? "Enter your last Name" : null,
                         onChanged: (val) {
-                          setState(() => email = val);
+                          setState(() => lastName = val);
                         },
                       ),
                       SizedBox(height: 30.0),
@@ -156,7 +158,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   error = 'Passwords don\'t match';
                                 });
                               }
-                              dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                              dynamic result = await _auth.registerWithEmailAndPassword(email, password, firstName, lastName);
                               if(result == null) {
                                 setState(() {
                                   error = 'Could not register with those credentials';
