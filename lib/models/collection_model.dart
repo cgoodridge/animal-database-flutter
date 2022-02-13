@@ -14,14 +14,10 @@ class Collection {
       name = map['name'],
       imgURL = map['imgURL'];
 
-
   Collection.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
   String toString() => "$name:$imgURL";
-
-  // String toString() => Alien<$species:$abilities:$origin:$codename:$imgUrl>";
-
 
 }

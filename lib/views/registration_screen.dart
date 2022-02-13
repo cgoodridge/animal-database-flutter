@@ -26,6 +26,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String passwordConfirm = '';
   String error = '';
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,7 +161,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 setState(() {
                                   error = 'Could not register with those credentials';
                                 });
-                              } else if(User != null){
+                              } else if(CustomUser != null){
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => MyHomePage()),

@@ -190,9 +190,9 @@ class CollectionDetails extends StatelessWidget {
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
       stream:
-        ((_selection == sortOption.alpha) ? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('class', descending: false).snapshots()
-            : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('order', descending: true).snapshots()
-            :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()),
+        ((_selection == sortOption.alpha) ? FirebaseFirestore.instance.collection('favourites').doc("playlists").collection(collection.name).orderBy('class', descending: false).snapshots()
+            : (_selection == sortOption.reverseAlpha)? FirebaseFirestore.instance.collection('favourites').doc("playlists").collection(collection.name).orderBy('order', descending: true).snapshots()
+            :(_selection == sortOption.recentlyAdded)? FirebaseFirestore.instance.collection('favourites').doc("playlists").collection(collection.name).orderBy('dateAdded', descending: true).snapshots():FirebaseFirestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()),
 
       builder: (context, snapshot) {
         if (!snapshot.hasData || !snapshot.hasData) {
@@ -201,7 +201,7 @@ class CollectionDetails extends StatelessWidget {
         else {
           //print(snapshots.item1.data.);
 
-          return (_width > 600)? _buildGridList(context, snapshot.data.documents, snapshot.data.documents) : _buildList(context, snapshot.data.documents, snapshot.data.documents);
+          return (_width > 600)? _buildGridList(context, snapshot.data.docs, snapshot.data.docs) : _buildList(context, snapshot.data.docs, snapshot.data.docs);
         }
       },
     );
@@ -231,12 +231,12 @@ class CollectionDetails extends StatelessWidget {
   void addToFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
     Map<String, dynamic> alienData = animal.toJson();
-    faves.document(data.documentID).setData(alienData);
+    faves.doc(data.id).set(alienData);
   }
 
   void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
-    faves.document(data.documentID).delete();
+    faves.doc(data.id).delete();
   }
 
 
@@ -252,7 +252,7 @@ class CollectionDetails extends StatelessWidget {
 
     for (var data in faves)
     {
-      Map<String, dynamic> values = data.data;
+      Map<String, dynamic> values = data.data();
       //print(values);
       //return alienVal;
     }
@@ -274,7 +274,7 @@ class CollectionDetails extends StatelessWidget {
     // }
 
 
-    CollectionReference favorite = Firestore.instance.collection('favourites');
+    CollectionReference favorite = FirebaseFirestore.instance.collection('favourites');
 
   /*  if (animal.isActive) { activeAlien = animal.species.toString(); }
 

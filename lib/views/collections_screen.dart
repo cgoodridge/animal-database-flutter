@@ -86,14 +86,14 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
-      stream:Firestore.instance.collection('playlistNames').snapshots(),
+      stream:FirebaseFirestore.instance.collection('playlistNames').snapshots(),
 
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         }
         else {
-          return (_width > 600)? _buildGridList(context, snapshot.data.documents) : _buildList(context, snapshot.data.documents);
+          return (_width > 600)? _buildGridList(context, snapshot.data.docs) : _buildList(context, snapshot.data.docs);
         }
       },
     );

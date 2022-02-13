@@ -10,6 +10,10 @@ import 'package:sanctuary/models/models.dart';
 import 'package:sanctuary/services/auth.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
+import 'package:provider/provider.dart';
+
+import '../models/user_model.dart';
+
 
 
 String activeAlien = "";
@@ -30,10 +34,11 @@ class AnimalListScreen extends StatefulWidget {
 class _AnimalListScreenState extends State<AnimalListScreen> {
 
   final TextEditingController searchController = new TextEditingController();
+  final AuthService _auth = AuthService();
 
+  String firstName = '';
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
   sortOption _selection = sortOption.alpha;
 
   List _allResults = [];
@@ -46,6 +51,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   {
     super.initState();
     searchController.addListener(() {onSearchChanged();});
+    _getUserName();
   }
 
   @override
@@ -67,6 +73,19 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     print(searchController.text);
   }
 
+  Future<void> _getUserName() async {
+    final user = Provider.of<CustomUser>(context);
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then((value) {
+          print(value.data()['first-name']);
+      setState(() {
+        firstName = value.data()['first-name'].toString();
+      });
+    });
+  }
 
   searchResultsList()
   {
@@ -92,16 +111,24 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     });
   }
 
+  findUser() async {
+    final user = Provider.of<CustomUser>(context);
+    print('User on the animal list screen ' + user.uid);
+    DocumentSnapshot userVal = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    return userVal;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // print(_auth.currentUser());
-    // FirebaseUser user = await _auth.currentUser();
+    // findUser();
+
+    // print(firstName);
+
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       body:_buildViewSmall(context)
     );
   }
-
 
   Widget _buildViewSmall(BuildContext context)
   {
@@ -227,11 +254,11 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder2<QuerySnapshot, QuerySnapshot>(
       streams:Tuple2(
-        ((_selection == sortOption.alpha) ? Firestore.instance.collection('animals').orderBy('common-name', descending: false).snapshots()
-              : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('animals').orderBy('common-name', descending: true).snapshots()
-                :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('animals').orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('animals').orderBy('common-name', descending: false).snapshots()),
+        ((_selection == sortOption.alpha) ? FirebaseFirestore.instance.collection('animals').orderBy('common-name', descending: false).snapshots()
+              : (_selection == sortOption.reverseAlpha)? FirebaseFirestore.instance.collection('animals').orderBy('common-name', descending: true).snapshots()
+                :(_selection == sortOption.recentlyAdded)? FirebaseFirestore.instance.collection('animals').orderBy('dateAdded', descending: true).snapshots():FirebaseFirestore.instance.collection('animals').orderBy('common-name', descending: false).snapshots()),
 
-                Firestore.instance.collection('playlistNames').snapshots(),
+        FirebaseFirestore.instance.collection('playlistNames').snapshots(),
       ),
 
       builder: (context, snapshots) {
@@ -240,9 +267,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           }
         else {
 
-          _allResults = snapshots.item1.data.documents;
+          _allResults = snapshots.item1.data.docs;
 
-          return (_width > 600)? _buildGridList(context, snapshots.item1.data.documents, snapshots.item2.data.documents) : _buildList(context, snapshots.item1.data.documents, snapshots.item2.data.documents);
+          return (_width > 600)? _buildGridList(context, snapshots.item1.data.docs, snapshots.item2.data.docs) : _buildList(context, snapshots.item1.data.docs, snapshots.item2.data.docs);
         }
       },
     );
@@ -273,12 +300,12 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   void addToFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
     Map<String, dynamic> animalData = animal.toJson();
-    faves.document(data.documentID).setData(animalData);
+    faves.doc(data.id).set(animalData);
   }
 
   void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
   {
-    faves.document(data.documentID).delete();
+    faves.doc(data.id).delete();
   }
 
   Future<void> _showMyDialog(Animal animal, CollectionReference faves, DocumentSnapshot data) async {
@@ -306,14 +333,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
     for (var data in faves)
     {
-      Map<String, dynamic> val = data.data;
+      Map<String, dynamic> val = data.data();
       playlistName =  val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'),'');
       //print(playlistName);
 
       //return alienVal;
     }
 
-    CollectionReference favorite = Firestore.instance.collection('playlistNames').document("playlists").collection("collectionPath");
+    CollectionReference favorite = FirebaseFirestore.instance.collection('playlistNames').doc("playlists").collection("collectionPath");
 
     // for (var data in faves)
     // {
@@ -496,14 +523,14 @@ class _PlaylistFormState extends State<PlaylistForm> {
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('playlistNames').snapshots(),
+      stream: FirebaseFirestore.instance.collection('playlistNames').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData || !snapshot.hasData) {
           return CircularProgressIndicator();
         }
         else {
           //print(snapshots.item1.data.);
-          return _buildCollectionList(context, snapshot.data.documents);
+          return _buildCollectionList(context, snapshot.data.docs);
         }
       },
     );
@@ -555,11 +582,11 @@ class _PlaylistFormState extends State<PlaylistForm> {
     var stringVal;
     List colName = [];
     colName.add(playlistName.text);
-    QuerySnapshot snapshot = await Firestore.instance.collection("playlistNames").getDocuments();
-    snapshot.documents.forEach((document) {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection("playlistNames").get();
+    snapshot.docs.forEach((document) {
       if (document.exists) {
         //print('Documents exist');
-        Map<String, dynamic> val = document.data;
+        Map<String, dynamic> val = document.data();
         var tempVal =  val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'),'');
         print(tempVal);
         setState(() {
@@ -582,9 +609,9 @@ class _PlaylistFormState extends State<PlaylistForm> {
         } else {
 
         //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
-        await Firestore.instance.collection("favourites").document("playlists").collection(playlistName.text).document(data.documentID).setData(animalData);
-        await Firestore.instance.collection("playlistNames").document().setData({"name": playlistName.text, "imgURL": animal.imgUrl});
-        await Firestore.instance.collection('animals').document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
+        await FirebaseFirestore.instance.collection("favourites").doc("playlists").collection(playlistName.text).doc(data.id).set(animalData);
+        await FirebaseFirestore.instance.collection("playlistNames").doc().set({"name": playlistName.text, "imgURL": animal.imgUrl});
+        await FirebaseFirestore.instance.collection('animals').doc(data.id).update({'collections': FieldValue.arrayUnion(colName)});
       }
     }
   }
@@ -595,8 +622,8 @@ class _PlaylistFormState extends State<PlaylistForm> {
     List colName = [];
     colName.add(collectionName);
     Map<String, dynamic> animalData = animal.toJson();
-    await Firestore.instance.collection("favourites").document("playlists").collection(collectionName).document(data.documentID).setData(animalData);
-    await Firestore.instance.collection("animals").document(data.documentID).updateData({'collections': FieldValue.arrayUnion(colName)});
+    await FirebaseFirestore.instance.collection("favourites").doc("playlists").collection(collectionName).doc(data.id).set(animalData);
+    await FirebaseFirestore.instance.collection("animals").doc(data.id).update({'collections': FieldValue.arrayUnion(colName)});
 
     print("Animal added to " + collectionName);
   }

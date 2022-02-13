@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sanctuary/models/user_model.dart';
 import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/services/database.dart';
 import 'package:sanctuary/services/wrapper.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:sanctuary/views/animallist_screen.dart';
@@ -19,11 +21,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
-void main() {
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
 
@@ -31,8 +33,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return StreamProvider<User>.value(
+    return StreamProvider<CustomUser>.value(
       value: AuthService().user,
+      initialData: null,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Project Sanctuary',
@@ -86,75 +89,119 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = Provider.of<CustomUser>(context);
     SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.manual, overlays: [
-      SystemUiOverlay.bottom, //This line is used for showing the bottom bar
-    ]
+          SystemUiOverlay.bottom, //This line is used for showing the bottom bar
+        ]
     );
-    return Scaffold(
-      extendBody: true,
-      body: _navBarLocations[_selectedIndex],
+    return StreamBuilder<CustomUserData>(
+      stream: DatabaseService(uid: user.uid).userData,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          CustomUserData userData = snapshot.data;
+          if (userData.role == 'admin') {
+            return Scaffold(
+              extendBody: true,
+              body: _navBarLocations[_selectedIndex],
 
-      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
-        elevation: 0.1,
-        onPressed: () async {
-          showDialog(
-              context: context,
-              builder: (_){
-                return FormDialog();
-            });
+              floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
+                elevation: 0.1,
+                onPressed: () async {
+                  showDialog(
+                      context: context,
+                      builder: (_){
+                        return FormDialog();
+                      });
+                },
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  child:
+                  Icon(Icons.add, size: 30,),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                          colors: [
+                            Colors.orange,
+                            Colors.orange,
+                            //Colors.transparent,
+                            //Color(0x11000000)
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter
+                      )
+                  ),
+                ),
+                backgroundColor: Colors.transparent,
+              ): null,
+              //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+              bottomNavigationBar: BottomNavigationBar(
+                backgroundColor: Color(0xffe3e3e3),
+                unselectedItemColor: Colors.black,
+                type: BottomNavigationBarType.fixed,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.collections),
+                    label: 'Collections',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.location_on),
+                    label: 'Locations',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    label: 'Settings',
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.orange,
+                onTap: _onItemTapped,
+              ),
+            );
+          } else {
+            return Scaffold(
+              extendBody: true,
+              body: _navBarLocations[_selectedIndex],
+              //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+              bottomNavigationBar: BottomNavigationBar(
 
-        },
-        child: Container(
-          width: 100,
-          height: 100,
-          child:
-              Icon(Icons.add, size: 30,),
-              decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                  colors: [
-                    Colors.orange,
-                    Colors.orange,
-                    //Colors.transparent,
-                    //Color(0x11000000)
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter
-              )
-            ),
-        ),
-
-        backgroundColor: Colors.transparent,
-      ): null,
-      //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomNavigationBar(
-
-        backgroundColor: Color(0xffe3e3e3),
-        unselectedItemColor: Colors.black,
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.collections),
-            label: 'Collections',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            label: 'Locations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.orange,
-        onTap: _onItemTapped,
-      ),
+                backgroundColor: Color(0xffe3e3e3),
+                unselectedItemColor: Colors.black,
+                type: BottomNavigationBarType.fixed,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.collections),
+                    label: 'Collections',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.location_on),
+                    label: 'Locations',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    label: 'Settings',
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.orange,
+                onTap: _onItemTapped,
+              ),
+            );
+          }
+        } else {
+          return CircularProgressIndicator();
+        }
+      }
     );
   }
 }
@@ -343,14 +390,16 @@ class _FormDialogState extends State<FormDialog> {
 
   void addRecord() async
   {
+    final user = Provider.of<CustomUser>(context);
+
     if (formKey.currentState.validate())
       {
         var imageStore = FirebaseStorage.instance.ref().child(imgFile.path);
         var imageUploadTask = imageStore.putFile(imgFile);
 
-        imgURL = await (await imageUploadTask.onComplete).ref.getDownloadURL();
+        imgURL = await (await imageUploadTask).ref.getDownloadURL();
 
-        await Firestore.instance.collection("animals").add({
+        await FirebaseFirestore.instance.collection("animals").add({
           'kingdom' : kingdom.text,
           'phylum' : phylum.text,
           'class' : kingdomClass.text,
@@ -359,9 +408,10 @@ class _FormDialogState extends State<FormDialog> {
           'genus' : genus.text,
           'scientific-name' : scientificName.text,
           'common-name' : commonName.text,
+          'added-by' : user.uid,
           'location': location.text,
+          'imgURL': imgURL,
           'dateAdded' : DateTime.now(),
-
         });
       }
 

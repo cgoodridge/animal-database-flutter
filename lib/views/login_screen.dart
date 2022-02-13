@@ -100,25 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                       ),
                       SizedBox(height: 12.0),
-                      FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              side: BorderSide(color: Colors.orange)
-                          ),
-                          child: Text(
-                            'Sign In Anon',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () async {
-                            dynamic result = await _auth.signInAnon();
-                            if (result == null) {
-                              print('error signing in');
-                            }else {
-                              print('signed in');
-                              print(result);
-                            }
-                          }
-                      ),
                       Text(
                         error,
                         style: TextStyle(color: Colors.red, fontSize: 14.0),
