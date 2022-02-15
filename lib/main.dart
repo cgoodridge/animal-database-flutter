@@ -91,11 +91,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
 
     final user = Provider.of<CustomUser>(context);
+
     SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.manual, overlays: [
           SystemUiOverlay.bottom, //This line is used for showing the bottom bar
         ]
     );
+
+
     return StreamBuilder<CustomUserData>(
       stream: DatabaseService(uid: user.uid).userData,
       builder: (context, snapshot) {
@@ -105,7 +108,6 @@ class _MyHomePageState extends State<MyHomePage> {
             return Scaffold(
               extendBody: true,
               body: _navBarLocations[_selectedIndex],
-
               floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
                 elevation: 0.1,
                 onPressed: () async {

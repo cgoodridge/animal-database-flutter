@@ -19,6 +19,7 @@ class Animal {
   final String location;
   final String nameOfYoung;
   final String description;
+  final String redListStatus;
   final List collections;
   final Timestamp date;
 
@@ -46,6 +47,7 @@ class Animal {
         assert(map['location'] != null),
         assert(map['name-of-young'] != null),
         assert(map['description'] != null),
+        assert(map['redlist-status'] != null),
         kingdomClass = map['class'],
         family = map['family'],
         genus = map['genus'],
@@ -60,6 +62,7 @@ class Animal {
         location = map['location'],
         nameOfYoung = map['name-of-young'],
         description = map['description'],
+        redListStatus = map['redlist-status'],
         collections = map['collections'],
         environment = map['environment'],
         imgUrl = map['imgURL'],
@@ -69,7 +72,7 @@ class Animal {
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
-  String toString() => "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl";
+  String toString() => "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl:$redListStatus";
 
   Map<String, dynamic> toJson() =>
       {
@@ -85,6 +88,8 @@ class Animal {
         'lifespan': lifespan,
         'lifestyle': lifestyle,
         'location': location,
+        'description': description,
+        'redlist-status': redListStatus,
         'name-of-young': nameOfYoung,
         // 'isActive': isActive,
         'imgURL': imgUrl,

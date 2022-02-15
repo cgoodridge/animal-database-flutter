@@ -22,14 +22,6 @@ class AnimalDetails extends StatelessWidget {
         ),
         backgroundColor: Colors.black,
         title: Text(animal.scientificName, style: GoogleFonts.bungeeHairline(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),),
-        // flexibleSpace: Container(
-        //   decoration: const BoxDecoration(
-        //     gradient: LinearGradient(
-        //         begin: Alignment.topCenter,
-        //         end: Alignment.bottomCenter,
-        //         colors: <Color>[Colors.black, Colors.transparent]),
-        //   ),
-        //),
         centerTitle: true,
       ),
       body: Column(
@@ -44,38 +36,6 @@ class AnimalDetails extends StatelessWidget {
           )
         ],
       )
-      // SlidingUpPanel(
-      //   minHeight: 350,
-      //   maxHeight: MediaQuery.of(context).size.height,
-      //   slideDirection: SlideDirection.DOWN,
-      //   backdropEnabled: true,
-      //   parallaxEnabled: true,
-      //   borderRadius: BorderRadius.circular(20.0),
-      //   color: Color(0xff2c2c2c),
-      //   panel: Column(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: [
-      //       Padding(
-      //         padding: const EdgeInsets.only(top: 64.0),
-      //         child: Align(
-      //             child: Image.network(animal.imgUrl, fit: BoxFit.fitHeight,)
-      //         ),
-      //       ),
-      //       Divider(
-      //         height: 30,
-      //         color: Colors.white70,
-      //         thickness: 1,
-      //         indent: 175,
-      //         endIndent: 175,
-      //       )
-      //     ],
-      //   ),
-      //   body: Container(
-      //     child: SafeArea(
-      //       child: _buildDetails(context),
-      //     ),
-      //   ),
-      // ),
     );
   }
 
@@ -86,7 +46,7 @@ class AnimalDetails extends StatelessWidget {
             children: <Widget>[
               Expanded(
                   child: DefaultTabController(
-                      length: 2,
+                      length: 4,
                       child: Scaffold(
                         backgroundColor: Color(0xffffffff),
                         appBar: PreferredSize(
@@ -115,18 +75,18 @@ class AnimalDetails extends StatelessWidget {
                                             style:  TextStyle(color: Colors.black)
                                         ),
                                       ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(bottom: 15.0, top:15.0),
-                                      //   child:Text("Location & Habitat",
-                                      //       style:  TextStyle(color: Colors.black)
-                                      //   ),
-                                      // ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(bottom: 15.0, top:15.0),
-                                      //   child:Text("Physical Characteristics",
-                                      //       style:  TextStyle(color: Colors.black)
-                                      //   ),
-                                      // ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 15.0, top:15.0),
+                                        child:Text("Habitat",
+                                            style:  TextStyle(color: Colors.black)
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 15.0, top:15.0),
+                                        child:Text("Details",
+                                            style:  TextStyle(color: Colors.black)
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -135,6 +95,7 @@ class AnimalDetails extends StatelessWidget {
                           ),
                         ),
                         body: TabBarView(
+
                             children: [
                               ListView(
                                   children: [
@@ -147,168 +108,221 @@ class AnimalDetails extends StatelessWidget {
                               ListView(
                                   children: [
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/5.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Kingdom:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.kingdom),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Kingdom', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.kingdom),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
+                                    Divider(),
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/4.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Phylum:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.phylum),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Phylum', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.phylum),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
+                                    Divider(),
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/7.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Class:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.kingdomClass),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Class', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.kingdomClass),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
+                                    Divider(),
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/10.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Order:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.order),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Order', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.order),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
+                                    Divider(),
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/45.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Family:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.family),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Family', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.family),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
+                                    Divider(),
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/45.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Genus:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.genus),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Genus', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.genus),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
+                                    Divider(),
                                     ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/45.jpg"),
-                                        radius: 40,
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Species:", style: TextStyle(fontWeight: FontWeight.bold),),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.scientificName),
+                                            flex: 1,
+                                          )
+                                        ],
                                       ),
-                                      title: Text('Species', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                      subtitle: Text(animal.scientificName),
-                                      trailing: Icon(Icons.more_vert),
                                     ),
                                   ]
                               ),
-                              // ListView(
-                              //     children: [
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/5.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Alessia', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("Growing Pains"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/4.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Hozier', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("To Be Alone"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/7.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Ariana', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("7 Rings"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/10.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Toby', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("Wilderman"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/45.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Beyonce', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("Halo"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //     ]
-                              // ),
-                              // ListView(
-                              //     children: [
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/5.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Alessia', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("Growing Pains"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/4.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Hozier', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("To Be Alone"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/7.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Ariana', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("7 Rings"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/10.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Toby', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("Wilderman"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //       ListTile(
-                              //         leading: CircleAvatar(
-                              //           backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/45.jpg"),
-                              //           radius: 40,
-                              //         ),
-                              //         title: Text('Beyonce', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                              //         subtitle: Text("Halo"),
-                              //         trailing: Icon(Icons.more_vert),
-                              //       ),
-                              //     ]
-                              // ),
+                              ListView(
+                                  children: [
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                              child: Text("Locations:"),
+                                              flex: 3,
+                                          ),
+                                          Expanded(
+                                              child: Text(animal.location),
+                                              flex: 1,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Center(child: Text("Map goes here"))
+                                  ]
+                              ),
+                              ListView(
+                                  children: [
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Lifespan:"),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.lifespan),
+                                            flex: 1,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Lifestyle:"),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.lifestyle),
+                                            flex: 1,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Name of Young:"),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.nameOfYoung),
+                                            flex: 1,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Diet:"),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.diet),
+                                            flex: 1,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            child: Text("Red List Status:"),
+                                            flex: 3,
+                                          ),
+                                          Expanded(
+                                            child: Text(animal.redListStatus),
+                                            flex: 1,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ]
+                              ),
 
                             ]
                         ),

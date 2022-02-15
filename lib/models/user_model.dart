@@ -28,7 +28,6 @@ class CustomUserData {
   //       lastName = map['last-name'],
   //       role = map['role'];
   //
-  //
   // CustomUserData.fromSnapshot(DocumentSnapshot snapshot)
   //     : this.fromMap(snapshot.data(), reference: snapshot.reference);
   //

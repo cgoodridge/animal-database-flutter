@@ -100,8 +100,8 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-
+    return GridView.count(
+        crossAxisCount: 2,
         //itemExtent: 5,
         shrinkWrap: true,
         //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -123,8 +123,6 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final collection = Collection.fromSnapshot(data);
-
-    //CollectionReference favorite = Firestore.instance.collection('favourites');
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
@@ -176,7 +174,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text("Collection: " + collection.name, style: GoogleFonts.sarpanch(color: Colors.orange, fontSize: 24, fontWeight: FontWeight.w300),),
+                        Text(collection.name, style: GoogleFonts.sarpanch(color: Colors.orange, fontSize: 24, fontWeight: FontWeight.w300),),
                         SizedBox(height:16),
 
 

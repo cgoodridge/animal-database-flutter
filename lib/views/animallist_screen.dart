@@ -110,7 +110,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     return Column(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+            margin: EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
             child: Column(
               children: [
                 Row(
@@ -271,7 +271,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data) async {
     await faves.doc(data.id).delete();
-    print('Remove from faves ' + data.id);
+    print('Removed from faves ' + data.id);
   }
 
   Future<void> _showMyDialog(Animal animal, CollectionReference faves, DocumentSnapshot data) async {
@@ -291,7 +291,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     var playlistName;
     Animal faveList;
     //This works, but we'll look for a more efficient way to do it later
-    print(animal);
     if (animal.collections != null)
     {
         faveIcon = true;
@@ -301,30 +300,12 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     {
       Map<String, dynamic> val = data.data();
       playlistName =  val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'),'');
-      //print(playlistName);
 
-      //return alienVal;
     }
 
-    CollectionReference favorite = FirebaseFirestore.instance.collection('playlistNames').doc("playlists").collection("collectionPath");
+    CollectionReference favorite = FirebaseFirestore.instance.collection('playlistNames');
     CollectionReference fave = FirebaseFirestore.instance.collection('favourites').doc("playlists").collection("collectionPath");
 
-    // for (var data in faves)
-    // {
-    //   var dataRes = Alien.fromSnapshot(data);
-    //   faveList = dataRes;
-    //
-    //   if (animal.codename == dataRes.codename)
-    //     {
-    //       isInFaves = true;
-    //       faveIcon = true;
-    //     }
-    //   else
-    //   {
-    //     isInFaves = false;
-    //   }
-    //   //return alienVal;
-    // }
 
     // if (animal.isActive) { activeAlien = animal.species.toString(); }
     //
@@ -334,7 +315,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     // else if (animal.environment == "water") { shadowColor = Colors.blue; }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
       child: Container(
         height: 500,
         child: Card(
@@ -395,32 +376,11 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                   color: Colors.white,
                                   iconSize: 32,
                                   onPressed: () async {
-                                    if (faveIcon) {
-                                      removeFromFaves(animal, favorite, data);
-                                    } else {
-                                      print('Add to faves');
                                       _showMyDialog(animal, favorite, data);
-                                    }
-                                    // Faves FINALLY freaking work
-                                    /*
-                                            if (isInFaves)
-                                              {
-                                                removeFromFaves(alien, favorite, data);
-                                              }
-                                            else
-                                              {
-                                                addToFaves(alien, favorite, data);
-                                              }
-                                            */
+                                    // Faves FINALLY freaking works
                                   },
                                 ),
                               ),
-                              // Flexible(
-                              //   child: Padding(
-                              //     padding: const EdgeInsets.symmetric(horizontal:6.0),
-                              //     child: animal.isActive ? Icon(Icons.circle, color: Colors.green, size: 12) : null,
-                              //   ),
-                              // )
                             ],
                           ),
                         ],
