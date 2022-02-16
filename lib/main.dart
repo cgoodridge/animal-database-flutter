@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sanctuary/models/user_model.dart';
 import 'package:sanctuary/services/auth.dart';
 import 'package:sanctuary/services/database.dart';
@@ -10,6 +12,7 @@ import 'package:sanctuary/services/wrapper.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:sanctuary/views/animallist_screen.dart';
 import 'package:sanctuary/views/collections_screen.dart';
+import 'package:sanctuary/views/account_screen.dart';
 import 'package:sanctuary/views/locations_screen.dart';
 import 'package:sanctuary/views/login_screen.dart';
 import 'package:sanctuary/views/settings_screen.dart';
@@ -24,6 +27,9 @@ import 'package:flutter/services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
   runApp(MyApp());
 }
 
@@ -74,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
     AnimalListScreen(),
     CollectionsScreen(),
     LocationsScreen(),
-    SettingsScreen(),
+    AccountScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -157,8 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     label: 'Locations',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: 'Settings',
+                    icon: Icon(Icons.person),
+                    label: 'Account',
                   ),
                 ],
                 currentIndex: _selectedIndex,
@@ -190,8 +196,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     label: 'Locations',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: 'Settings',
+                    icon: Icon(Icons.person),
+                    label: 'Account',
                   ),
                 ],
                 currentIndex: _selectedIndex,
