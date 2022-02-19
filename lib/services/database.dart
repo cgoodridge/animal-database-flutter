@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sanctuary/models/animal-model.dart';
 import 'package:sanctuary/models/user_model.dart';
 
 class DatabaseService {
@@ -7,6 +8,7 @@ class DatabaseService {
   DatabaseService({ this.uid });
 
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
+  final CollectionReference animalCollection = FirebaseFirestore.instance.collection('animals');
 
   CustomUserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return CustomUserData(
@@ -29,5 +31,13 @@ class DatabaseService {
         'last-name': lastName,
         'role': 'user'
       });
+  }
+
+  Animal _animalDataFromSnapshot(DocumentSnapshot snapshot) {
+    return Animal.fromSnapshot(snapshot);
+  }
+
+  Stream<QuerySnapshot> get animalData {
+    return animalCollection.snapshots();
   }
 }

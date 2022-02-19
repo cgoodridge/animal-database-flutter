@@ -14,8 +14,6 @@ import 'package:provider/provider.dart';
 
 import '../models/user_model.dart';
 
-
-
 String activeAlien = "";
 Color shadowColor;
 
