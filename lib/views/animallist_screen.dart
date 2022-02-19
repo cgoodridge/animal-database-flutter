@@ -413,7 +413,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Save to Playlist'),
+      title: Text('Save to Collection'),
       content: Container(
         width: double.maxFinite,
         child: Column(
@@ -427,7 +427,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
                   return value.isNotEmpty? null : "Invalid Field";
                 },
                 decoration: InputDecoration(
-                    hintText: "Playlist Name"
+                    hintText: "Collection Name"
                 ),
               ),
             ),
