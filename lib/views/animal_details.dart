@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sanctuary/models/animal-model.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sanctuary/models/environment_model.dart';
+import 'package:sanctuary/models/location_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AnimalDetails extends StatelessWidget {

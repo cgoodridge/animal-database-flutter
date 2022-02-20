@@ -298,7 +298,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     {
       Map<String, dynamic> val = data.data();
       playlistName =  val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'),'');
-
     }
 
     CollectionReference favorite = FirebaseFirestore.instance.collection('playlistNames');

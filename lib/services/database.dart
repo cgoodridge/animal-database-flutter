@@ -9,6 +9,7 @@ class DatabaseService {
 
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
   final CollectionReference animalCollection = FirebaseFirestore.instance.collection('animals');
+  final CollectionReference locationCollection = FirebaseFirestore.instance.collection('locations');
 
   CustomUserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return CustomUserData(
@@ -39,5 +40,9 @@ class DatabaseService {
 
   Stream<QuerySnapshot> get animalData {
     return animalCollection.snapshots();
+  }
+
+  Stream<QuerySnapshot> get locationData {
+    return locationCollection.snapshots();
   }
 }

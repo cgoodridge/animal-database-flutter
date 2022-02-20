@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomUser {
-
   final String uid;
-
   CustomUser({ this.uid });
-
 }
 
 class CustomUserData {

@@ -27,7 +27,7 @@ class Animal {
   final String environment;
   /// End of color variables
 
-  ///TODO: REVIEW HOW DATE IS SORTED
+  /// TODO: REVIEW HOW DATE IS SORTED
   // final bool isActive;
   final String imgUrl;
   final DocumentReference reference;
@@ -74,26 +74,24 @@ class Animal {
   @override
   String toString() => "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl:$redListStatus";
 
-  Map<String, dynamic> toJson() =>
-      {
-        'class': kingdomClass,
-        'family': family,
-        'genus': genus,
-        'kingdom': kingdom,
-        'order': order,
-        'phylum': phylum,
-        'scientific-name': scientificName,
-        'common-name': commonName,
-        'diet': diet,
-        'lifespan': lifespan,
-        'lifestyle': lifestyle,
-        'location': location,
-        'description': description,
-        'redlist-status': redListStatus,
-        'name-of-young': nameOfYoung,
-        // 'isActive': isActive,
-        'imgURL': imgUrl,
-        'dateAdded': date.toDate(),
-      };
-
+  Map<String, dynamic> toJson() => {
+    'class': kingdomClass,
+    'family': family,
+    'genus': genus,
+    'kingdom': kingdom,
+    'order': order,
+    'phylum': phylum,
+    'scientific-name': scientificName,
+    'common-name': commonName,
+    'diet': diet,
+    'lifespan': lifespan,
+    'lifestyle': lifestyle,
+    'location': location,
+    'description': description,
+    'redlist-status': redListStatus,
+    'name-of-young': nameOfYoung,
+    // 'isActive': isActive,
+    'imgURL': imgUrl,
+    'dateAdded': date.toDate(),
+  };
 }
