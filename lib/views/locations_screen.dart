@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:clippy_flutter/triangle.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +11,7 @@ import '../models/animal-model.dart';
 import '../models/location_model.dart';
 import '../services/database.dart';
 import 'animal_details.dart';
+import 'package:custom_info_window/custom_info_window.dart';
 
 class LocationsScreen extends StatefulWidget {
   @override
@@ -19,51 +20,51 @@ class LocationsScreen extends StatefulWidget {
 
 class _LocationsScreenState extends State<LocationsScreen> {
   final TextEditingController searchController = new TextEditingController();
+  CustomInfoWindowController _customInfoWindowController =
+      CustomInfoWindowController();
 
   bool isSearching = false;
 
   List _allResults = [];
   List _resultsList = [];
 
-  searchResultsList()
-  {
+  searchResultsList() {
     var showResults = [];
-    if (searchController.text != "")
-    {
-      for (var animalSnapshot in _allResults)
-      {
-        var commonName = Animal.fromSnapshot(animalSnapshot).commonName.toLowerCase();
-        if (commonName.contains(searchController.text.toLowerCase()))
-        {
+    if (searchController.text != "") {
+      for (var animalSnapshot in _allResults) {
+        var commonName =
+            Animal.fromSnapshot(animalSnapshot).commonName.toLowerCase();
+        if (commonName.contains(searchController.text.toLowerCase())) {
           showResults.add(animalSnapshot);
         }
       }
-    }
-    else
-    {
+    } else {
       showResults = List.from(_allResults);
     }
     setState(() {
       _resultsList = showResults;
     });
   }
-  onSearchChanged()
-  {
+
+  onSearchChanged() {
     searchResultsList();
     print(searchController.text);
   }
 
   @override
-  void initState()
-  {
+  void initState() {
+    _customInfoWindowController.dispose();
     super.initState();
-    searchController.addListener(() {onSearchChanged();});
+    searchController.addListener(() {
+      onSearchChanged();
+    });
   }
 
   @override
-  void dispose()
-  {
-    searchController.removeListener(() {onSearchChanged();});
+  void dispose() {
+    searchController.removeListener(() {
+      onSearchChanged();
+    });
     searchController.dispose();
     super.dispose();
   }
@@ -82,12 +83,10 @@ class _LocationsScreenState extends State<LocationsScreen> {
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
-      zoom: 19.151926040649414
-  );
+      zoom: 19.151926040649414);
 
   @override
   Widget build(BuildContext context) {
-
     final user = Provider.of<CustomUser>(context);
 
     return StreamBuilder<QuerySnapshot>(
@@ -96,39 +95,57 @@ class _LocationsScreenState extends State<LocationsScreen> {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           } else {
-            print(snapshot.data.docs.elementAt(1).get("class"));
+            print(snapshot.data.docs);
             return DefaultTabController(
               length: 2,
               child: Scaffold(
                 backgroundColor: Color(0xffffffff),
                 body: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          !isSearching ? Align(
-                            alignment: Alignment.centerLeft,
-                            child: Image.asset('assets/images/logo.png', width: 40,),
-                          ) : SizedBox(),
+                          !isSearching
+                              ? Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Image.asset(
+                                    'assets/images/logo.png',
+                                    width: 40,
+                                  ),
+                                )
+                              : SizedBox(),
                           Flexible(
-                            child: !isSearching ? Text("Location", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),) :
-                            TextField(
-                              controller: searchController,
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.search, color: Colors.black,),
-                                  hintText: "Search Sanctuary",
-                                  hintStyle: TextStyle(color: Colors.black)
-                              ),
-                            ),
+                            child: !isSearching
+                                ? Text(
+                                    "Location",
+                                    style: GoogleFonts.bungeeHairline(
+                                        color: Colors.black,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : TextField(
+                                    controller: searchController,
+                                    style: TextStyle(color: Colors.black),
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.search,
+                                          color: Colors.black,
+                                        ),
+                                        hintText: "Search Sanctuary",
+                                        hintStyle:
+                                            TextStyle(color: Colors.black)),
+                                  ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: IconButton(
                               color: Colors.black,
-                              icon: !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
+                              icon: !isSearching
+                                  ? Icon(Icons.search)
+                                  : Icon(Icons.cancel),
                               onPressed: () {
                                 // Expand search Field
                                 setState(() {
@@ -139,35 +156,57 @@ class _LocationsScreenState extends State<LocationsScreen> {
                           )
                         ],
                       ),
-                      TabBar(
-                          tabs: [
-                            Tab(icon: Icon(Icons.location_on_rounded, color: Colors.black,)),
-                            Tab(icon: Icon(Icons.map, color: Colors.black,)),
-                          ]
-                      ),
+                      TabBar(tabs: [
+                        Tab(
+                            icon: Icon(
+                          Icons.location_on_rounded,
+                          color: Colors.black,
+                        )),
+                        Tab(
+                            icon: Icon(
+                          Icons.map,
+                          color: Colors.black,
+                        )),
+                      ]),
                       Expanded(
                         child: TabBarView(
+                            physics: NeverScrollableScrollPhysics(),
                             children: [
                               _buildList(context, snapshot.data.docs),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 32.0),
-                                child: SizedBox(
-                                  height: 800,
-                                  child: GoogleMap(
-                                    mapType: MapType.hybrid,
-                                    compassEnabled: true,
-                                    markers: getMarkers(),
-                                    initialCameraPosition: _firstLocation,
-                                    onMapCreated: (GoogleMapController controller) {
-                                      setState(() {
-                                        _controller.complete(controller);
-                                      });
-                                    },
+                              Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 32.0),
+                                    child: SizedBox(
+                                      height: 800,
+                                      child: GoogleMap(
+                                        onTap: (position) {
+                                          _customInfoWindowController
+                                              .hideInfoWindow();
+                                        },
+                                        mapType: MapType.hybrid,
+                                        compassEnabled: true,
+                                        markers: getMarkers(snapshot.data.docs),
+                                        initialCameraPosition: _firstLocation,
+                                        onMapCreated:
+                                            (GoogleMapController controller) {
+                                          setState(() {
+                                            _controller.complete(controller);
+                                          });
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  CustomInfoWindow(
+                                    controller: _customInfoWindowController,
+                                    height: 75,
+                                    width: 150,
+                                    offset: 50,
+                                  ),
+                                ],
                               ),
-                            ]
-                        ),
+                            ]),
                       ),
                     ],
                   ),
@@ -175,44 +214,40 @@ class _LocationsScreenState extends State<LocationsScreen> {
               ),
             );
           }
-        }
-    );
+        });
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
-      children:[
+      children: [
         ...snapshot.map((data) => _buildListItem(context, data)).toList(),
       ],
     );
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-      final animal = Animal.fromSnapshot(data);
-      // final location = Location.fromSnapshot(data);
-
-      return Hero(
-        tag: animal.commonName,
-        child: Material(
-          child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(animal.imgUrl),
-              ),
-              subtitle: Text(animal.location),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AnimalDetails(
-                        animal: animal,
-                      )
-                  ),
-                );
-              },
-              title: Text(animal.commonName)
-          ),
-        ),
-      );
+    final animal = Animal.fromSnapshot(data);
+    // final location = Location.fromSnapshot(data);
+    return Hero(
+      tag: animal.commonName,
+      child: Material(
+        child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(animal.imgUrl),
+            ),
+            subtitle: Text(animal.location),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AnimalDetails(
+                          animal: animal,
+                        )),
+              );
+            },
+            title: Text(animal.commonName)),
+      ),
+    );
   }
 
   Future<void> _goToTheLake() async {
@@ -220,19 +255,70 @@ class _LocationsScreenState extends State<LocationsScreen> {
     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 
-  Set<Marker> getMarkers() { //markers to place on map
-
-    markers.add(Marker( //add first marker
-      markerId: MarkerId(showLocation.toString()),
-      position: showLocation, //position of marker
-      infoWindow: InfoWindow( //popup info
-        title: 'Aardvark',
-        snippet: 'Oryteropus Afer',
-      ),
-      icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-    ));
+  Set<Marker> getMarkers(List<DocumentSnapshot> animal) {
+    //markers to place on map
+    // print(animal.docs.single.data());
+    // final animalData = Animal.fromSnapshot(animal);
+    animal.forEach((data) {
+      // print(data.get("common-name"));
+      markers.add(Marker(
+        markerId: MarkerId("marker_id"),
+        position: LatLng(double.parse(data.get("latitude")),
+            double.parse(data.get("longitude"))),
+        onTap: () {
+          _customInfoWindowController.addInfoWindow(
+            Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.account_circle,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          Text(
+                            "I am here",
+                            style:
+                                Theme.of(context).textTheme.headline6.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          )
+                        ],
+                      ),
+                    ),
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
+                Triangle.isosceles(
+                  edge: Edge.BOTTOM,
+                  child: Container(
+                    color: Colors.blue,
+                    width: 20.0,
+                    height: 10.0,
+                  ),
+                ),
+              ],
+            ),
+            LatLng(double.parse(data.get("latitude")),
+                double.parse(data.get("longitude"))),
+          );
+        },
+      ));
+    });
 
     return markers;
   }
-
 }
