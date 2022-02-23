@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class Animal {
-
   final String kingdomClass;
   final String family;
   final String genus;
@@ -20,11 +19,13 @@ class Animal {
   final String nameOfYoung;
   final String description;
   final String redListStatus;
-  final List collections;
+  final String collection;
+  // final List collections;
   final Timestamp date;
 
   /// Color Variables
   final String environment;
+
   /// End of color variables
 
   /// TODO: REVIEW HOW DATE IS SORTED
@@ -63,7 +64,7 @@ class Animal {
         nameOfYoung = map['name-of-young'],
         description = map['description'],
         redListStatus = map['redlist-status'],
-        collections = map['collections'],
+        collection = map['collection'],
         environment = map['environment'],
         imgUrl = map['imgURL'],
         date = map['dateAdded'];
@@ -72,26 +73,27 @@ class Animal {
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
-  String toString() => "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl:$redListStatus";
+  String toString() =>
+      "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl:$redListStatus";
 
   Map<String, dynamic> toJson() => {
-    'class': kingdomClass,
-    'family': family,
-    'genus': genus,
-    'kingdom': kingdom,
-    'order': order,
-    'phylum': phylum,
-    'scientific-name': scientificName,
-    'common-name': commonName,
-    'diet': diet,
-    'lifespan': lifespan,
-    'lifestyle': lifestyle,
-    'location': location,
-    'description': description,
-    'redlist-status': redListStatus,
-    'name-of-young': nameOfYoung,
-    // 'isActive': isActive,
-    'imgURL': imgUrl,
-    'dateAdded': date.toDate(),
-  };
+        'class': kingdomClass,
+        'family': family,
+        'genus': genus,
+        'kingdom': kingdom,
+        'order': order,
+        'phylum': phylum,
+        'scientific-name': scientificName,
+        'common-name': commonName,
+        'diet': diet,
+        'lifespan': lifespan,
+        'lifestyle': lifestyle,
+        'location': location,
+        'description': description,
+        'redlist-status': redListStatus,
+        'name-of-young': nameOfYoung,
+        // 'isActive': isActive,
+        'imgURL': imgUrl,
+        'dateAdded': date.toDate(),
+      };
 }

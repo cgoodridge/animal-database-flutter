@@ -187,13 +187,16 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                         },
                                         mapType: MapType.hybrid,
                                         compassEnabled: true,
+                                        onCameraMove: (position) {
+                                          _customInfoWindowController
+                                              .onCameraMove();
+                                        },
                                         markers: getMarkers(snapshot.data.docs),
                                         initialCameraPosition: _firstLocation,
-                                        onMapCreated:
-                                            (GoogleMapController controller) {
-                                          setState(() {
-                                            _controller.complete(controller);
-                                          });
+                                        onMapCreated: (GoogleMapController
+                                            controller) async {
+                                          _customInfoWindowController
+                                              .googleMapController = controller;
                                         },
                                       ),
                                     ),
@@ -202,7 +205,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                     controller: _customInfoWindowController,
                                     height: 75,
                                     width: 150,
-                                    offset: 50,
+                                    offset: 30,
                                   ),
                                 ],
                               ),
@@ -261,8 +264,10 @@ class _LocationsScreenState extends State<LocationsScreen> {
     // final animalData = Animal.fromSnapshot(animal);
     animal.forEach((data) {
       // print(data.get("common-name"));
+      final animal = Animal.fromSnapshot(data);
+
       markers.add(Marker(
-        markerId: MarkerId("marker_id"),
+        markerId: MarkerId(data.get("common-name")),
         position: LatLng(double.parse(data.get("latitude")),
             double.parse(data.get("longitude"))),
         onTap: () {
@@ -270,36 +275,47 @@ class _LocationsScreenState extends State<LocationsScreen> {
             Column(
               children: [
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          Text(
-                            "I am here",
-                            style:
-                                Theme.of(context).textTheme.headline6.copyWith(
-                                      color: Colors.white,
-                                    ),
-                          )
-                        ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AnimalDetails(
+                                  animal: animal,
+                                )),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(4),
                       ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(data.get("imgURL"))),
+                            SizedBox(
+                              width: 8.0,
+                            ),
+                            Text(
+                              data.get("common-name"),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(
+                                    color: Colors.white,
+                                  ),
+                            )
+                          ],
+                        ),
+                      ),
+                      width: double.infinity,
+                      height: double.infinity,
                     ),
-                    width: double.infinity,
-                    height: double.infinity,
                   ),
                 ),
                 Triangle.isosceles(
