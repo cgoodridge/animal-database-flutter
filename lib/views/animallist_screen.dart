@@ -32,7 +32,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   bool isChecked = false;
 
   final TextEditingController searchController = new TextEditingController();
-  TextEditingController collectionName = new TextEditingController();
+  TextEditingController collectionNameField = new TextEditingController();
   bool showForm = false;
 
   sortOption _selection = sortOption.alpha;
@@ -245,7 +245,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
       stream:
-          FirebaseFirestore.instance.collection('playlistNames').snapshots(),
+          FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData || !snapshot.hasData) {
           return CircularProgressIndicator();
@@ -349,48 +349,47 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   void saveToNewCollection(
       Animal animal, CollectionReference faves, DocumentSnapshot data) async {
     var stringVal;
-    List colName = [];
-    colName.add(collectionName.text);
+    List collectionNameList = [];
+    // colName.add(collectionNameField.text);
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection("collectionNames").get();
-    snapshot.docs.forEach((document) {
+    snapshot.docs.forEach((document) async {
       if (document.exists) {
         //print('Documents exist');
+
         Map<String, dynamic> val = document.data();
+        // print("The value is " + document.get("name"));
+
+        collectionNameList.add(document.get("name"));
+
         var tempVal =
             val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'), '');
-        print(tempVal);
-        setState(() {
-          stringVal = tempVal;
-        });
+
+        //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
       } else {
-        print('document does not exist');
+        print("Document doesn't exist");
       }
     });
 
-    //print(stringVal.toString());
-
-    if (formKey.currentState.validate()) {
-      Map<String, dynamic> animalData = animal.toJson();
-      if (stringVal.toString() == collectionName.text) {
-        print(true);
-      } else {
-        //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
-        await FirebaseFirestore.instance
-            .collection("collections")
-            .doc("collectionLists")
-            .collection(collectionName.text)
-            .doc(data.id)
-            .set(animalData);
-        await FirebaseFirestore.instance
-            .collection("collectionNames")
-            .doc()
-            .set({"name": collectionName.text, "imgURL": animal.imgUrl});
-        await FirebaseFirestore.instance
-            .collection('animals')
-            .doc(data.id)
-            .update({'collections': collectionName});
-      }
+    Map<String, dynamic> animalData = animal.toJson();
+    if (collectionNameList.contains(collectionNameField.text.toLowerCase())) {
+      print("Collection already exists");
+      return;
+    } else {
+      await FirebaseFirestore.instance
+          .collection("collections")
+          .doc("collectionLists")
+          .collection(collectionNameField.text)
+          .doc(data.id)
+          .set(animalData);
+      await FirebaseFirestore.instance
+          .collection("collectionNames")
+          .doc()
+          .set({"name": collectionNameField.text, "imgURL": animal.imgUrl});
+      await FirebaseFirestore.instance
+          .collection('animals')
+          .doc(data.id)
+          .update({'collection': collectionNameField.text});
     }
   }
 
@@ -409,7 +408,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     await FirebaseFirestore.instance
         .collection("animals")
         .doc(data.id)
-        .update({'collections': collectionName});
+        .update({'collection': collectionName});
   }
 
   Widget _buildBody(BuildContext context) {
@@ -492,9 +491,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       Animal animal, CollectionReference faves, DocumentSnapshot data) async {
     await faves.doc(data.id).delete();
     await FirebaseFirestore.instance
-        .collection("collections")
+        .collection("animals")
         .doc(data.id)
-        .update({"collection": ""});
+        .update({"collection": FieldValue.delete()});
+
     print('Removed from faves ' + data.id);
   }
 
@@ -510,23 +510,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     // if (animal.collections != null) {
     //   faveIcon = true;
     // }
+    if (animal.collection != null) {
+      isInFaves = true;
+    }
 
     for (var data in faves) {
       Map<String, dynamic> val = data.data();
       collectionNameRef =
           val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'), '');
-
-      if (animal.collection != null) {
-        if (animal.collection.contains(val["name"])) {
-          isInFaves = true;
-          print("This is in the collection");
-        } else {
-          print("This is not in the collection");
-          isInFaves = false;
-        }
-      } else {
-        print("Animal not in collection");
-      }
     }
 
     CollectionReference favorite =
@@ -625,6 +616,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                     } else {
                                       showModalBottomSheet<void>(
                                         context: context,
+                                        isScrollControlled: true,
                                         builder: (BuildContext context) {
                                           return StatefulBuilder(
                                             builder: (BuildContext context,
@@ -662,7 +654,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                                                     child:
                                                                         TextFormField(
                                                                       controller:
-                                                                          collectionName,
+                                                                          collectionNameField,
                                                                       validator:
                                                                           (value) {
                                                                         return value.isNotEmpty
@@ -725,6 +717,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                                                       "Save"),
                                                                   onPressed:
                                                                       () {
+                                                                    print(
+                                                                        "save button clicked");
                                                                     saveToNewCollection(
                                                                         animal,
                                                                         favorite,
