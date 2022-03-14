@@ -399,12 +399,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     List colName = [];
     colName.add(collectionName);
     Map<String, dynamic> animalData = animal.toJson();
+
     await FirebaseFirestore.instance
         .collection("collections")
         .doc("collectionLists")
         .collection(collectionName)
         .doc(data.id)
         .set(animalData);
+
     await FirebaseFirestore.instance
         .collection("animals")
         .doc(data.id)
