@@ -236,9 +236,9 @@ class _LocationsScreenState extends State<LocationsScreen> {
       child: Material(
         child: ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(animal.imgUrl),
+              backgroundImage: NetworkImage("animal.imgUrl"),
             ),
-            subtitle: Text(animal.location),
+            subtitle: Text("animal.location"),
             onTap: () {
               Navigator.push(
                 context,

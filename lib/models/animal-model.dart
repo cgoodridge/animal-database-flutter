@@ -15,7 +15,8 @@ class Animal {
   final String diet;
   final String lifespan;
   final String lifestyle;
-  final String location;
+  final List locations;
+  // final String location;
   final String nameOfYoung;
   final String description;
   final String redListStatus;
@@ -30,7 +31,7 @@ class Animal {
 
   /// TODO: REVIEW HOW DATE IS SORTED
   // final bool isActive;
-  final String imgUrl;
+  final List imgUrls;
   final DocumentReference reference;
 
   Animal.fromMap(Map<String, dynamic> map, {this.reference})
@@ -45,7 +46,7 @@ class Animal {
         assert(map['diet'] != null),
         assert(map['lifespan'] != null),
         assert(map['lifestyle'] != null),
-        assert(map['location'] != null),
+        assert(map['locations'] != null),
         assert(map['nameOfYoung'] != null),
         assert(map['description'] != null),
         assert(map['redlistStatus'] != null),
@@ -60,13 +61,13 @@ class Animal {
         diet = map['diet'],
         lifespan = map['lifespan'],
         lifestyle = map['lifestyle'],
-        location = map['location'],
+        locations = map['locations'],
         nameOfYoung = map['nameOfYoung'],
         description = map['description'],
         redListStatus = map['redlistStatus'],
         collection = map['collection'],
         environment = map['environment'],
-        imgUrl = map['imgURL'],
+        imgUrls = map['imgURLs'],
         date = map['dateAdded'];
 
   Animal.fromSnapshot(DocumentSnapshot snapshot)
@@ -74,7 +75,7 @@ class Animal {
 
   @override
   String toString() =>
-      "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl:$redListStatus";
+      "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrls:$redListStatus";
 
   Map<String, dynamic> toJson() => {
         'class': kingdomClass,
@@ -88,12 +89,12 @@ class Animal {
         'diet': diet,
         'lifespan': lifespan,
         'lifestyle': lifestyle,
-        'location': location,
+        'locations': locations,
         'description': description,
         'redlistStatus': redListStatus,
         'nameOfYoung': nameOfYoung,
         // 'isActive': isActive,
-        'imgURL': imgUrl,
+        'imgURLs': imgUrls,
         'dateAdded': date.toDate(),
       };
 }

@@ -34,22 +34,18 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return StreamProvider<CustomUser>.value(
       value: AuthService().user,
       initialData: null,
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Project Sanctuary',
-        theme: ThemeData(
-
-          primarySwatch: Colors.blue,
-        ),
-
+          debugShowCheckedModeBanner: false,
+          title: 'Project Sanctuary',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
           initialRoute: '/',
           routes: {
             '/': (context) => Wrapper(),
@@ -59,8 +55,8 @@ class MyApp extends StatelessWidget {
             '/settings': (context) => SettingsScreen(),
             AnimalDetails.id: (context) => AnimalDetails(),
           }
-        //home: MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
+          //home: MyHomePage(title: 'Flutter Demo Home Page'),
+          ),
     );
   }
 }
@@ -71,7 +67,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   int _selectedIndex = 0;
 
   //PickedFile image;
@@ -88,129 +83,125 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
   }
+
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     final user = Provider.of<CustomUser>(context);
 
-    SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.manual, overlays: [
-          SystemUiOverlay.bottom, //This line is used for showing the bottom bar
-        ]
-    );
-
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+      SystemUiOverlay.bottom, //This line is used for showing the bottom bar
+    ]);
 
     return StreamBuilder<CustomUserData>(
-      stream: DatabaseService(uid: user.uid).userData,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          CustomUserData userData = snapshot.data;
-          if (userData.role == 'admin') {
-            return Scaffold(
-              extendBody: true,
-              body: _navBarLocations[_selectedIndex],
-              floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
-                elevation: 0.1,
-                onPressed: () async {
-                  showDialog(
-                      context: context,
-                      builder: (_){
-                        return FormDialog();
-                      });
-                },
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  child:
-                  Icon(Icons.add, size: 30,),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                          colors: [
-                            Colors.orange,
-                            Colors.orange,
-                            //Colors.transparent,
-                            //Color(0x11000000)
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter
+        stream: DatabaseService(uid: user.uid).userData,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            CustomUserData userData = snapshot.data;
+            if (userData.role == 'admin') {
+              return Scaffold(
+                extendBody: true,
+                body: _navBarLocations[_selectedIndex],
+                floatingActionButton: _selectedIndex == 0
+                    ? FloatingActionButton(
+                        elevation: 0.1,
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return FormDialog();
+                              });
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          child: Icon(
+                            Icons.add,
+                            size: 30,
+                          ),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Colors.orange,
+                                    Colors.orange,
+                                    //Colors.transparent,
+                                    //Color(0x11000000)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
+                        ),
+                        backgroundColor: Colors.transparent,
                       )
-                  ),
+                    : null,
+                //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                bottomNavigationBar: BottomNavigationBar(
+                  backgroundColor: Color(0xfff1f1f1),
+                  unselectedItemColor: Colors.black,
+                  type: BottomNavigationBarType.fixed,
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.collections),
+                      label: 'Collections',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.location_on),
+                      label: 'Locations',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person),
+                      label: 'Account',
+                    ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  selectedItemColor: Colors.orange,
+                  onTap: _onItemTapped,
                 ),
-                backgroundColor: Colors.transparent,
-              ): null,
-              //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-              bottomNavigationBar: BottomNavigationBar(
-                backgroundColor: Color(0xfff1f1f1),
-                unselectedItemColor: Colors.black,
-                type: BottomNavigationBarType.fixed,
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.collections),
-                    label: 'Collections',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.location_on),
-                    label: 'Locations',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person),
-                    label: 'Account',
-                  ),
-                ],
-                currentIndex: _selectedIndex,
-                selectedItemColor: Colors.orange,
-                onTap: _onItemTapped,
-              ),
-            );
+              );
+            } else {
+              return Scaffold(
+                extendBody: true,
+                body: _navBarLocations[_selectedIndex],
+                //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                bottomNavigationBar: BottomNavigationBar(
+                  backgroundColor: Color(0xffe3e3e3),
+                  unselectedItemColor: Colors.black,
+                  type: BottomNavigationBarType.fixed,
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.collections),
+                      label: 'Collections',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.location_on),
+                      label: 'Locations',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person),
+                      label: 'Account',
+                    ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  selectedItemColor: Colors.orange,
+                  onTap: _onItemTapped,
+                ),
+              );
+            }
           } else {
-            return Scaffold(
-              extendBody: true,
-              body: _navBarLocations[_selectedIndex],
-              //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-              bottomNavigationBar: BottomNavigationBar(
-
-                backgroundColor: Color(0xffe3e3e3),
-                unselectedItemColor: Colors.black,
-                type: BottomNavigationBarType.fixed,
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.collections),
-                    label: 'Collections',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.location_on),
-                    label: 'Locations',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person),
-                    label: 'Account',
-                  ),
-                ],
-                currentIndex: _selectedIndex,
-                selectedItemColor: Colors.orange,
-                onTap: _onItemTapped,
-              ),
-            );
+            return CircularProgressIndicator();
           }
-        } else {
-          return CircularProgressIndicator();
-        }
-      }
-    );
+        });
   }
 }
 
@@ -220,7 +211,6 @@ class FormDialog extends StatefulWidget {
 }
 
 class _FormDialogState extends State<FormDialog> {
-
   final formKey = GlobalKey<FormState>();
   /*
   * TODO: Add remaining fields
@@ -244,190 +234,165 @@ class _FormDialogState extends State<FormDialog> {
   String imgURL;
   @override
   Widget build(BuildContext context) {
-
-      return AlertDialog(
+    return AlertDialog(
       content: Container(
         width: double.maxFinite,
-        child: ListView(
-            shrinkWrap: true,
-            children:[
-              Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      InkWell(
-                          onTap:() {
-                            getImage();
-                          },
-                          child: (imgFile != null) ? Image.file(imgFile): CircleAvatar(radius: 50, backgroundColor: Colors.orange, child: Icon(Icons.camera_alt, size: 50, color: Colors.black,),)
-                      ),
-                      TextFormField(
-                        controller: kingdom,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Kingdom"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: phylum,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Phylum"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: kingdomClass,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Class"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: order,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Order"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: family,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Family"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: genus,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Genus"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: scientificName,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Scientific Name"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: commonName,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Common Name"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: nameOfYoung,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Name of Young"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: diet,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Diet"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: lifespan,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Lifespan"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: lifestyle,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Lifestyle"
-                        ),
-                      ),
-                      TextFormField(
-                        controller: description,
-                        validator: (value){
-                          return value.isNotEmpty? null : "Invalid Field";
-                        },
-                        decoration: InputDecoration(
-                            hintText: "Description"
-                        ),
-                      ),
-                    ],
-                  )
-              ),
-            ]
-        ),
+        child: ListView(shrinkWrap: true, children: [
+          Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  InkWell(
+                      onTap: () {
+                        getImage();
+                      },
+                      child: (imgFile != null)
+                          ? Image.file(imgFile)
+                          : CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.orange,
+                              child: Icon(
+                                Icons.camera_alt,
+                                size: 50,
+                                color: Colors.black,
+                              ),
+                            )),
+                  TextFormField(
+                    controller: kingdom,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Kingdom"),
+                  ),
+                  TextFormField(
+                    controller: phylum,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Phylum"),
+                  ),
+                  TextFormField(
+                    controller: kingdomClass,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Class"),
+                  ),
+                  TextFormField(
+                    controller: order,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Order"),
+                  ),
+                  TextFormField(
+                    controller: family,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Family"),
+                  ),
+                  TextFormField(
+                    controller: genus,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Genus"),
+                  ),
+                  TextFormField(
+                    controller: scientificName,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Scientific Name"),
+                  ),
+                  TextFormField(
+                    controller: commonName,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Common Name"),
+                  ),
+                  TextFormField(
+                    controller: nameOfYoung,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Name of Young"),
+                  ),
+                  TextFormField(
+                    controller: diet,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Diet"),
+                  ),
+                  TextFormField(
+                    controller: lifespan,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Lifespan"),
+                  ),
+                  TextFormField(
+                    controller: lifestyle,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Lifestyle"),
+                  ),
+                  TextFormField(
+                    controller: description,
+                    validator: (value) {
+                      return value.isNotEmpty ? null : "Invalid Field";
+                    },
+                    decoration: InputDecoration(hintText: "Description"),
+                  ),
+                ],
+              )),
+        ]),
       ),
       actions: <Widget>[
         TextButton(
-            onPressed: (){
+            onPressed: () {
               addRecord();
               Navigator.of(context).pop();
             },
-            child: Text("SAVE", style: TextStyle(fontSize: 22),)
-        )
+            child: Text(
+              "SAVE",
+              style: TextStyle(fontSize: 22),
+            ))
       ],
     );
   }
 
-  void addRecord() async
-  {
+  void addRecord() async {
     final user = Provider.of<CustomUser>(context);
 
-    if (formKey.currentState.validate())
-      {
-        var imageStore = FirebaseStorage.instance.ref().child(imgFile.path);
-        var imageUploadTask = imageStore.putFile(imgFile);
+    if (formKey.currentState.validate()) {
+      var imageStore = FirebaseStorage.instance.ref().child(imgFile.path);
+      var imageUploadTask = imageStore.putFile(imgFile);
 
-        imgURL = await (await imageUploadTask).ref.getDownloadURL();
+      imgURL = await (await imageUploadTask).ref.getDownloadURL();
 
-        await FirebaseFirestore.instance.collection("animals").add({
-          'kingdom' : kingdom.text,
-          'phylum' : phylum.text,
-          'class' : kingdomClass.text,
-          'order' : order.text,
-          'family' : family.text,
-          'genus' : genus.text,
-          'scientific-name' : scientificName.text,
-          'common-name' : commonName.text,
-          'added-by' : user.uid,
-          'location': location.text,
-          'imgURL': imgURL,
-          'dateAdded' : DateTime.now(),
-        });
-      }
-
+      await FirebaseFirestore.instance.collection("animals").add({
+        'kingdom': kingdom.text,
+        'phylum': phylum.text,
+        'class': kingdomClass.text,
+        'order': order.text,
+        'family': family.text,
+        'genus': genus.text,
+        'scientificName': scientificName.text,
+        'commonName': commonName.text,
+        'addedBy': user.uid,
+        'location': location.text,
+        'imgURL': imgURL,
+        'dateAdded': DateTime.now(),
+      });
+    }
   }
 
-
-  void getImage() async
-  {
+  void getImage() async {
     final picker = ImagePicker();
 
     //Check permissions
@@ -437,24 +402,20 @@ class _FormDialogState extends State<FormDialog> {
     var photoPermissionStatus = await Permission.photos.status;
     //var cameraPermissionStatus = await Permission.camera.status;
 
-    if(photoPermissionStatus.isGranted)
-    {
+    if (photoPermissionStatus.isGranted) {
       final image = await picker.getImage(source: ImageSource.gallery);
 
       //var file = ;
       //print(file);
-      if(image != null){
+      if (image != null) {
         setState(() {
           imgFile = File(image.path);
         });
-      }
-      else {
+      } else {
         print("No path received");
       }
-    }
-    else{
+    } else {
       print("Permission needs to be granted");
     }
-
   }
 }

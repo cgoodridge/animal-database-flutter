@@ -385,7 +385,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       await FirebaseFirestore.instance
           .collection("collectionNames")
           .doc()
-          .set({"name": collectionNameField.text, "imgURL": animal.imgUrl});
+          .set({"name": collectionNameField.text, "imgURL": "animal.imgUrl"});
       await FirebaseFirestore.instance
           .collection('animals')
           .doc(data.id)
@@ -422,12 +422,12 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         ((_selection == sortOption.alpha)
             ? FirebaseFirestore.instance
                 .collection('animals')
-                .orderBy('common-name', descending: false)
+                .orderBy('commonName', descending: false)
                 .snapshots()
             : (_selection == sortOption.reverseAlpha)
                 ? FirebaseFirestore.instance
                     .collection('animals')
-                    .orderBy('common-name', descending: true)
+                    .orderBy('commonName', descending: true)
                     .snapshots()
                 : (_selection == sortOption.recentlyAdded)
                     ? FirebaseFirestore.instance
@@ -436,7 +436,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                         .snapshots()
                     : FirebaseFirestore.instance
                         .collection('animals')
-                        .orderBy('common-name', descending: false)
+                        .orderBy('commonName', descending: false)
                         .snapshots()),
         FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       ),
@@ -508,10 +508,12 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     bool faveIcon = false;
     var collectionNameRef;
     Animal faveList;
+
     //This works, but we'll look for a more efficient way to do it later
     // if (animal.collections != null) {
     //   faveIcon = true;
     // }
+
     if (animal.collection != null) {
       isInFaves = true;
     }
@@ -566,7 +568,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Hero(
                         tag: animal.commonName,
                         child: Image.network(
-                          animal.imgUrl,
+                          "animal.imgUrl",
                           fit: BoxFit.fitHeight,
                           // height: 200,
                         ),
