@@ -441,7 +441,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       ),
       builder: (context, snapshots) {
-        if (!snapshots.item1.hasData || !snapshots.item2.hasData) {
+        if (!snapshots.item1.hasData) { // If animal list is empty we show a loading spinner
           return CircularProgressIndicator();
         } else {
           _allResults = snapshots.item1.data.docs;
