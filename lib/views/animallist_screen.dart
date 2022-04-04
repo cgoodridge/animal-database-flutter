@@ -417,6 +417,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
+    print(_selection);
     return StreamBuilder2<QuerySnapshot, QuerySnapshot>(
       streams: Tuple2(
         ((_selection == sortOption.alpha)
@@ -445,6 +446,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           return CircularProgressIndicator();
         } else {
           _allResults = snapshots.item1.data.docs;
+          print(snapshots.item1.data.docs);
+          print(_allResults);
           return (_width > 600)
               ? _buildGridList(
                   context, snapshots.item1.data.docs, snapshots.item2.data.docs)
@@ -455,8 +458,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,
-      List<DocumentSnapshot> faves) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
     return isSearching
         ? ListView.builder(
             itemCount: _resultsList.length,
@@ -500,10 +502,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     print('Removed from faves ' + data.id);
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data,
-      List<DocumentSnapshot> faves) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
     final animal = Animal.fromSnapshot(data);
-
+    print(animal);
     bool isInFaves = false;
     bool faveIcon = false;
     var collectionNameRef;

@@ -15,7 +15,7 @@ class Animal {
   final String diet;
   final String lifespan;
   final String lifestyle;
-  final List locations;
+  // final List locations;
   // final String location;
   final String nameOfYoung;
   final String description;
@@ -31,7 +31,7 @@ class Animal {
 
   /// TODO: REVIEW HOW DATE IS SORTED
   // final bool isActive;
-  final List imgUrls;
+  // final List imgUrls;
   final DocumentReference reference;
 
   Animal.fromMap(Map<String, dynamic> map, {this.reference})
@@ -46,10 +46,10 @@ class Animal {
         assert(map['diet'] != null),
         assert(map['lifespan'] != null),
         assert(map['lifestyle'] != null),
-        assert(map['locations'] != null),
+        // assert(map['locations'] != null),
         assert(map['nameOfYoung'] != null),
         assert(map['description'] != null),
-        assert(map['redlistStatus'] != null),
+        assert(map['redListStatus'] != null),
         kingdomClass = map['class'],
         family = map['family'],
         genus = map['genus'],
@@ -61,13 +61,13 @@ class Animal {
         diet = map['diet'],
         lifespan = map['lifespan'],
         lifestyle = map['lifestyle'],
-        locations = map['locations'],
+        // locations = map['locations'],
         nameOfYoung = map['nameOfYoung'],
         description = map['description'],
-        redListStatus = map['redlistStatus'],
+        redListStatus = map['redListStatus'],
         collection = map['collection'],
         environment = map['environment'],
-        imgUrls = map['imgURLs'],
+        // imgUrls = map['imgURLs'],
         date = map['dateAdded'];
 
   Animal.fromSnapshot(DocumentSnapshot snapshot)
@@ -75,7 +75,7 @@ class Animal {
 
   @override
   String toString() =>
-      "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrls:$redListStatus";
+      "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$redListStatus";
 
   Map<String, dynamic> toJson() => {
         'class': kingdomClass,
@@ -89,12 +89,12 @@ class Animal {
         'diet': diet,
         'lifespan': lifespan,
         'lifestyle': lifestyle,
-        'locations': locations,
+        // 'locations': locations,
         'description': description,
-        'redlistStatus': redListStatus,
+        'redListStatus': redListStatus,
         'nameOfYoung': nameOfYoung,
         // 'isActive': isActive,
-        'imgURLs': imgUrls,
+        // 'imgURLs': imgUrls,
         'dateAdded': date.toDate(),
       };
 }
