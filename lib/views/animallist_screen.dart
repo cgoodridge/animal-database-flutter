@@ -442,12 +442,11 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       ),
       builder: (context, snapshots) {
-        if (!snapshots.item1.hasData) { // If animal list is empty we show a loading spinner
+        if (!snapshots.item1.hasData) {
+          // If animal list is empty we show a loading spinner
           return CircularProgressIndicator();
         } else {
           _allResults = snapshots.item1.data.docs;
-          print(snapshots.item1.data.docs);
-          print(_allResults);
           return (_width > 600)
               ? _buildGridList(
                   context, snapshots.item1.data.docs, snapshots.item2.data.docs)
@@ -458,7 +457,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,
+      List<DocumentSnapshot> faves) {
     return isSearching
         ? ListView.builder(
             itemCount: _resultsList.length,
@@ -502,9 +502,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     print('Removed from faves ' + data.id);
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data,
+      List<DocumentSnapshot> faves) {
     final animal = Animal.fromSnapshot(data);
-    print(animal);
+
     bool isInFaves = false;
     bool faveIcon = false;
     var collectionNameRef;
@@ -569,7 +570,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Hero(
                         tag: animal.commonName,
                         child: Image.network(
-                          "animal.imgUrl",
+                          animal.imgURLS.first,
                           fit: BoxFit.fitHeight,
                           // height: 200,
                         ),

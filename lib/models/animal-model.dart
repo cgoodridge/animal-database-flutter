@@ -21,6 +21,8 @@ class Animal {
   final String description;
   final String redListStatus;
   final String collection;
+  final List imgURLS;
+
   // final List collections;
   final Timestamp date;
 
@@ -31,11 +33,10 @@ class Animal {
 
   /// TODO: REVIEW HOW DATE IS SORTED
   // final bool isActive;
-  // final List imgUrls;
   final DocumentReference reference;
 
   Animal.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['class'] != null),
+      : assert(map['kingdomClass'] != null),
         assert(map['family'] != null),
         assert(map['genus'] != null),
         assert(map['kingdom'] != null),
@@ -50,7 +51,8 @@ class Animal {
         assert(map['nameOfYoung'] != null),
         assert(map['description'] != null),
         assert(map['redListStatus'] != null),
-        kingdomClass = map['class'],
+        assert(map['imgURLS'] != null),
+        kingdomClass = map['kingdomClass'],
         family = map['family'],
         genus = map['genus'],
         kingdom = map['kingdom'],
@@ -67,7 +69,7 @@ class Animal {
         redListStatus = map['redListStatus'],
         collection = map['collection'],
         environment = map['environment'],
-        // imgUrls = map['imgURLs'],
+        imgURLS = map['imgURLS'],
         date = map['dateAdded'];
 
   Animal.fromSnapshot(DocumentSnapshot snapshot)
@@ -94,7 +96,7 @@ class Animal {
         'redListStatus': redListStatus,
         'nameOfYoung': nameOfYoung,
         // 'isActive': isActive,
-        // 'imgURLs': imgUrls,
+        'imgURLS': imgURLS,
         'dateAdded': date.toDate(),
       };
 }

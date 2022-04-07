@@ -22,7 +22,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="omnitrix_database_flutter">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
@@ -34,7 +33,7 @@
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
 
-<!--  <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>-->
+  <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
 
   <!-- TODO: Add SDKs for Firebase products that you want to use
        https://firebase.google.com/docs/web/setup#available-libraries -->
@@ -51,11 +50,12 @@
     measurementId: "G-3P0R5F60ZD"
   };
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+<!--  firebase.initializeApp(firebaseConfig);-->
   </script>
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebase/8.10.1/firebase-storage.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('flutter-first-frame', function () {

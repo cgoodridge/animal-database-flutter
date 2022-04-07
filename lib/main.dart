@@ -37,6 +37,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // print(AuthService().currentUser);
+
     return StreamProvider<CustomUser>.value(
       value: AuthService().user,
       initialData: null,

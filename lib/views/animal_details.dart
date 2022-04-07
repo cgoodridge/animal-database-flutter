@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sanctuary/models/animal-model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/models/location_model.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class AnimalDetails extends StatelessWidget {
   static const String id = 'animal_details';
@@ -33,7 +33,7 @@ class AnimalDetails extends StatelessWidget {
             Hero(
                 tag: animal.commonName,
                 child: Image.network(
-                  "animal.imgUrl",
+                  animal.imgURLS.first,
                   fit: BoxFit.fitHeight,
                 )),
             // _buildDetails(context),
