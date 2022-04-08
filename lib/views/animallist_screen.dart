@@ -247,7 +247,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       stream:
           FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData || !snapshot.hasData) {
+        if (!snapshot.hasData) {
           return CircularProgressIndicator();
         } else {
           //print(snapshots.item1.data.);
@@ -417,7 +417,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
-    print(_selection);
     return StreamBuilder2<QuerySnapshot, QuerySnapshot>(
       streams: Tuple2(
         ((_selection == sortOption.alpha)

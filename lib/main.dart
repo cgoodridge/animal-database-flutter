@@ -22,11 +22,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+
+  // await dotenv.load(fileName: ".env");
+
+  Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
       appId: "1:553317843027:web:89d438c60e5b2184e446a6",
@@ -37,9 +41,11 @@ void main() async {
       measurementId: "G-3P0R5F60ZD",
     ),
   );
+
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
+
   runApp(MyApp());
 }
 
