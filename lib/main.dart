@@ -26,7 +26,17 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
+      appId: "1:553317843027:web:89d438c60e5b2184e446a6",
+      messagingSenderId: "553317843027",
+      projectId: "natgeo-database",
+      storageBucket: "natgeo-database.appspot.com",
+      authDomain: "natgeo-database.firebaseapp.com",
+      measurementId: "G-3P0R5F60ZD",
+    ),
+  );
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
