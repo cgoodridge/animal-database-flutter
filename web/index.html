@@ -15,19 +15,19 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="The flutter version of the omnitrix database project">
+  <meta name="description" content="The flutter version of Project Sanctuary">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="omnitrix_database_flutter">
+  <meta name="apple-mobile-web-app-title" content="Project Sanctuary">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="./assets/images/logo.png"/>
 
-  <title>omnitrix_database_flutter</title>
+  <title>Project Sanctuary</title>
   <link rel="manifest" href="manifest.json">
+
 </head>
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
@@ -39,23 +39,10 @@
   <!-- TODO: Add SDKs for Firebase products that you want to use
        https://firebase.google.com/docs/web/setup#available-libraries -->
 
-  <script>
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyAku41yq6jj6yJHilHGj0r2oGesoDBCnh0",
-    authDomain: "omnitrix-database.firebaseapp.com",
-    databaseURL: "https://omnitrix-database.firebaseio.com",
-    projectId: "omnitrix-database",
-    storageBucket: "omnitrix-database.appspot.com",
-    messagingSenderId: "840193091580",
-    appId: "1:840193091580:web:356047cc416be8275ff479"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  </script>
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebase/8.10.1/firebase-storage.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('flutter-first-frame', function () {

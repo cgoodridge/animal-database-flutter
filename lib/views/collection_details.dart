@@ -13,7 +13,6 @@ Color shadowColor;
 String activeAlien = "";
 
 class CollectionDetails extends StatelessWidget {
-
   final Collection collection;
   CollectionDetails({this.collection});
 
@@ -22,7 +21,6 @@ class CollectionDetails extends StatelessWidget {
   sortOption _selection = sortOption.alpha;
 
   List _allResults = [];
-
 
   /*
   @override
@@ -45,143 +43,168 @@ class CollectionDetails extends StatelessWidget {
 
    */
 
-  onSearchChanged()
-  {
+  onSearchChanged() {
     print(searchController.text);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
         backgroundColor: Color(0xfff5f5f5),
         //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
-        body:_buildViewSmall(context)
-
-    );
+        body: _buildViewSmall(context));
   }
 
-
-  Widget _buildViewSmall(BuildContext context)
-  {
-    return Column(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
-            child: Column(
+  Widget _buildViewSmall(BuildContext context) {
+    return Column(children: [
+      Container(
+        margin: EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    !isSearching ? Align(
-                      alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        onPressed: ()
-                        {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(Icons.arrow_back, color: Colors.black, size: 32,),
-
-                      ),
-                    ) : SizedBox(),
-                    Flexible(
-                      child: !isSearching ? Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),) :
-                      TextField(
-                        controller: searchController,
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search, color: Colors.black,),
-                            hintText: "Search Sanctuary",
-                            hintStyle: TextStyle(color: Colors.black)
+                !isSearching
+                    ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                            size: 32,
+                          ),
                         ),
-                      ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        color: Colors.black,
-                        icon: !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
-                        onPressed: () {
-                          // Expand search Field
-                          /*
+                      )
+                    : SizedBox(),
+                Flexible(
+                  child: !isSearching
+                      ? Text(
+                          "collections",
+                          style: GoogleFonts.bungeeHairline(
+                              color: Colors.black,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : TextField(
+                          controller: searchController,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              hintText: "Search Sanctuary",
+                              hintStyle: TextStyle(color: Colors.black)),
+                        ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    color: Colors.black,
+                    icon:
+                        !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
+                    onPressed: () {
+                      // Expand search Field
+                      /*
                           setState(() {
                             isSearching = !isSearching;
                           });
                           */
-                        },),
-                    )
-                  ],
-                ),
-                SizedBox(height: 16,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      flex: 15,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color(0xff242424),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Icon(Icons.circle, color: Colors.green, size: 12,),
-                              ),
-                              Text("Active Sample: " + activeAlien, style: GoogleFonts.lato(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w300),)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                        flex: 2,
-                        child: PopupMenuButton<sortOption>(
-                          icon: Icon(Icons.sort,color: Colors.white,),
-                          onSelected: (sortOption result) { /*setState(() { _selection = result; });*/ },
-                          itemBuilder: (BuildContext context) => <PopupMenuEntry<sortOption>>[
-                            const PopupMenuItem<sortOption>(
-                              value: sortOption.alpha,
-                              child: Text('A-Z'),
-                            ),
-                            const PopupMenuItem<sortOption>(
-                              value: sortOption.reverseAlpha,
-                              child: Text('Z-A'),
-                            ),
-                            const PopupMenuItem<sortOption>(
-                              value: sortOption.recentlyAdded,
-                              child: Text('Recently Added'),
-                            ),
-                          ],
-                        )
-                    )
-                  ],
-                ),
+                    },
+                  ),
+                )
               ],
             ),
-          ),
-          Expanded(
-            child: SizedBox(height: 200.0, child: _buildBody(context)),
-          ),
-        ]);
+            SizedBox(
+              height: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 15,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Color(0xff242424),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              Icons.circle,
+                              color: Colors.green,
+                              size: 12,
+                            ),
+                          ),
+                          Text(
+                            "Active Sample: " + activeAlien,
+                            style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                    flex: 2,
+                    child: PopupMenuButton<sortOption>(
+                      icon: Icon(
+                        Icons.sort,
+                        color: Colors.white,
+                      ),
+                      onSelected: (sortOption result) {
+                        /*setState(() { _selection = result; });*/
+                      },
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<sortOption>>[
+                        const PopupMenuItem<sortOption>(
+                          value: sortOption.alpha,
+                          child: Text('A-Z'),
+                        ),
+                        const PopupMenuItem<sortOption>(
+                          value: sortOption.reverseAlpha,
+                          child: Text('Z-A'),
+                        ),
+                        const PopupMenuItem<sortOption>(
+                          value: sortOption.recentlyAdded,
+                          child: Text('Recently Added'),
+                        ),
+                      ],
+                    ))
+              ],
+            ),
+          ],
+        ),
+      ),
+      Expanded(
+        child: SizedBox(height: 200.0, child: _buildBody(context)),
+      ),
+    ]);
   }
 
-  Widget _buildViewLarge(BuildContext context)
-  {
+  Widget _buildViewLarge(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
         body: Column(
           children: [
-            Text("TEST", style: TextStyle(color: Colors.white, fontSize: 26),),
+            Text(
+              "TEST",
+              style: TextStyle(color: Colors.white, fontSize: 26),
+            ),
           ],
-        )
-    );
+        ));
   }
 
   Widget _buildBody(BuildContext context) {
@@ -189,70 +212,89 @@ class CollectionDetails extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     // TODO: get actual snapshot from Cloud Firestore
     return StreamBuilder<QuerySnapshot>(
-      stream:
-        ((_selection == sortOption.alpha) ? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('class', descending: false).snapshots()
-            : (_selection == sortOption.reverseAlpha)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('order', descending: true).snapshots()
-            :(_selection == sortOption.recentlyAdded)? Firestore.instance.collection('favourites').document("playlists").collection(collection.name).orderBy('dateAdded', descending: true).snapshots():Firestore.instance.collection('aliens').orderBy('species', descending: false).snapshots()),
-
+      stream: ((_selection == sortOption.alpha)
+          ? FirebaseFirestore.instance
+              .collection('favourites')
+              .doc("playlists")
+              .collection(collection.name)
+              .orderBy('class', descending: false)
+              .snapshots()
+          : (_selection == sortOption.reverseAlpha)
+              ? FirebaseFirestore.instance
+                  .collection('favourites')
+                  .doc("playlists")
+                  .collection(collection.name)
+                  .orderBy('order', descending: true)
+                  .snapshots()
+              : (_selection == sortOption.recentlyAdded)
+                  ? FirebaseFirestore.instance
+                      .collection('favourites')
+                      .doc("playlists")
+                      .collection(collection.name)
+                      .orderBy('dateAdded', descending: true)
+                      .snapshots()
+                  : FirebaseFirestore.instance
+                      .collection('aliens')
+                      .orderBy('species', descending: false)
+                      .snapshots()),
       builder: (context, snapshot) {
         if (!snapshot.hasData || !snapshot.hasData) {
           return CircularProgressIndicator();
-        }
-        else {
+        } else {
           //print(snapshots.item1.data.);
 
-          return (_width > 600)? _buildGridList(context, snapshot.data.documents, snapshot.data.documents) : _buildList(context, snapshot.data.documents, snapshot.data.documents);
+          return (_width > 600)
+              ? _buildGridList(context, snapshot.data.docs, snapshot.data.docs)
+              : _buildList(context, snapshot.data.docs, snapshot.data.docs);
         }
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,
+      List<DocumentSnapshot> faves) {
     //print(snapshot.length);
 
     return ListView(
-
-      children:[
+      children: [
         ...snapshot.map((data) => _buildListItem(context, data, faves)).toList()
       ],
-
     );
   }
 
-  Widget _buildGridList(BuildContext context, List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+  Widget _buildGridList(BuildContext context, List<DocumentSnapshot> snapshot,
+      List<DocumentSnapshot> faves) {
     return GridView.count(
-      //itemExtent: 5,
-      //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        //itemExtent: 5,
+        //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
         crossAxisCount: 2,
-        children:snapshot.map((data) => _buildListItem(context, data, faves)).toList()
-    );
+        children: snapshot
+            .map((data) => _buildListItem(context, data, faves))
+            .toList());
   }
 
-  void addToFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
-  {
+  void addToFaves(
+      Animal animal, CollectionReference faves, DocumentSnapshot data) {
     Map<String, dynamic> alienData = animal.toJson();
-    faves.document(data.documentID).setData(alienData);
+    faves.doc(data.id).set(alienData);
   }
 
-  void removeFromFaves(Animal animal, CollectionReference faves, DocumentSnapshot data)
-  {
-    faves.document(data.documentID).delete();
+  void removeFromFaves(
+      Animal animal, CollectionReference faves, DocumentSnapshot data) {
+    faves.doc(data.id).delete();
   }
 
-
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data, List<DocumentSnapshot> faves) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data,
+      List<DocumentSnapshot> faves) {
     final animal = Animal.fromSnapshot(data);
     bool isInFaves = false;
     bool faveIcon = false;
 
-
     Animal faveList;
     //This works, but we'll look for a more efficient way to do it later
 
-    for (var data in faves)
-    {
-      Map<String, dynamic> values = data.data;
+    for (var data in faves) {
+      Map<String, dynamic> values = data.data();
       //print(values);
       //return alienVal;
     }
@@ -273,16 +315,15 @@ class CollectionDetails extends StatelessWidget {
     //   //return alienVal;
     // }
 
+    CollectionReference favorite =
+        FirebaseFirestore.instance.collection('favourites');
 
-    CollectionReference favorite = Firestore.instance.collection('favourites');
-
-  /*  if (animal.isActive) { activeAlien = animal.species.toString(); }
+    /*  if (animal.isActive) { activeAlien = animal.species.toString(); }
 
     if (alien.environment == "space") { shadowColor = Colors.white; }
     else if (alien.environment == "land") { shadowColor = Colors.brown; }
     else if (alien.environment == "ice") { shadowColor = Colors.blueAccent; }
     else if (alien.environment == "water") { shadowColor = Colors.blue; }*/
-
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -316,8 +357,18 @@ class CollectionDetails extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(animal.order, style: GoogleFonts.sarpanch(color: Colors.green, fontSize: 18, fontWeight: FontWeight.w300),),
-                          Text("Common Name: \n" + animal.commonName, style: GoogleFonts.lato(color: Colors.white54,fontSize: 16),),
+                          Text(
+                            animal.order,
+                            style: GoogleFonts.sarpanch(
+                                color: Colors.green,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300),
+                          ),
+                          Text(
+                            "Common Name: \n" + animal.commonName,
+                            style: GoogleFonts.lato(
+                                color: Colors.white54, fontSize: 16),
+                          ),
                           /*
                         Text("Description: " + alien.description,
                           maxLines: 1,
@@ -326,18 +377,21 @@ class CollectionDetails extends StatelessWidget {
                           style: GoogleFonts.lato(color: Colors.white54),
                         ),
                         */
-                          SizedBox(height:16),
+                          SizedBox(height: 16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               //
 
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:2.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.0),
                                 child: IconButton(
                                   //icon: Icon(CupertinoIcons.bookmark),
                                   //icon: isFavourited(data.documentID).then((value) {return Icon(CupertinoIcons.book);}) != null ? returnFilledIcon(context) : returnOutlinedIcon(context),
-                                  icon: faveIcon? Icon(CupertinoIcons.bookmark_fill) : Icon(CupertinoIcons.bookmark),
+                                  icon: faveIcon
+                                      ? Icon(CupertinoIcons.bookmark_fill)
+                                      : Icon(CupertinoIcons.bookmark),
                                   color: Colors.white,
                                   iconSize: 18,
 
@@ -348,8 +402,6 @@ class CollectionDetails extends StatelessWidget {
                                     });
 
                                      */
-
-
 
                                     // Faves FINALLY freaking works
                                     /*
@@ -388,13 +440,12 @@ class CollectionDetails extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => AnimalDetails(
-                              animal: animal,
-                            )
-                        ),
+                                  animal: animal,
+                                )),
                       );
                     },
                     child: Image.network(
-                      animal.imgUrl,
+                      "animal.imgUrl",
                       fit: BoxFit.contain,
                       height: 150,
                     ),
@@ -403,8 +454,6 @@ class CollectionDetails extends StatelessWidget {
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 }
-

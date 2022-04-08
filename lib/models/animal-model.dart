@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class Animal {
-
   final String kingdomClass;
   final String family;
   final String genus;
@@ -16,79 +15,88 @@ class Animal {
   final String diet;
   final String lifespan;
   final String lifestyle;
-  final String location;
+  // final List locations;
+  // final String location;
   final String nameOfYoung;
   final String description;
-  final List collections;
+  final String redListStatus;
+  final String collection;
+  final List imgURLS;
+
+  // final List collections;
   final Timestamp date;
 
   /// Color Variables
   final String environment;
+
   /// End of color variables
 
-  ///TODO: REVIEW HOW DATE IS SORTED
+  /// TODO: REVIEW HOW DATE IS SORTED
   // final bool isActive;
-  final String imgUrl;
   final DocumentReference reference;
 
   Animal.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['class'] != null),
+      : assert(map['kingdomClass'] != null),
         assert(map['family'] != null),
         assert(map['genus'] != null),
         assert(map['kingdom'] != null),
         assert(map['order'] != null),
         assert(map['phylum'] != null),
-        assert(map['scientific-name'] != null),
-        assert(map['common-name'] != null),
+        assert(map['scientificName'] != null),
+        assert(map['commonName'] != null),
         assert(map['diet'] != null),
         assert(map['lifespan'] != null),
         assert(map['lifestyle'] != null),
-        assert(map['location'] != null),
-        assert(map['name-of-young'] != null),
+        // assert(map['locations'] != null),
+        assert(map['nameOfYoung'] != null),
         assert(map['description'] != null),
-        kingdomClass = map['class'],
+        assert(map['redListStatus'] != null),
+        assert(map['imgURLS'] != null),
+        kingdomClass = map['kingdomClass'],
         family = map['family'],
         genus = map['genus'],
         kingdom = map['kingdom'],
         order = map['order'],
         phylum = map['phylum'],
-        scientificName = map['scientific-name'],
-        commonName = map['common-name'],
+        scientificName = map['scientificName'],
+        commonName = map['commonName'],
         diet = map['diet'],
         lifespan = map['lifespan'],
         lifestyle = map['lifestyle'],
-        location = map['location'],
-        nameOfYoung = map['name-of-young'],
+        // locations = map['locations'],
+        nameOfYoung = map['nameOfYoung'],
         description = map['description'],
-        collections = map['collections'],
+        redListStatus = map['redListStatus'],
+        collection = map['collection'],
         environment = map['environment'],
-        imgUrl = map['imgURL'],
+        imgURLS = map['imgURLS'],
         date = map['dateAdded'];
 
   Animal.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
-  String toString() => "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$imgUrl";
+  String toString() =>
+      "$kingdomClass:$family:$genus:$kingdom:$order:$phylum:$scientificName:$commonName:$redListStatus";
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'class': kingdomClass,
         'family': family,
         'genus': genus,
         'kingdom': kingdom,
         'order': order,
         'phylum': phylum,
-        'scientific-name': scientificName,
-        'common-name': commonName,
+        'scientificName': scientificName,
+        'commonName': commonName,
         'diet': diet,
         'lifespan': lifespan,
         'lifestyle': lifestyle,
-        'location': location,
-        'name-of-young': nameOfYoung,
+        // 'locations': locations,
+        'description': description,
+        'redListStatus': redListStatus,
+        'nameOfYoung': nameOfYoung,
         // 'isActive': isActive,
-        'imgURL': imgUrl,
+        'imgURLS': imgURLS,
         'dateAdded': date.toDate(),
       };
-
 }
