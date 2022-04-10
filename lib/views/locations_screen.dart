@@ -95,7 +95,6 @@ class _LocationsScreenState extends State<LocationsScreen> {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           } else {
-            print(snapshot.data.docs);
             return DefaultTabController(
               length: 2,
               child: Scaffold(
