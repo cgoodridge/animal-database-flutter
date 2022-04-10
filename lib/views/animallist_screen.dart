@@ -91,7 +91,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffffffff), body: _buildViewSmall(context));
+        backgroundColor: Color(0xffffffff), body: SafeArea(child: _buildViewSmall(context)));
   }
 
   Widget _buildViewSmall(BuildContext context) {

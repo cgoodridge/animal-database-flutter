@@ -30,7 +30,7 @@ void main() async {
 
   // await dotenv.load(fileName: ".env");
 
-  Firebase.initializeApp(
+  await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
       appId: "1:553317843027:web:89d438c60e5b2184e446a6",
@@ -54,7 +54,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print(AuthService().currentUser);
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.orange
+    ));
     return StreamProvider<CustomUser>.value(
       value: AuthService().user,
       initialData: null,

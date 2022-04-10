@@ -1,7 +1,0 @@
-APIKEY = "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8"
-APPID = "1:553317843027:web:89d438c60e5b2184e446a6"
-MESSAGINGSENDERID = "553317843027"
-PROJECTID = "natgeo-database"
-STORAGEBUCKET = "natgeo-database.appspot.com"
-AUTHDOMAIN = "natgeo-database.firebaseapp.com"
-MEASUREMENTID = "G-3P0R5F60ZD"
