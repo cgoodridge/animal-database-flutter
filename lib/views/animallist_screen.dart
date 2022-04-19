@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/models/collection_model.dart';
 import 'package:sanctuary/models/models.dart';
 import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/views/account_screen.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:provider/provider.dart';
@@ -91,12 +92,15 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffffffff), body: _buildViewSmall(context));
+        backgroundColor: Color(0xffffffff),
+        body: SafeArea(child: _buildViewSmall(context)));
   }
 
   Widget _buildViewSmall(BuildContext context) {
-    if (!isSearching) {
-      searchController.text = "";
+    if (searchController.text == "") {
+      isSearching = false;
+    } else {
+      isSearching = true;
     }
 
     return Column(children: [
@@ -107,47 +111,34 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                !isSearching
-                    ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 40,
-                        ),
-                      )
-                    : SizedBox(),
-                Flexible(
-                  child: !isSearching
-                      ? Text(
-                          "Project Sanctuary",
-                          style: GoogleFonts.bungeeHairline(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold),
-                        )
-                      : TextField(
-                          controller: searchController,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.black,
-                              ),
-                              hintText: "Search Sanctuary",
-                              hintStyle: TextStyle(color: Colors.black)),
-                        ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 40,
+                  ),
+                ),
+                Center(
+                  child: Flexible(
+                      child: Text(
+                    "Sanctuary",
+                    style: GoogleFonts.bungeeHairline(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  )),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
                     color: Colors.black,
-                    icon:
-                        !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
+                    icon: Icon(Icons.account_circle),
+                    iconSize: 38,
                     onPressed: () {
-                      // Expand search Field
-                      setState(() {
-                        isSearching = !isSearching;
-                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AccountScreen()),
+                      );
                     },
                   ),
                 )
@@ -156,38 +147,27 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             SizedBox(
               height: 16,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  flex: 15,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black12,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                "Now Showing: ",
-                                style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400),
-                              )),
-                        ],
-                      ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: TextField(
+                      controller: searchController,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.black,
+                          ),
+                          hintText: "Search Sanctuary",
+                          hintStyle: TextStyle(color: Colors.black)),
                     ),
                   ),
-                ),
-                Flexible(
-                    flex: 2,
+                  Expanded(
+                    flex: 1,
                     child: PopupMenuButton<sortOption>(
                       icon: Icon(
                         Icons.sort,
@@ -214,8 +194,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                           child: Text('Recently Added'),
                         ),
                       ],
-                    ))
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ],
         ),
@@ -248,7 +230,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Center(child: SizedBox(width: 50, height: 50,child: CircularProgressIndicator()));
         } else {
           //print(snapshots.item1.data.);
           return _buildCollectionList(context, snapshot.data.docs, animal);
@@ -441,9 +423,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       ),
       builder: (context, snapshots) {
-        if (!snapshots.item1.hasData) {
+        if (!snapshots.item1.hasData || !snapshots.item2.hasData) {
           // If animal list is empty we show a loading spinner
-          return CircularProgressIndicator();
+          return Center(child: SizedBox(width: 50, height: 50,child: CircularProgressIndicator()));
         } else {
           _allResults = snapshots.item1.data.docs;
           if (_width > 600 && _width < 1024) {

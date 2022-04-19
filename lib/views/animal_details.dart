@@ -22,7 +22,7 @@ class AnimalDetails extends StatelessWidget {
           ),
           backgroundColor: Colors.black,
           title: Text(
-            animal.scientificName,
+            animal.commonName,
             style: GoogleFonts.bungeeHairline(
                 color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
           ),
@@ -113,7 +113,7 @@ class AnimalDetails extends StatelessWidget {
                               "Kingdom:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.kingdom),
@@ -132,7 +132,7 @@ class AnimalDetails extends StatelessWidget {
                               "Phylum:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.phylum),
@@ -151,7 +151,7 @@ class AnimalDetails extends StatelessWidget {
                               "Class:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.kingdomClass),
@@ -170,7 +170,7 @@ class AnimalDetails extends StatelessWidget {
                               "Order:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.order),
@@ -189,7 +189,7 @@ class AnimalDetails extends StatelessWidget {
                               "Family:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.family),
@@ -208,7 +208,7 @@ class AnimalDetails extends StatelessWidget {
                               "Genus:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.genus),
@@ -227,10 +227,28 @@ class AnimalDetails extends StatelessWidget {
                               "Species:",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.scientificName),
+                            flex: 1,
+                          )
+                        ],
+                      ),
+                    ),
+                    ListTile(
+                      title: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Common Name:",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            flex: 2,
+                          ),
+                          Expanded(
+                            child: Text(animal.commonName),
                             flex: 1,
                           )
                         ],
@@ -244,7 +262,7 @@ class AnimalDetails extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text("Locations:"),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text("animal.location"),
@@ -262,7 +280,7 @@ class AnimalDetails extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text("Lifespan:"),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.lifespan),
@@ -278,7 +296,7 @@ class AnimalDetails extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text("Lifestyle:"),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.lifestyle),
@@ -294,7 +312,7 @@ class AnimalDetails extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text("Name of Young:"),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.nameOfYoung),
@@ -310,7 +328,7 @@ class AnimalDetails extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text("Diet:"),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.diet),
@@ -326,7 +344,7 @@ class AnimalDetails extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text("Red List Status:"),
-                            flex: 3,
+                            flex: 2,
                           ),
                           Expanded(
                             child: Text(animal.redListStatus),

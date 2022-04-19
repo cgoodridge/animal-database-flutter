@@ -29,18 +29,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // await dotenv.load(fileName: ".env");
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
+        appId: "1:553317843027:web:89d438c60e5b2184e446a6",
+        messagingSenderId: "553317843027",
+        projectId: "natgeo-database",
+        storageBucket: "natgeo-database.appspot.com",
+        authDomain: "natgeo-database.firebaseapp.com",
+        measurementId: "G-3P0R5F60ZD",
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
 
-  Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
-      appId: "1:553317843027:web:89d438c60e5b2184e446a6",
-      messagingSenderId: "553317843027",
-      projectId: "natgeo-database",
-      storageBucket: "natgeo-database.appspot.com",
-      authDomain: "natgeo-database.firebaseapp.com",
-      measurementId: "G-3P0R5F60ZD",
-    ),
-  );
 
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
@@ -54,7 +58,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print(AuthService().currentUser);
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.orange,
+        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarDividerColor: null,
+        statusBarIconBrightness: Brightness.light,
+    ));
     return StreamProvider<CustomUser>.value(
       value: AuthService().user,
       initialData: null,
@@ -189,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 body: _navBarLocations[_selectedIndex],
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Color(0xffe3e3e3),
+                  backgroundColor: Color(0xffffffff),
                   unselectedItemColor: Colors.black,
                   type: BottomNavigationBarType.fixed,
                   items: const <BottomNavigationBarItem>[

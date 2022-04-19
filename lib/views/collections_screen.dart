@@ -45,7 +45,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                       alignment: Alignment.centerLeft,
                       child: Image.asset('assets/images/logo.png', width: 40,),
                     ),
-                    Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),),
+                    Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),),
                     Align(
                       alignment: Alignment.centerRight,
                       child: Icon(Icons.search, color: Colors.black),
@@ -90,7 +90,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()));
         }
         else {
           return (_width > 600)? _buildGridList(context, snapshot.data.docs) : _buildList(context, snapshot.data.docs);
