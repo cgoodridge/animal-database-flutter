@@ -446,11 +446,16 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           return CircularProgressIndicator();
         } else {
           _allResults = snapshots.item1.data.docs;
-          return (_width > 600)
-              ? _buildGridList(
-                  context, snapshots.item1.data.docs, snapshots.item2.data.docs)
-              : _buildList(context, snapshots.item1.data.docs,
-                  snapshots.item2.data.docs);
+          if (_width > 600 && _width < 1024) {
+            return _buildGridList(
+                context, snapshots.item1.data.docs, snapshots.item2.data.docs);
+          } else if (_width > 1024) {
+            return _buildLargeGridList(
+                context, snapshots.item1.data.docs, snapshots.item2.data.docs);
+          } else {
+            return _buildList(
+                context, snapshots.item1.data.docs, snapshots.item2.data.docs);
+          }
         }
       },
     );
@@ -478,7 +483,22 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     return GridView.count(
         //itemExtent: 5,
         //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
         crossAxisCount: 2,
+        children: snapshot
+            .map((data) => _buildListItem(context, data, faves))
+            .toList());
+  }
+
+  Widget _buildLargeGridList(BuildContext context,
+      List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+    return GridView.count(
+        //itemExtent: 5,
+        //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
+        crossAxisCount: 4,
         children: snapshot
             .map((data) => _buildListItem(context, data, faves))
             .toList());
