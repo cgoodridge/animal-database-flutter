@@ -258,6 +258,22 @@ class _FormDialogState extends State<FormDialog> {
 
   File imgFile;
   String imgURL;
+
+  Widget _eventControlBuilder(BuildContext context, ControlsDetails controls) {
+    return Row(
+      children: [
+        TextButton(
+          onPressed: controls.onStepContinue,
+          child: const Text('Next'),
+        ),
+        TextButton(
+          onPressed: controls.onStepCancel,
+          child: const Text('Back'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
@@ -271,18 +287,15 @@ class _FormDialogState extends State<FormDialog> {
             elevation: 0.0,
             type: StepperType.horizontal,
             currentStep: _index,
-            onStepCancel: () {
-              if (_index > 0) {
-                setState(() {
-                  _index -= 1;
-                });
-              }
-            },
+            onStepCancel:
+                _index == 0 ? null : () => setState(() => _index -= 1),
             onStepContinue: () {
-              if (_index <= 0) {
-                setState(() {
-                  _index += 1;
-                });
+              final isLastStep = _index == 3;
+              if (isLastStep) {
+                print("Completed");
+                // Save Animal
+              } else {
+                setState(() => _index += 1);
               }
             },
             onStepTapped: (int index) {
@@ -290,8 +303,11 @@ class _FormDialogState extends State<FormDialog> {
                 _index = index;
               });
             },
+            controlsBuilder: _eventControlBuilder,
             steps: <Step>[
               Step(
+                state: _index > 0 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 0,
                 title: const Text('Animal Details'),
                 content: Column(
                   children: [
@@ -525,188 +541,28 @@ class _FormDialogState extends State<FormDialog> {
                   ],
                 ),
               ),
-              const Step(
+              Step(
+                state: _index > 1 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 1,
                 title: Text('Images'),
                 content: Text('Content for Step 2'),
               ),
-              const Step(
+              Step(
+                state: _index > 2 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 2,
                 title: Text('Locations'),
-                content: Text('Content for Step 2'),
+                content: Text('Content for Step 3'),
               ),
-              const Step(
+              Step(
+                state: _index > 3 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 3,
                 title: Text('Confirm & Upload'),
-                content: Text('Content for Step 2'),
+                content: Text('Content for Step 4'),
               ),
             ],
           ),
         ),
       ),
-      // content: Flex(
-      //   direction: Axis.vertical,
-      //   children: [
-      //     Stepper(
-      //       currentStep: _index,
-      //       onStepCancel: () {
-      //         if (_index > 0) {
-      //           setState(() {
-      //             _index -= 1;
-      //           });
-      //         }
-      //       },
-      //       onStepContinue: () {
-      //         if (_index <= 0) {
-      //           setState(() {
-      //             _index += 1;
-      //           });
-      //         }
-      //       },
-      //       onStepTapped: (int index) {
-      //         setState(() {
-      //           _index = index;
-      //         });
-      //       },
-      //       steps: <Step>[
-      //         Step(
-      //           title: const Text('Step 1 title'),
-      //           content: Container(
-      //             width: 400,
-      //             child: Form(
-      //                 key: formKey,
-      //                 child: Column(
-      //                   children: [
-      //                     // InkWell(
-      //                     //     onTap: () {
-      //                     //       getImage();
-      //                     //     },
-      //                     //     child: (imgFile != null)
-      //                     //         ? Image.file(imgFile)
-      //                     //         : CircleAvatar(
-      //                     //             radius: 50,
-      //                     //             backgroundColor: Colors.orange,
-      //                     //             child: Icon(
-      //                     //               Icons.camera_alt,
-      //                     //               size: 50,
-      //                     //               color: Colors.black,
-      //                     //             ),
-      //                     //           )),
-      //                     // TextFormField(
-      //                     //   controller: kingdom,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Kingdom"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: phylum,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Phylum"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: kingdomClass,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Class"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: order,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Order"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: family,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Family"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: genus,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Genus"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: scientificName,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration:
-      //                     //       InputDecoration(hintText: "Scientific Name"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: commonName,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration:
-      //                     //       InputDecoration(hintText: "Common Name"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: nameOfYoung,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration:
-      //                     //       InputDecoration(hintText: "Name of Young"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: diet,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Diet"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: lifespan,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Lifespan"),
-      //                     // ),
-      //                     // TextFormField(
-      //                     //   controller: lifestyle,
-      //                     //   validator: (value) {
-      //                     //     return value.isNotEmpty ? null : "Invalid Field";
-      //                     //   },
-      //                     //   decoration: InputDecoration(hintText: "Lifestyle"),
-      //                     // ),
-      //                     TextFormField(
-      //                       controller: description,
-      //                       validator: (value) {
-      //                         return value.isNotEmpty ? null : "Invalid Field";
-      //                       },
-      //                       decoration:
-      //                           InputDecoration(hintText: "Description"),
-      //                     ),
-      //                   ],
-      //                 )),
-      //           ),
-      //         ),
-      //         const Step(
-      //           title: Text('Step 2 title'),
-      //           content: Text('Content for Step 2'),
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      // ),
-      actions: <Widget>[
-        TextButton(
-            onPressed: () {
-              addRecord();
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              "Save",
-              style: TextStyle(fontSize: 22),
-            ))
-      ],
     );
   }
 
