@@ -16,9 +16,9 @@ and [A-Z Animals](https://a-z-animals.com/).
 
 - User authentication(Account creation and login)
 - The ability to save animals into custom collections
-- The ability to search animals by location, scientific name, common name or any other classification type
-- Map showing regions for each species
-- Ability to add new animals(if you have the right permissions)
+- The ability to search animals by location, scientific name, common name or any other classification type(In Progress)
+- Map showing regions for each species(In Progress)
+- Ability to add new animals(if you have the right permissions) (In Progress)
 
 ## Screenshots
 
@@ -28,7 +28,7 @@ and [A-Z Animals](https://a-z-animals.com/).
 
 - Animal List Screen
 
-_ Animal Collection Screen
+- Animal Collection Screen
 
 - Animal Detail Screen
 

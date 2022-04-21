@@ -56,7 +56,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print(AuthService().currentUser);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.orange,
       systemNavigationBarIconBrightness: Brightness.light,
@@ -101,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
     AnimalListScreen(),
     CollectionsScreen(),
     LocationsScreen(),
-    AccountScreen(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -180,8 +179,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Locations',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Account',
+                      icon: Icon(Icons.settings),
+                      label: 'Settings',
                     ),
                   ],
                   currentIndex: _selectedIndex,
@@ -212,8 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Locations',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Account',
+                      icon: Icon(Icons.settings),
+                      label: 'Settings',
                     ),
                   ],
                   currentIndex: _selectedIndex,
