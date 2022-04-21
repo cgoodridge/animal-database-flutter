@@ -23,20 +23,20 @@ and [A-Z Animals](https://a-z-animals.com/).
 ## Screenshots
 
 - Login Screen
-
+![Login Screen]()
 - Registration Screen
 
 - Animal List Screen
-
+![Animal List](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_list.png)
 - Animal Collection Screen
 
 - Animal Detail Screen
-
+![Animal Detail](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png)
 - Map Screen
 
 - Account Screen
-
+![Account Screen](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/account_screen.png)
 - Settings Screen
-
+![Settings Screen](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/settings_screen.png)
 
 
