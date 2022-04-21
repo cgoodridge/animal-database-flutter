@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // print(AuthService().currentUser);
+    print(AuthService().currentUser);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.orange,
       systemNavigationBarIconBrightness: Brightness.light,
@@ -123,13 +123,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
 
     double _width = MediaQuery.of(context).size.width;
-
     return StreamBuilder<CustomUserData>(
         stream: DatabaseService(uid: user.uid).userData,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          // print(user.toString());
+          if (snapshot.hasData || user.uid != null) {
             CustomUserData userData = snapshot.data;
-            if (userData.role == 'admin') {
+            if (userData != null && userData.role == 'admin') {
               return Scaffold(
                 extendBody: true,
                 body: _navBarLocations[_selectedIndex],
@@ -309,11 +309,13 @@ class _FormDialogState extends State<FormDialog> {
                 state: _index > 0 ? StepState.complete : StepState.indexed,
                 isActive: _index >= 0,
                 title: const Text('Animal Details'),
-                content: Column(
+                content: Flex(
+                  direction: Axis.vertical,
                   children: [
                     Row(
                       children: [
                         Flexible(
+                          flex: 1,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 15.0),
@@ -329,6 +331,7 @@ class _FormDialogState extends State<FormDialog> {
                           ),
                         ),
                         Flexible(
+                          flex: 1,
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),

@@ -118,15 +118,15 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     width: 40,
                   ),
                 ),
-                Center(
-                  child: Flexible(
-                      child: Text(
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
                     "Sanctuary",
                     style: GoogleFonts.bungeeHairline(
                         color: Colors.black,
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
-                  )),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
@@ -137,7 +137,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AccountScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => AccountScreen()),
                       );
                     },
                   ),
@@ -230,7 +231,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(child: SizedBox(width: 50, height: 50,child: CircularProgressIndicator()));
+          return SizedBox(
+              width: 50, height: 50, child: CircularProgressIndicator());
         } else {
           //print(snapshots.item1.data.);
           return _buildCollectionList(context, snapshot.data.docs, animal);
@@ -425,7 +427,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       builder: (context, snapshots) {
         if (!snapshots.item1.hasData || !snapshots.item2.hasData) {
           // If animal list is empty we show a loading spinner
-          return Center(child: SizedBox(width: 50, height: 50,child: CircularProgressIndicator()));
+          return SizedBox(
+              width: 50, height: 50, child: CircularProgressIndicator());
         } else {
           _allResults = snapshots.item1.data.docs;
           if (_width > 600 && _width < 1024) {
