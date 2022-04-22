@@ -90,7 +90,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
     final user = Provider.of<CustomUser>(context);
 
     return StreamBuilder<QuerySnapshot>(
-        stream: DatabaseService().animalData,
+        stream: DatabaseService().locationData,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -172,42 +172,43 @@ class _LocationsScreenState extends State<LocationsScreen> {
                             physics: NeverScrollableScrollPhysics(),
                             children: [
                               _buildList(context, snapshot.data.docs),
-                              Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 32.0),
-                                    child: SizedBox(
-                                      height: 800,
-                                      child: GoogleMap(
-                                        onTap: (position) {
-                                          _customInfoWindowController
-                                              .hideInfoWindow();
-                                        },
-                                        mapType: MapType.hybrid,
-                                        compassEnabled: true,
-                                        onCameraMove: (position) {
-                                          _customInfoWindowController
-                                              .onCameraMove();
-                                        },
-                                        markers: getMarkers(snapshot.data.docs),
-                                        initialCameraPosition: _firstLocation,
-                                        onMapCreated: (GoogleMapController
-                                            controller) async {
-                                          _customInfoWindowController
-                                              .googleMapController = controller;
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  CustomInfoWindow(
-                                    controller: _customInfoWindowController,
-                                    height: 75,
-                                    width: 150,
-                                    offset: 30,
-                                  ),
-                                ],
-                              ),
+                              Text("Test")
+                              // Stack(
+                              //   children: [
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           vertical: 32.0),
+                              //       child: SizedBox(
+                              //         height: 800,
+                              //         child: GoogleMap(
+                              //           onTap: (position) {
+                              //             _customInfoWindowController
+                              //                 .hideInfoWindow();
+                              //           },
+                              //           mapType: MapType.hybrid,
+                              //           compassEnabled: true,
+                              //           onCameraMove: (position) {
+                              //             _customInfoWindowController
+                              //                 .onCameraMove();
+                              //           },
+                              //           markers: getMarkers(snapshot.data.docs),
+                              //           initialCameraPosition: _firstLocation,
+                              //           onMapCreated: (GoogleMapController
+                              //               controller) async {
+                              //             _customInfoWindowController
+                              //                 .googleMapController = controller;
+                              //           },
+                              //         ),
+                              //       ),
+                              //     ),
+                              //     CustomInfoWindow(
+                              //       controller: _customInfoWindowController,
+                              //       height: 75,
+                              //       width: 150,
+                              //       offset: 30,
+                              //     ),
+                              //   ],
+                              // ),
                             ]),
                       ),
                     ],
@@ -228,27 +229,27 @@ class _LocationsScreenState extends State<LocationsScreen> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final animal = Animal.fromSnapshot(data);
+    final location = Location.fromSnapshot(data);
     // final location = Location.fromSnapshot(data);
-    return Hero(
-      tag: animal.commonName,
-      child: Material(
-        child: ListTile(
+    return ExpansionTile(
+      title: Text(location.locationName),
+      children: [
+        ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage("animal.imgUrl"),
             ),
             subtitle: Text("animal.location"),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AnimalDetails(
-                          animal: animal,
-                        )),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => AnimalDetails(
+              //             animal: animal,
+              //           )),
+              // );
             },
-            title: Text(animal.commonName)),
-      ),
+            title: Text("location.locationName")),
+      ],
     );
   }
 

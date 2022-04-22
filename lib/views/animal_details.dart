@@ -53,7 +53,6 @@ class AnimalDetails extends StatelessWidget {
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(kToolbarHeight),
                   child: Container(
-                    //color: Colors.green,
                     child: SafeArea(
                       child: Column(
                         children: <Widget>[
@@ -236,6 +235,7 @@ class AnimalDetails extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Divider(),
                     ListTile(
                       title: Row(
                         mainAxisSize: MainAxisSize.max,
