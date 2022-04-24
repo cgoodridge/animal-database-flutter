@@ -234,21 +234,30 @@ class _LocationsScreenState extends State<LocationsScreen> {
     return ExpansionTile(
       title: Text(location.locationName),
       children: [
-        ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage("animal.imgUrl"),
+        Column(
+          children: [
+            ListView(
+              shrinkWrap: true,
+              children: [
+                ...location.animalList.map((data) => ListTile(
+                    leading: SizedBox(width: 20,),
+                    trailing: IconButton(icon: Icon(Icons.remove_red_eye), onPressed: () {
+                      /// TODO: Have button navigate to animal detail without passing entire animal object
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => AnimalDetails(
+                      //             animal: animal,
+                      //           )),
+                      // );
+                    },),
+
+                    title: Text(data)),).toList()
+              ],
             ),
-            subtitle: Text("animal.location"),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => AnimalDetails(
-              //             animal: animal,
-              //           )),
-              // );
-            },
-            title: Text("location.locationName")),
+          ],
+        ),
+
       ],
     );
   }

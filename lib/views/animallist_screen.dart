@@ -12,6 +12,7 @@ import 'package:sanctuary/views/account_screen.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import '../models/user_model.dart';
 
