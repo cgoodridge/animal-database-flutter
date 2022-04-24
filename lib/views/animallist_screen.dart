@@ -594,17 +594,20 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
+                          AutoSizeText(
+
                             animal.scientificName,
                             style: GoogleFonts.sarpanch(
                                 color: Colors.orange,
-                                fontSize: 28,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w300),
+                            maxLines: 1,
                           ),
-                          Text(
-                            "Common Name: " + animal.commonName,
+                          AutoSizeText(
+                            animal.commonName,
                             style: GoogleFonts.lato(
-                                color: Colors.white54, fontSize: 20),
+                                color: Colors.white54, fontSize: 22),
+                            maxLines: 1,
                           ),
                           SizedBox(height: 16),
                           Row(
