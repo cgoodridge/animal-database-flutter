@@ -244,13 +244,15 @@ class _LocationsScreenState extends State<LocationsScreen> {
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(animal.imgURLS.first),
                       ),
-                      trailing: IconButton(icon: Icon(Icons.remove_red_eye), onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AnimalDetails(
-                                    animal: animal,
-                                  )),
+                      trailing: IconButton(
+                        icon: Icon(Icons.remove_red_eye),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AnimalDetails(
+                                      animal: animal,
+                                    )),
                           );
                         },
                       ),
@@ -260,7 +262,6 @@ class _LocationsScreenState extends State<LocationsScreen> {
             ),
           ],
         ),
-
       ],
     );
   }

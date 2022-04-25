@@ -32,6 +32,7 @@ and [A-Z Animals](https://a-z-animals.com/).
 
 - Animal Detail Screen
 ![Animal Detail](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png)
+  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png" alt="Animal Detail Page" height="300"/>
 - Map Screen
 
 - Account Screen
