@@ -10,7 +10,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final AuthService _auth = AuthService();
-
+  bool themeVal = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +104,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ListTile(
                   title: Text('Data Usage',
                       style: TextStyle(fontSize: 18, color: Colors.black)),
+                ),
+                Divider(
+                  height: 1,
+                  color: Colors.black54,
+                  thickness: 0.1,
+                ),
+                SwitchListTile(
+                  value: themeVal,
+                  onChanged: (bool val) {
+                    setState(() {
+                      themeVal = val;
+                    });
+                  },
+                  title: Text('Theme',
+                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                  subtitle: Text(!themeVal ? 'Light': 'Dark'),
                 ),
                 Divider(
                   height: 1,

@@ -230,7 +230,6 @@ class _LocationsScreenState extends State<LocationsScreen> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final location = Location.fromSnapshot(data);
-    // final location = Location.fromSnapshot(data);
     return ExpansionTile(
       title: Text(location.locationName),
       children: [
@@ -239,20 +238,24 @@ class _LocationsScreenState extends State<LocationsScreen> {
             ListView(
               shrinkWrap: true,
               children: [
-                ...location.animalList.map((data) => ListTile(
-                    leading: SizedBox(width: 20,),
-                    trailing: IconButton(icon: Icon(Icons.remove_red_eye), onPressed: () {
-                      /// TODO: Have button navigate to animal detail without passing entire animal object
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => AnimalDetails(
-                      //             animal: animal,
-                      //           )),
-                      // );
-                    },),
-
-                    title: Text(data)),).toList()
+                ...location.animalList.map((animalData) {
+                  final animal = Animal.fromMap(animalData);
+                  return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(animal.imgURLS.first),
+                      ),
+                      trailing: IconButton(icon: Icon(Icons.remove_red_eye), onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AnimalDetails(
+                                    animal: animal,
+                                  )),
+                          );
+                        },
+                      ),
+                      title: Text(animal.commonName));
+                }).toList()
               ],
             ),
           ],
