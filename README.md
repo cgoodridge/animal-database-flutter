@@ -27,17 +27,16 @@ and [A-Z Animals](https://a-z-animals.com/).
 - Registration Screen
 
 - Animal List Screen
-![Animal List](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_list.png)
+  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_list.png" alt="Animal List" height="600"/>
 - Animal Collection Screen
 
 - Animal Detail Screen
-![Animal Detail](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png)
-  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png" alt="Animal Detail Page" height="300"/>
+  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png" alt="Animal Detail Page" height="600"/>
 - Map Screen
 
 - Account Screen
-![Account Screen](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/account_screen.png)
+  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/account_screen.png" alt="Account Screen" height="600"/>
 - Settings Screen
-![Settings Screen](https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/settings_screen.png)
+  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/settings_screen.png" alt="Settings Screen" height="600"/>
 
 
