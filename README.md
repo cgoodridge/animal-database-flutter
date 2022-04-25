@@ -23,7 +23,7 @@ and [A-Z Animals](https://a-z-animals.com/).
 ## Screenshots
 
 - Login Screen
-![Login Screen]()
+  <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/login_screen.png" alt="Animal List" height="600"/>
 - Registration Screen
 
 - Animal List Screen
