@@ -234,6 +234,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
     return ExpansionTile(
       title: Text(location.locationName),
       children: [
+        ListView(),
         ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage("animal.imgUrl"),

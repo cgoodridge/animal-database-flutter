@@ -30,6 +30,7 @@ class AnimalDetails extends StatelessWidget {
         ),
         body: Column(
           children: [
+            ListView(),
             Hero(
                 tag: animal.commonName,
                 child: Image.network(
