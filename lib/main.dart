@@ -29,18 +29,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // await dotenv.load(fileName: ".env");
-
-  Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
-      appId: "1:553317843027:web:89d438c60e5b2184e446a6",
-      messagingSenderId: "553317843027",
-      projectId: "natgeo-database",
-      storageBucket: "natgeo-database.appspot.com",
-      authDomain: "natgeo-database.firebaseapp.com",
-      measurementId: "G-3P0R5F60ZD",
-    ),
-  );
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyCGS7aJ--tZICb9zBfCqWEy2pwCc-roDc8",
+        appId: "1:553317843027:web:89d438c60e5b2184e446a6",
+        messagingSenderId: "553317843027",
+        projectId: "natgeo-database",
+        storageBucket: "natgeo-database.appspot.com",
+        authDomain: "natgeo-database.firebaseapp.com",
+        measurementId: "G-3P0R5F60ZD",
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
 
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
@@ -53,8 +56,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // print(AuthService().currentUser);
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.orange,
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarDividerColor: null,
+      statusBarIconBrightness: Brightness.light,
+    ));
     return StreamProvider<CustomUser>.value(
       value: AuthService().user,
       initialData: null,
@@ -93,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
     AnimalListScreen(),
     CollectionsScreen(),
     LocationsScreen(),
-    AccountScreen(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -114,46 +121,44 @@ class _MyHomePageState extends State<MyHomePage> {
       SystemUiOverlay.bottom, //This line is used for showing the bottom bar
     ]);
 
+    double _width = MediaQuery.of(context).size.width;
     return StreamBuilder<CustomUserData>(
         stream: DatabaseService(uid: user.uid).userData,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          // print(user.toString());
+          if (snapshot.hasData || user.uid != null) {
             CustomUserData userData = snapshot.data;
-            if (userData.role == 'admin') {
+            if (userData != null && userData.role == 'admin') {
               return Scaffold(
                 extendBody: true,
                 body: _navBarLocations[_selectedIndex],
                 floatingActionButton: _selectedIndex == 0
-                    ? FloatingActionButton(
-                        elevation: 0.1,
-                        onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (_) {
-                                return FormDialog();
-                              });
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          child: Icon(
-                            Icons.add,
-                            size: 30,
-                          ),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                  colors: [
-                                    Colors.orange,
-                                    Colors.orange,
-                                    //Colors.transparent,
-                                    //Color(0x11000000)
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter)),
-                        ),
-                        backgroundColor: Colors.transparent,
-                      )
+                    ? (_width > 600)
+                        ? FloatingActionButton.extended(
+                            elevation: 0.1,
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return FormDialog();
+                                  });
+                            },
+                            label: const Text("Add Animal"),
+                            icon: const Icon(Icons.add),
+                            backgroundColor: Colors.orange,
+                          )
+                        : FloatingActionButton(
+                            elevation: 0.1,
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return FormDialog();
+                                  });
+                            },
+                            child: const Icon(Icons.add),
+                            backgroundColor: Colors.orange,
+                          )
                     : null,
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
@@ -174,8 +179,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Locations',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Account',
+                      icon: Icon(Icons.settings),
+                      label: 'Settings',
                     ),
                   ],
                   currentIndex: _selectedIndex,
@@ -189,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 body: _navBarLocations[_selectedIndex],
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Color(0xffe3e3e3),
+                  backgroundColor: Color(0xffffffff),
                   unselectedItemColor: Colors.black,
                   type: BottomNavigationBarType.fixed,
                   items: const <BottomNavigationBarItem>[
@@ -206,8 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Locations',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Account',
+                      icon: Icon(Icons.settings),
+                      label: 'Settings',
                     ),
                   ],
                   currentIndex: _selectedIndex,
@@ -230,9 +235,7 @@ class FormDialog extends StatefulWidget {
 
 class _FormDialogState extends State<FormDialog> {
   final formKey = GlobalKey<FormState>();
-  /*
-  * TODO: Add remaining fields
-  * */
+
   final TextEditingController kingdomClass = TextEditingController();
   final TextEditingController family = TextEditingController();
   final TextEditingController genus = TextEditingController();
@@ -248,139 +251,318 @@ class _FormDialogState extends State<FormDialog> {
   final TextEditingController description = TextEditingController();
   final TextEditingController location = TextEditingController();
 
+  int _index = 0;
+
   File imgFile;
   String imgURL;
+
+  Widget _eventControlBuilder(BuildContext context, ControlsDetails controls) {
+    return Row(
+      children: [
+        TextButton(
+          onPressed: controls.onStepContinue,
+          child: const Text('Next'),
+        ),
+        TextButton(
+          onPressed: controls.onStepCancel,
+          child: const Text('Back'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+
     return AlertDialog(
-      content: Container(
-        width: double.maxFinite,
-        child: ListView(shrinkWrap: true, children: [
-          Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  InkWell(
-                      onTap: () {
-                        getImage();
-                      },
-                      child: (imgFile != null)
-                          ? Image.file(imgFile)
-                          : CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.orange,
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 50,
-                                color: Colors.black,
-                              ),
-                            )),
-                  TextFormField(
-                    controller: kingdom,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Kingdom"),
-                  ),
-                  TextFormField(
-                    controller: phylum,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Phylum"),
-                  ),
-                  TextFormField(
-                    controller: kingdomClass,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Class"),
-                  ),
-                  TextFormField(
-                    controller: order,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Order"),
-                  ),
-                  TextFormField(
-                    controller: family,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Family"),
-                  ),
-                  TextFormField(
-                    controller: genus,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Genus"),
-                  ),
-                  TextFormField(
-                    controller: scientificName,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Scientific Name"),
-                  ),
-                  TextFormField(
-                    controller: commonName,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Common Name"),
-                  ),
-                  TextFormField(
-                    controller: nameOfYoung,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Name of Young"),
-                  ),
-                  TextFormField(
-                    controller: diet,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Diet"),
-                  ),
-                  TextFormField(
-                    controller: lifespan,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Lifespan"),
-                  ),
-                  TextFormField(
-                    controller: lifestyle,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Lifestyle"),
-                  ),
-                  TextFormField(
-                    controller: description,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Invalid Field";
-                    },
-                    decoration: InputDecoration(hintText: "Description"),
-                  ),
-                ],
-              )),
-        ]),
-      ),
-      actions: <Widget>[
-        TextButton(
-            onPressed: () {
-              addRecord();
-              Navigator.of(context).pop();
+      content: SizedBox(
+        width: (_width > 600) ? 600 : (_width - 50),
+        height: 600,
+        child: Form(
+          child: Stepper(
+            elevation: 0.0,
+            type: StepperType.horizontal,
+            currentStep: _index,
+            onStepCancel:
+                _index == 0 ? null : () => setState(() => _index -= 1),
+            onStepContinue: () {
+              final isLastStep = _index == 3;
+              if (isLastStep) {
+                print("Completed");
+                // Save Animal
+              } else {
+                setState(() => _index += 1);
+              }
             },
-            child: Text(
-              "SAVE",
-              style: TextStyle(fontSize: 22),
-            ))
-      ],
+            onStepTapped: (int index) {
+              setState(() {
+                _index = index;
+              });
+            },
+            controlsBuilder: _eventControlBuilder,
+            steps: <Step>[
+              Step(
+                state: _index > 0 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 0,
+                title: const Text('Animal Details'),
+                content: Flex(
+                  direction: Axis.vertical,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 15.0),
+                            child: TextFormField(
+                              controller: kingdom,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Kingdom"),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: phylum,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Phylum"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: kingdomClass,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Class"),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: order,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Order"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: family,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Family"),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: genus,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Genus"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: scientificName,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Species"),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: commonName,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration:
+                                  InputDecoration(hintText: "Common Name"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: nameOfYoung,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration:
+                                  InputDecoration(hintText: "Name of Young"),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: diet,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Diet"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: lifespan,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration: InputDecoration(hintText: "Lifespan"),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: lifestyle,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration:
+                                  InputDecoration(hintText: "LifeStyle"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              controller: description,
+                              validator: (value) {
+                                return value.isNotEmpty
+                                    ? null
+                                    : "Invalid Field";
+                              },
+                              decoration:
+                                  InputDecoration(hintText: "Description"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Step(
+                state: _index > 1 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 1,
+                title: Text('Images'),
+                content: Text('Image selector goes here'),
+              ),
+              Step(
+                state: _index > 2 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 2,
+                title: Text('Locations'),
+                content: Text('Map goes here'),
+              ),
+              Step(
+                state: _index > 3 ? StepState.complete : StepState.indexed,
+                isActive: _index >= 3,
+                title: Text('Confirm & Upload'),
+                content: Text('Content for Step 4'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -406,6 +588,25 @@ class _FormDialogState extends State<FormDialog> {
         'location': location.text,
         'imgURL': imgURL,
         'dateAdded': DateTime.now(),
+      }).then((value) async {
+        await FirebaseFirestore.instance.collection("locations").doc(location.text).update({
+          'locationName': "",
+          'animals': [{
+            'kingdom': kingdom.text,
+            'phylum': phylum.text,
+            'class': kingdomClass.text,
+            'order': order.text,
+            'family': family.text,
+            'genus': genus.text,
+            'scientificName': scientificName.text,
+            'commonName': commonName.text,
+            'addedBy': user.uid,
+            'location': location.text,
+            'imgURL': imgURL,
+            'dateAdded': DateTime.now(),
+          }],
+
+        });
       });
     }
   }
@@ -421,10 +622,8 @@ class _FormDialogState extends State<FormDialog> {
     //var cameraPermissionStatus = await Permission.camera.status;
 
     if (photoPermissionStatus.isGranted) {
-      final image = await picker.getImage(source: ImageSource.gallery);
+      final image = await picker.pickImage(source: ImageSource.gallery);
 
-      //var file = ;
-      //print(file);
       if (image != null) {
         setState(() {
           imgFile = File(image.path);

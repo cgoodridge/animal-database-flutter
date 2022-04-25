@@ -44,6 +44,7 @@ dependencies:
   json_annotation: ^4.4.0
   multiple_stream_builder: ^2.0.0
   image_picker: ^0.8.4+8
+  auto_size_text: ^3.0.0
   firebase_storage: ^10.2.7
   permission_handler: ^9.2.0
   intl: ^0.17.0
