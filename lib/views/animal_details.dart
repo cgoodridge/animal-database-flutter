@@ -294,7 +294,7 @@ class AnimalDetails extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Expanded(
-                            child: Text("Locations:"),
+                            child: Text("Locations: "),
                             flex: 2,
                           ),
                           Expanded(
