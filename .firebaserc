@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "natgeo-database"
+  },
+  "targets": {
+    "natgeo-database": {
+      "hosting": {
+        "userApp": [
+          "projectsanctuary.web.app"
+        ]
+      }
+    }
+  }
+}

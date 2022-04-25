@@ -8,9 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/models/collection_model.dart';
 import 'package:sanctuary/models/models.dart';
 import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/views/account_screen.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import '../models/user_model.dart';
 
@@ -30,6 +32,8 @@ class AnimalListScreen extends StatefulWidget {
 class _AnimalListScreenState extends State<AnimalListScreen> {
   final formKey = GlobalKey<FormState>();
   bool isChecked = false;
+
+  final userAnon = FirebaseAuth.instance.currentUser.isAnonymous;
 
   final TextEditingController searchController = new TextEditingController();
   TextEditingController collectionNameField = new TextEditingController();
@@ -91,12 +95,15 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffffffff), body: _buildViewSmall(context));
+        backgroundColor: Color(0xffffffff),
+        body: SafeArea(child: _buildViewSmall(context)));
   }
 
   Widget _buildViewSmall(BuildContext context) {
-    if (!isSearching) {
-      searchController.text = "";
+    if (searchController.text == "") {
+      isSearching = false;
+    } else {
+      isSearching = true;
     }
 
     return Column(children: [
@@ -107,47 +114,35 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                !isSearching
-                    ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 40,
-                        ),
-                      )
-                    : SizedBox(),
-                Flexible(
-                  child: !isSearching
-                      ? Text(
-                          "Project Sanctuary",
-                          style: GoogleFonts.bungeeHairline(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold),
-                        )
-                      : TextField(
-                          controller: searchController,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.black,
-                              ),
-                              hintText: "Search Sanctuary",
-                              hintStyle: TextStyle(color: Colors.black)),
-                        ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 40,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Sanctuary",
+                    style: GoogleFonts.bungeeHairline(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
                     color: Colors.black,
-                    icon:
-                        !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
+                    icon: Icon(Icons.account_circle),
+                    iconSize: 38,
                     onPressed: () {
-                      // Expand search Field
-                      setState(() {
-                        isSearching = !isSearching;
-                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AccountScreen()),
+                      );
                     },
                   ),
                 )
@@ -156,38 +151,27 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             SizedBox(
               height: 16,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  flex: 15,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black12,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                "Now Showing: ",
-                                style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400),
-                              )),
-                        ],
-                      ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: TextField(
+                      controller: searchController,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.black,
+                          ),
+                          hintText: "Search Sanctuary",
+                          hintStyle: TextStyle(color: Colors.black)),
                     ),
                   ),
-                ),
-                Flexible(
-                    flex: 2,
+                  Expanded(
+                    flex: 1,
                     child: PopupMenuButton<sortOption>(
                       icon: Icon(
                         Icons.sort,
@@ -214,8 +198,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                           child: Text('Recently Added'),
                         ),
                       ],
-                    ))
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ],
         ),
@@ -247,8 +233,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       stream:
           FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData || !snapshot.hasData) {
-          return CircularProgressIndicator();
+        if (!snapshot.hasData) {
+          return SizedBox(
+              width: 50, height: 50, child: CircularProgressIndicator());
         } else {
           //print(snapshots.item1.data.);
           return _buildCollectionList(context, snapshot.data.docs, animal);
@@ -385,7 +372,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       await FirebaseFirestore.instance
           .collection("collectionNames")
           .doc()
-          .set({"name": collectionNameField.text, "imgURL": animal.imgUrl});
+          .set({"name": collectionNameField.text, "imgURL": "animal.imgUrl"});
       await FirebaseFirestore.instance
           .collection('animals')
           .doc(data.id)
@@ -422,12 +409,12 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         ((_selection == sortOption.alpha)
             ? FirebaseFirestore.instance
                 .collection('animals')
-                .orderBy('common-name', descending: false)
+                .orderBy('commonName', descending: false)
                 .snapshots()
             : (_selection == sortOption.reverseAlpha)
                 ? FirebaseFirestore.instance
                     .collection('animals')
-                    .orderBy('common-name', descending: true)
+                    .orderBy('commonName', descending: true)
                     .snapshots()
                 : (_selection == sortOption.recentlyAdded)
                     ? FirebaseFirestore.instance
@@ -436,20 +423,27 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                         .snapshots()
                     : FirebaseFirestore.instance
                         .collection('animals')
-                        .orderBy('common-name', descending: false)
+                        .orderBy('commonName', descending: false)
                         .snapshots()),
         FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       ),
       builder: (context, snapshots) {
         if (!snapshots.item1.hasData || !snapshots.item2.hasData) {
-          return CircularProgressIndicator();
+          // If animal list is empty we show a loading spinner
+          return SizedBox(
+              width: 50, height: 50, child: CircularProgressIndicator());
         } else {
           _allResults = snapshots.item1.data.docs;
-          return (_width > 600)
-              ? _buildGridList(
-                  context, snapshots.item1.data.docs, snapshots.item2.data.docs)
-              : _buildList(context, snapshots.item1.data.docs,
-                  snapshots.item2.data.docs);
+          if (_width > 600 && _width < 1024) {
+            return _buildGridList(
+                context, snapshots.item1.data.docs, snapshots.item2.data.docs);
+          } else if (_width > 1024) {
+            return _buildLargeGridList(
+                context, snapshots.item1.data.docs, snapshots.item2.data.docs);
+          } else {
+            return _buildList(
+                context, snapshots.item1.data.docs, snapshots.item2.data.docs);
+          }
         }
       },
     );
@@ -477,7 +471,22 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     return GridView.count(
         //itemExtent: 5,
         //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
         crossAxisCount: 2,
+        children: snapshot
+            .map((data) => _buildListItem(context, data, faves))
+            .toList());
+  }
+
+  Widget _buildLargeGridList(BuildContext context,
+      List<DocumentSnapshot> snapshot, List<DocumentSnapshot> faves) {
+    return GridView.count(
+        //itemExtent: 5,
+        //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
+        crossAxisCount: 4,
         children: snapshot
             .map((data) => _buildListItem(context, data, faves))
             .toList());
@@ -508,10 +517,12 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     bool faveIcon = false;
     var collectionNameRef;
     Animal faveList;
+
     //This works, but we'll look for a more efficient way to do it later
     // if (animal.collections != null) {
     //   faveIcon = true;
     // }
+
     if (animal.collection != null) {
       isInFaves = true;
     }
@@ -566,7 +577,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Hero(
                         tag: animal.commonName,
                         child: Image.network(
-                          animal.imgUrl,
+                          animal.imgURLS.first,
                           fit: BoxFit.fitHeight,
                           // height: 200,
                         ),
@@ -583,17 +594,20 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
+                          AutoSizeText(
+
                             animal.scientificName,
                             style: GoogleFonts.sarpanch(
                                 color: Colors.orange,
-                                fontSize: 28,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w300),
+                            maxLines: 1,
                           ),
-                          Text(
-                            "Common Name: " + animal.commonName,
+                          AutoSizeText(
+                            animal.commonName,
                             style: GoogleFonts.lato(
-                                color: Colors.white54, fontSize: 20),
+                                color: Colors.white54, fontSize: 22),
+                            maxLines: 1,
                           ),
                           SizedBox(height: 16),
                           Row(
@@ -602,144 +616,144 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0, vertical: 16),
-                                child: IconButton(
-                                  icon: isInFaves
-                                      ? Icon(CupertinoIcons.bookmark_fill)
-                                      : Icon(CupertinoIcons.bookmark),
-                                  color: Colors.white,
-                                  iconSize: 32,
-                                  onPressed: () async {
-                                    // _showMyDialog(animal, favorite, data);
-                                    if (isInFaves) {
-                                      removeFromFaves(animal, favorite, data);
-                                      setState(() {
-                                        isInFaves = false;
-                                      });
-                                    } else {
-                                      showModalBottomSheet<void>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          return StatefulBuilder(
-                                            builder: (BuildContext context,
-                                                StateSetter setNewState) {
-                                              return Container(
-                                                // width: double.maxFinite,
-                                                height: 350,
-                                                child: ListView(
-                                                    shrinkWrap: true,
-                                                    children: [
-                                                      Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical:
-                                                                        8.0),
-                                                            child: Text(
-                                                              "Collections",
-                                                              style: TextStyle(
-                                                                  fontSize: 22),
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(10.0),
-                                                            child: showForm
-                                                                ? Form(
-                                                                    key:
-                                                                        formKey,
-                                                                    child:
-                                                                        TextFormField(
-                                                                      controller:
-                                                                          collectionNameField,
-                                                                      validator:
-                                                                          (value) {
-                                                                        return value.isNotEmpty
-                                                                            ? null
-                                                                            : "Invalid Field";
-                                                                      },
-                                                                      decoration:
-                                                                          InputDecoration(
-                                                                              hintText: "Collection Name"),
-                                                                    ),
-                                                                  )
-                                                                : SizedBox(),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Row(
+                                child: !userAnon
+                                    ? IconButton(
+                                        icon: isInFaves
+                                            ? Icon(CupertinoIcons.bookmark_fill)
+                                            : Icon(CupertinoIcons.bookmark),
+                                        color: Colors.white,
+                                        iconSize: 32,
+                                        onPressed: () async {
+                                          // _showMyDialog(animal, favorite, data);
+                                          if (isInFaves) {
+                                            removeFromFaves(
+                                                animal, favorite, data);
+                                            setState(() {
+                                              isInFaves = false;
+                                            });
+                                          } else {
+                                            showModalBottomSheet<void>(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              builder: (BuildContext context) {
+                                                return StatefulBuilder(
+                                                  builder: (BuildContext
+                                                          context,
+                                                      StateSetter setNewState) {
+                                                    return Container(
+                                                      // width: double.maxFinite,
+                                                      height: 350,
+                                                      child: ListView(
+                                                          shrinkWrap: true,
+                                                          children: [
+                                                            Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
                                                               children: [
-                                                                IconButton(
-                                                                  icon: !showForm
-                                                                      ? Icon(
-                                                                          Icons
-                                                                              .add,
-                                                                          size:
-                                                                              28,
-                                                                        )
-                                                                      : Icon(
-                                                                          Icons
-                                                                              .close,
-                                                                          size:
-                                                                              28,
-                                                                        ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    setNewState(
-                                                                        () {
-                                                                      showForm =
-                                                                          !showForm;
-                                                                    });
-                                                                  },
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      vertical:
+                                                                          8.0),
+                                                                  child: Text(
+                                                                    "Collections",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            22),
+                                                                  ),
                                                                 ),
-                                                                SizedBox(
-                                                                    height: 150,
-                                                                    child: _buildCollection(
-                                                                        context,
-                                                                        animal)),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          10.0),
+                                                                  child: showForm
+                                                                      ? Form(
+                                                                          key:
+                                                                              formKey,
+                                                                          child:
+                                                                              TextFormField(
+                                                                            controller:
+                                                                                collectionNameField,
+                                                                            validator:
+                                                                                (value) {
+                                                                              return value.isNotEmpty ? null : "Invalid Field";
+                                                                            },
+                                                                            decoration:
+                                                                                InputDecoration(hintText: "Collection Name"),
+                                                                          ),
+                                                                        )
+                                                                      : SizedBox(),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      IconButton(
+                                                                        icon: !showForm
+                                                                            ? Icon(
+                                                                                Icons.add,
+                                                                                size: 28,
+                                                                              )
+                                                                            : Icon(
+                                                                                Icons.close,
+                                                                                size: 28,
+                                                                              ),
+                                                                        onPressed:
+                                                                            () {
+                                                                          setNewState(
+                                                                              () {
+                                                                            showForm =
+                                                                                !showForm;
+                                                                          });
+                                                                        },
+                                                                      ),
+                                                                      SizedBox(
+                                                                          height:
+                                                                              150,
+                                                                          child: _buildCollection(
+                                                                              context,
+                                                                              animal)),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                showForm
+                                                                    ? TextButton(
+                                                                        style: TextButton
+                                                                            .styleFrom(
+                                                                          textStyle:
+                                                                              const TextStyle(fontSize: 20),
+                                                                        ),
+                                                                        child: Text(
+                                                                            "Save"),
+                                                                        onPressed:
+                                                                            () {
+                                                                          print(
+                                                                              "save button clicked");
+                                                                          saveToNewCollection(
+                                                                              animal,
+                                                                              favorite,
+                                                                              data);
+                                                                        },
+                                                                      )
+                                                                    : SizedBox()
                                                               ],
                                                             ),
-                                                          ),
-                                                          showForm
-                                                              ? TextButton(
-                                                                  style: TextButton
-                                                                      .styleFrom(
-                                                                    textStyle: const TextStyle(
-                                                                        fontSize:
-                                                                            20),
-                                                                  ),
-                                                                  child: Text(
-                                                                      "Save"),
-                                                                  onPressed:
-                                                                      () {
-                                                                    print(
-                                                                        "save button clicked");
-                                                                    saveToNewCollection(
-                                                                        animal,
-                                                                        favorite,
-                                                                        data);
-                                                                  },
-                                                                )
-                                                              : SizedBox()
-                                                        ],
-                                                      ),
-                                                    ]),
-                                              );
-                                            },
-                                          );
+                                                          ]),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          }
+                                          // Faves FINALLY freaking works
                                         },
-                                      );
-                                    }
-                                    // Faves FINALLY freaking works
-                                  },
-                                ),
+                                      )
+                                    : null,
                               ),
                             ],
                           ),

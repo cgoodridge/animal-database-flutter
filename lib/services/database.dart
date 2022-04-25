@@ -3,35 +3,35 @@ import 'package:sanctuary/models/animal-model.dart';
 import 'package:sanctuary/models/user_model.dart';
 
 class DatabaseService {
-
   final String uid;
-  DatabaseService({ this.uid });
+  DatabaseService({this.uid});
 
-  final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
-  final CollectionReference animalCollection = FirebaseFirestore.instance.collection('animals');
-  final CollectionReference locationCollection = FirebaseFirestore.instance.collection('locations');
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
+  final CollectionReference animalCollection =
+      FirebaseFirestore.instance.collection('animals');
+  final CollectionReference locationCollection =
+      FirebaseFirestore.instance.collection('locations');
 
   CustomUserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return CustomUserData(
       uid: uid,
-      firstName: snapshot['first-name'],
-      lastName: snapshot['last-name'],
+      firstName: snapshot['firstName'],
+      lastName: snapshot['lastName'],
+      email: snapshot['email'],
+      dateAdded: snapshot['dateAdded'].toDate(),
       role: snapshot['role'],
     );
   }
 
   Stream<CustomUserData> get userData {
-    return userCollection.doc(uid).snapshots()
-      .map(_userDataFromSnapshot);
+    return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
 
   Future updateUserData(String firstName, String lastName) async {
-    return await userCollection.doc(uid)
-      .set({
-        'first-name': firstName,
-        'last-name': lastName,
-        'role': 'user'
-      });
+    return await userCollection
+        .doc(uid)
+        .set({'firstName': firstName, 'lastName': lastName, 'role': 'user'});
   }
 
   Animal _animalDataFromSnapshot(DocumentSnapshot snapshot) {
