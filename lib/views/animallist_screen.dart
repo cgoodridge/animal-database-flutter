@@ -336,23 +336,17 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   void saveToNewCollection(
       Animal animal, CollectionReference faves, DocumentSnapshot data) async {
     var stringVal;
+    final user = Provider.of<CustomUser>(context, listen: false);
+
     List collectionNameList = [];
-    // colName.add(collectionNameField.text);
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection("collectionNames").get();
     snapshot.docs.forEach((document) async {
       if (document.exists) {
-        //print('Documents exist');
-
         Map<String, dynamic> val = document.data();
-        // print("The value is " + document.get("name"));
-
         collectionNameList.add(document.get("name"));
-
         var tempVal =
             val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'), '');
-
-        //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
       } else {
         print("Document doesn't exist");
       }
@@ -365,14 +359,17 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     } else {
       await FirebaseFirestore.instance
           .collection("collections")
-          .doc("collectionLists")
+          .doc(user.uid)
           .collection(collectionNameField.text)
           .doc(data.id)
           .set(animalData);
       await FirebaseFirestore.instance
           .collection("collectionNames")
-          .doc()
-          .set({"name": collectionNameField.text, "imgURL": "animal.imgUrl"});
+          .doc(user.uid)
+          .set({
+        "names": FieldValue.arrayUnion([collectionNameField.text]),
+        "imgURL": animal.imgURLS.first
+      });
       await FirebaseFirestore.instance
           .collection('animals')
           .doc(data.id)
@@ -382,14 +379,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   void saveToExistingCollection(
       Animal animal, String collectionName, DocumentSnapshot data) async {
-    var stringVal;
     List colName = [];
     colName.add(collectionName);
     Map<String, dynamic> animalData = animal.toJson();
+    final user = Provider.of<CustomUser>(context, listen: false);
 
     await FirebaseFirestore.instance
         .collection("collections")
-        .doc("collectionLists")
+        .doc(user.uid)
         .collection(collectionName)
         .doc(data.id)
         .set(animalData);
@@ -492,19 +489,47 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             .toList());
   }
 
-  void addToFaves(
-      Animal animal, CollectionReference faves, DocumentSnapshot data) {
-    Map<String, dynamic> animalData = animal.toJson();
-    faves.doc(data.id).set(animalData);
-  }
+  // void addToFaves(
+  //     Animal animal, CollectionReference faves, DocumentSnapshot data) {
+  //   Map<String, dynamic> animalData = animal.toJson();
+  //   faves.doc(data.id).set(animalData);
+  // }
 
   void removeFromFaves(
       Animal animal, CollectionReference faves, DocumentSnapshot data) async {
+    final user = Provider.of<CustomUser>(context, listen: false);
+
+    String animalCollection = "";
     await faves.doc(data.id).delete();
+
+    await FirebaseFirestore.instance
+        .collection("animals")
+        .doc(data.id)
+        .snapshots()
+        .first
+        .then((value) {
+      final animal = Animal.fromSnapshot(value);
+      animalCollection = animal.collection;
+    });
+
     await FirebaseFirestore.instance
         .collection("animals")
         .doc(data.id)
         .update({"collection": FieldValue.delete()});
+
+    await FirebaseFirestore.instance
+        .collection("collections")
+        .doc(user.uid)
+        .collection(animalCollection)
+        .doc(data.id)
+        .delete();
+
+    await FirebaseFirestore.instance
+        .collection("collectionNames")
+        .doc(user.uid)
+        .update({
+      "names": FieldValue.arrayRemove([animalCollection])
+    });
 
     print('Removed from faves ' + data.id);
   }
@@ -595,7 +620,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           AutoSizeText(
-
                             animal.scientificName,
                             style: GoogleFonts.sarpanch(
                                 color: Colors.orange,
