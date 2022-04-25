@@ -230,26 +230,37 @@ class _LocationsScreenState extends State<LocationsScreen> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final location = Location.fromSnapshot(data);
-    // final location = Location.fromSnapshot(data);
     return ExpansionTile(
       title: Text(location.locationName),
       children: [
-        ListView(),
-        ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage("animal.imgUrl"),
+        Column(
+          children: [
+            ListView(
+              shrinkWrap: true,
+              children: [
+                ...location.animalList.map((animalData) {
+                  final animal = Animal.fromMap(animalData);
+                  return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(animal.imgURLS.first),
+                      ),
+                      trailing: IconButton(icon: Icon(Icons.remove_red_eye), onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AnimalDetails(
+                                    animal: animal,
+                                  )),
+                          );
+                        },
+                      ),
+                      title: Text(animal.commonName));
+                }).toList()
+              ],
             ),
-            subtitle: Text("animal.location"),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => AnimalDetails(
-              //             animal: animal,
-              //           )),
-              // );
-            },
-            title: Text("location.locationName")),
+          ],
+        ),
+
       ],
     );
   }

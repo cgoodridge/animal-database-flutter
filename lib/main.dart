@@ -235,9 +235,7 @@ class FormDialog extends StatefulWidget {
 
 class _FormDialogState extends State<FormDialog> {
   final formKey = GlobalKey<FormState>();
-  /*
-  * TODO: Add remaining fields
-  * */
+
   final TextEditingController kingdomClass = TextEditingController();
   final TextEditingController family = TextEditingController();
   final TextEditingController genus = TextEditingController();
@@ -547,13 +545,13 @@ class _FormDialogState extends State<FormDialog> {
                 state: _index > 1 ? StepState.complete : StepState.indexed,
                 isActive: _index >= 1,
                 title: Text('Images'),
-                content: Text('Content for Step 2'),
+                content: Text('Image selector goes here'),
               ),
               Step(
                 state: _index > 2 ? StepState.complete : StepState.indexed,
                 isActive: _index >= 2,
                 title: Text('Locations'),
-                content: Text('Content for Step 3'),
+                content: Text('Map goes here'),
               ),
               Step(
                 state: _index > 3 ? StepState.complete : StepState.indexed,
@@ -590,6 +588,25 @@ class _FormDialogState extends State<FormDialog> {
         'location': location.text,
         'imgURL': imgURL,
         'dateAdded': DateTime.now(),
+      }).then((value) async {
+        await FirebaseFirestore.instance.collection("locations").doc(location.text).update({
+          'locationName': "",
+          'animals': [{
+            'kingdom': kingdom.text,
+            'phylum': phylum.text,
+            'class': kingdomClass.text,
+            'order': order.text,
+            'family': family.text,
+            'genus': genus.text,
+            'scientificName': scientificName.text,
+            'commonName': commonName.text,
+            'addedBy': user.uid,
+            'location': location.text,
+            'imgURL': imgURL,
+            'dateAdded': DateTime.now(),
+          }],
+
+        });
       });
     }
   }

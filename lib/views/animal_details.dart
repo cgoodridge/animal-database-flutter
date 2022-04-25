@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sanctuary/models/animal-model.dart';
@@ -33,19 +35,50 @@ class AnimalDetails extends StatelessWidget {
             ListView(),
             Hero(
                 tag: animal.commonName,
-                child: Image.network(
-                  animal.imgURLS.first,
-                  fit: BoxFit.fitHeight,
+                child: Container(
+                  height: 300,
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                      PointerDeviceKind.touch,
+                      PointerDeviceKind.mouse,
+                    },),
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        ...animal.imgURLS.map((data) =>
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  minWidth: 200,
+                                  minHeight: 200,
+                                  maxWidth: 350,
+                                  maxHeight: 350),
+                              child: Image.network(
+                                data,
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 )),
             // _buildDetails(context),
-            Expanded(child: _buildDetails(context))
+            Expanded(
+                child: _buildDetails(context)
+            )
           ],
         ));
   }
 
   Widget _buildDetails(BuildContext context) {
     return SafeArea(
-        child: Column(children: <Widget>[
+      child: Column(
+          children: <Widget>[
       Expanded(
           child: DefaultTabController(
               length: 4,
@@ -262,7 +295,7 @@ class AnimalDetails extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Expanded(
-                            child: Text("Locations:"),
+                            child: Text("Locations: "),
                             flex: 2,
                           ),
                           Expanded(

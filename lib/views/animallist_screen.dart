@@ -12,6 +12,7 @@ import 'package:sanctuary/views/account_screen.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:multiple_stream_builder/multiple_stream_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import '../models/user_model.dart';
 
@@ -593,17 +594,20 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
+                          AutoSizeText(
+
                             animal.scientificName,
                             style: GoogleFonts.sarpanch(
                                 color: Colors.orange,
-                                fontSize: 28,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w300),
+                            maxLines: 1,
                           ),
-                          Text(
-                            "Common Name: " + animal.commonName,
+                          AutoSizeText(
+                            animal.commonName,
                             style: GoogleFonts.lato(
-                                color: Colors.white54, fontSize: 20),
+                                color: Colors.white54, fontSize: 22),
+                            maxLines: 1,
                           ),
                           SizedBox(height: 16),
                           Row(
