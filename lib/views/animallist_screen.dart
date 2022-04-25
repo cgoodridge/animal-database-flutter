@@ -397,6 +397,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .update({'collection': collectionName});
   }
 
+  Widget _confirmRemoveFromFaves(BuildContext context) {
+    return AlertDialog();
+  }
+
   Widget _buildBody(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
@@ -564,12 +568,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .collection('collections')
         .doc("collectionLists")
         .collection("collectionPath");
-
-    // if (animal.isActive) { activeAlien = animal.species.toString(); }
-    // if (animal.environment == "space") { shadowColor = Colors.white; }
-    // else if (animal.environment == "land") { shadowColor = Colors.brown; }
-    // else if (animal.environment == "ice") { shadowColor = Colors.blueAccent; }
-    // else if (animal.environment == "water") { shadowColor = Colors.blue; }
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
