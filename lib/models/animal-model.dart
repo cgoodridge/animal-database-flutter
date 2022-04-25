@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class Animal {
+
   final String kingdomClass;
   final String family;
   final String genus;
