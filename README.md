@@ -24,19 +24,31 @@ and [A-Z Animals](https://a-z-animals.com/).
 
 - Login Screen
   <img src="https://github.com/cgoodridge/animal-database-flutter/blob/develop/doc-images/login_screen.png" alt="Login Screen" height="600"/>
+  ----------------------------------
 - Registration Screen
-
+  
+  ----------------------------------  
 - Animal List Screen
   <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_list.png" alt="Animal List" height="600"/>
+
+  ----------------------------------
 - Animal Collection Screen
 
+  ----------------------------------
 - Animal Detail Screen
   <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/animal_detail.png" alt="Animal Detail Page" height="600"/>
+
+  ----------------------------------
 - Map Screen
 
+  ----------------------------------
 - Account Screen
   <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/account_screen.png" alt="Account Screen" height="600"/>
+
+  ----------------------------------
 - Settings Screen
   <img src="https://github.com/cgoodridge/animal-database-flutter/blob/riverpod-migration/doc-images/settings_screen.png" alt="Settings Screen" height="600"/>
+
+  ----------------------------------
 
 
