@@ -233,11 +233,10 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       stream:
           FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (!snapshot.hasData ) {
           return SizedBox(
               width: 50, height: 50, child: CircularProgressIndicator());
         } else {
-          //print(snapshots.item1.data.);
           return _buildCollectionList(context, snapshot.data.docs, animal);
         }
       },
@@ -246,6 +245,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   Widget _buildCollectionList(
       BuildContext context, List<DocumentSnapshot> snapshot, Animal animal) {
+
     return ListView(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -272,65 +272,78 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     }
 
     final collection = Collection.fromSnapshot(data);
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Column(
-        children: [
-          Container(
-            width: 130,
-            height: 130,
-            child: InkWell(
-              onTap: () {
-                saveToExistingCollection(animal, collection.name, data);
-                Navigator.of(context).pop();
-              },
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white54, width: 0.35),
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        color: Color(0xff2c2c2c),
-                        child: Image.network(collection.imgURL,
-                            fit: BoxFit.fitHeight)),
-                  ),
+    if (collection.names.length == 0) {
+      print("This is a test");
+      return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          children: [
+            Text("No collections available",)
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          children: [
+            Container(
+              width: 130,
+              height: 130,
+              child: InkWell(
+                onTap: () {
+                  saveToExistingCollection(animal, collection.name, data);
+                  Navigator.of(context).pop();
+                },
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(color: Colors.white54, width: 0.35),
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          color: Color(0xff2c2c2c),
+                          child: Image.network(collection.imgURL,
+                              fit: BoxFit.fitHeight)),
+                    ),
 
-                  /// Part of code to make animals save-able to multiple collections
-                  // Row(
-                  //   mainAxisSize: MainAxisSize.min,
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Checkbox(
-                  //       checkColor: Colors.white,
-                  //       fillColor: MaterialStateProperty.resolveWith(getColor),
-                  //       value: isChecked,
-                  //       onChanged: (bool value) {
-                  //         setState(() {
-                  //           isChecked = value;
-                  //         });
-                  //       },
-                  //     ),
-                  //     Text(
-                  //       collection.name,
-                  //       overflow: TextOverflow.ellipsis,
-                  //     )
-                  //   ],
-                  // ),
-                  Text(
-                    collection.name,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ],
+                    /// Part of code to make animals save-able to multiple collections
+                    // Row(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Checkbox(
+                    //       checkColor: Colors.white,
+                    //       fillColor: MaterialStateProperty.resolveWith(getColor),
+                    //       value: isChecked,
+                    //       onChanged: (bool value) {
+                    //         setState(() {
+                    //           isChecked = value;
+                    //         });
+                    //       },
+                    //     ),
+                    //     Text(
+                    //       collection.name,
+                    //       overflow: TextOverflow.ellipsis,
+                    //     )
+                    //   ],
+                    // ),
+                    Text(
+                      collection.name,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
+
   }
 
   void saveToNewCollection(
@@ -776,8 +789,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                                                             "Save"),
                                                                         onPressed:
                                                                             () {
-                                                                          print(
-                                                                              "save button clicked");
                                                                           saveToNewCollection(
                                                                               animal,
                                                                               favorite,
