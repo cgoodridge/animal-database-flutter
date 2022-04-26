@@ -397,8 +397,32 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .update({'collection': collectionName});
   }
 
-  Widget _confirmRemoveFromFaves(BuildContext context) {
-    return AlertDialog();
+  Future<String> _confirmRemoveFromFaves(BuildContext context, Animal animal, CollectionReference faves, DocumentSnapshot data) {
+
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Confirm Remove'),
+        content: const Text('Are you sure you want to remove this animal from the collection?'),
+        actions: <Widget>[
+
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+
+          TextButton(
+            onPressed: () {
+              removeFromFaves(animal, faves, data);
+              Navigator.pop(context, 'Cancel');
+            },
+            child: const Text('OK'),
+          ),
+
+        ],
+      ),
+    );
+
   }
 
   Widget _buildBody(BuildContext context) {
@@ -532,10 +556,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .collection("collectionNames")
         .doc(user.uid)
         .update({
-      "names": FieldValue.arrayRemove([animalCollection])
+      "names": FieldValue.arrayRemove([animalCollection]),
     });
 
-    print('Removed from faves ' + data.id);
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data,
@@ -546,11 +569,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     bool faveIcon = false;
     var collectionNameRef;
     Animal faveList;
-
-    //This works, but we'll look for a more efficient way to do it later
-    // if (animal.collections != null) {
-    //   faveIcon = true;
-    // }
 
     if (animal.collection != null) {
       isInFaves = true;
@@ -648,11 +666,15 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                         onPressed: () async {
                                           // _showMyDialog(animal, favorite, data);
                                           if (isInFaves) {
-                                            removeFromFaves(
-                                                animal, favorite, data);
+
+                                            _confirmRemoveFromFaves(context, animal, favorite, data);
+
+                                            // removeFromFaves(animal, favorite, data);
+
                                             setState(() {
                                               isInFaves = false;
                                             });
+
                                           } else {
                                             showModalBottomSheet<void>(
                                               context: context,
