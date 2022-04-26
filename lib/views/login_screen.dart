@@ -108,8 +108,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState.validate()) {
-                                  dynamic result = await _auth
-                                      .signInWithEmailAndPassword(email, password);
+                                  dynamic result =
+                                      await _auth.signInWithEmailAndPassword(
+                                          email, password);
                                   if (result == null) {
                                     setState(() {
                                       error =
@@ -143,21 +144,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(height: 12.0),
                           Text(
                             "Forgot Password",
-                            style: TextStyle(color: Colors.black, fontSize: 14.0),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 14.0),
                           ),
-                          // TextButton(
-                          //   style: TextButton.styleFrom(
-                          //       textStyle:
-                          //           TextStyle(color: Colors.black, fontSize: 14.0)),
-                          //   child: const Text("Register"),
-                          //   onPressed: () {
-                          //     Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => RegistrationScreen()),
-                          //     );
-                          //   },
-                          // ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                                textStyle: TextStyle(
+                                    color: Colors.black, fontSize: 14.0)),
+                            child: const Text("Register"),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegistrationScreen()),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),

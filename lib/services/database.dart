@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sanctuary/models/animal-model.dart';
 import 'package:sanctuary/models/user_model.dart';
 
@@ -28,10 +29,14 @@ class DatabaseService {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
 
-  Future updateUserData(String firstName, String lastName) async {
-    return await userCollection
-        .doc(uid)
-        .set({'firstName': firstName, 'lastName': lastName, 'role': 'user'});
+  Future updateUserData(String firstName, String lastName, String email) async {
+    return await userCollection.doc(uid).set({
+      'dateAdded': DateTime.now(),
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'role': 'user' // HIDE THIS
+    });
   }
 
   Animal _animalDataFromSnapshot(DocumentSnapshot snapshot) {

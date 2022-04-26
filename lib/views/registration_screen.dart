@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/main.dart';
 import 'package:sanctuary/models/models.dart';
@@ -15,7 +17,6 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
@@ -28,8 +29,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String lastName = '';
   String error = '';
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,9 +39,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: Column(
           children: [
             SizedBox(height: 60.0),
-            Text("Project Sanctuary", style: GoogleFonts.orbitron(fontWeight: FontWeight.normal, color: Colors.black,fontSize: 30),),
+            Text(
+              "Project Sanctuary",
+              style: GoogleFonts.orbitron(
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                  fontSize: 30),
+            ),
             SizedBox(height: 40.0),
-            Image.asset('assets/images/logo.png', width: 125,),
+            Image.asset(
+              'assets/images/logo.png',
+              width: 125,
+            ),
             Expanded(
               child: Form(
                 key: _formKey,
@@ -53,10 +61,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'First Name',
-                          hintStyle: TextStyle(color: Colors.black,),
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
                           prefixIcon: Icon(Icons.person),
                         ),
-                        validator: (val) => val.isEmpty ? "Enter your first Name" : null,
+                        validator: (val) =>
+                            val.isEmpty ? "Enter your first Name" : null,
                         onChanged: (val) {
                           setState(() => firstName = val);
                         },
@@ -65,10 +76,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Last Name',
-                          hintStyle: TextStyle(color: Colors.black,),
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
                           prefixIcon: Icon(Icons.person),
                         ),
-                        validator: (val) => val.isEmpty ? "Enter your last Name" : null,
+                        validator: (val) =>
+                            val.isEmpty ? "Enter your last Name" : null,
                         onChanged: (val) {
                           setState(() => lastName = val);
                         },
@@ -77,10 +91,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Email',
-                          hintStyle: TextStyle(color: Colors.black,),
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
                           prefixIcon: Icon(Icons.email_outlined),
                         ),
-                        validator: (val) => val.isEmpty ? "Enter an email" : null,
+                        validator: (val) =>
+                            val.isEmpty ? "Enter an email" : null,
                         onChanged: (val) {
                           setState(() => email = val);
                         },
@@ -89,24 +106,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Password',
-                          hintStyle: TextStyle(color: Colors.black,),
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
                           prefixIcon: Icon(Icons.vpn_key_outlined),
-                          suffixIcon: passwordToggle ? IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                passwordToggle = !passwordToggle;
-                              });
-                            },)
-                              :
-                          IconButton(
-                            icon: Icon(Icons.visibility_off),
-                            onPressed: () {
-                              setState(() {
-                                passwordToggle = !passwordToggle;
-                              });
-                            },)
-                          ,
+                          suffixIcon: passwordToggle
+                              ? IconButton(
+                                  icon: Icon(Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordToggle = !passwordToggle;
+                                    });
+                                  },
+                                )
+                              : IconButton(
+                                  icon: Icon(Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordToggle = !passwordToggle;
+                                    });
+                                  },
+                                ),
                         ),
                         obscureText: passwordToggle,
                         onChanged: (val) {
@@ -117,24 +137,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Confirm Password',
-                          hintStyle: TextStyle(color: Colors.black,),
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
                           prefixIcon: Icon(Icons.vpn_key_outlined),
-                          suffixIcon: passwordToggle ? IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                passwordToggle = !passwordToggle;
-                              });
-                            },)
-                              :
-                          IconButton(
-                            icon: Icon(Icons.visibility_off),
-                            onPressed: () {
-                              setState(() {
-                                passwordToggle = !passwordToggle;
-                              });
-                            },)
-                          ,
+                          suffixIcon: passwordToggle
+                              ? IconButton(
+                                  icon: Icon(Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordToggle = !passwordToggle;
+                                    });
+                                  },
+                                )
+                              : IconButton(
+                                  icon: Icon(Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordToggle = !passwordToggle;
+                                    });
+                                  },
+                                ),
                         ),
                         obscureText: passwordToggle,
                         onChanged: (val) {
@@ -145,34 +168,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       FlatButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
-                              side: BorderSide(color: Colors.orange)
-                          ),
+                              side: BorderSide(color: Colors.orange)),
                           child: Text(
                             'Register',
                             style: TextStyle(color: Colors.black),
                           ),
                           onPressed: () async {
-                            if(_formKey.currentState.validate()){
+                            if (_formKey.currentState.validate()) {
                               if (password != passwordConfirm) {
                                 setState(() {
                                   error = 'Passwords don\'t match';
                                 });
                               }
-                              dynamic result = await _auth.registerWithEmailAndPassword(email, password, firstName, lastName);
-                              if(result == null) {
+                              dynamic result =
+                                  await _auth.registerWithEmailAndPassword(
+                                      email, password, firstName, lastName);
+
+                              if (result == null) {
                                 setState(() {
-                                  error = 'Could not register with those credentials';
+                                  error =
+                                      'Could not register with those credentials';
                                 });
-                              } else if(CustomUser != null){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => MyHomePage()),
-                                );
-                                print(result);
                               }
                             }
-                          }
-                      ),
+                          }),
                       SizedBox(height: 12.0),
                       Text(
                         error,
@@ -180,12 +199,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                       SizedBox(height: 12.0),
                       TextButton(
-                        style: TextButton.styleFrom(textStyle: TextStyle(color: Colors.black, fontSize: 14.0)),
+                        style: TextButton.styleFrom(
+                            textStyle:
+                                TextStyle(color: Colors.black, fontSize: 14.0)),
                         child: const Text("Already registered? Log in"),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => LoginScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
                           );
                         },
                       ),

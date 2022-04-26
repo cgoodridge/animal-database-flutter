@@ -233,7 +233,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
       stream:
           FirebaseFirestore.instance.collection('collectionNames').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData ) {
+        if (!snapshot.hasData) {
           return SizedBox(
               width: 50, height: 50, child: CircularProgressIndicator());
         } else {
@@ -245,7 +245,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   Widget _buildCollectionList(
       BuildContext context, List<DocumentSnapshot> snapshot, Animal animal) {
-
     return ListView(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -278,7 +277,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         padding: const EdgeInsets.all(4.0),
         child: Column(
           children: [
-            Text("No collections available",)
+            Text(
+              "No collections available",
+            )
           ],
         ),
       );
@@ -302,7 +303,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                       child: Card(
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white54, width: 0.35),
+                            side:
+                                BorderSide(color: Colors.white54, width: 0.35),
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                           color: Color(0xff2c2c2c),
@@ -343,7 +345,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         ),
       );
     }
-
   }
 
   void saveToNewCollection(
@@ -410,20 +411,19 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .update({'collection': collectionName});
   }
 
-  Future<String> _confirmRemoveFromFaves(BuildContext context, Animal animal, CollectionReference faves, DocumentSnapshot data) {
-
+  Future<String> _confirmRemoveFromFaves(BuildContext context, Animal animal,
+      CollectionReference faves, DocumentSnapshot data) {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: const Text('Confirm Remove'),
-        content: const Text('Are you sure you want to remove this animal from the collection?'),
+        content: const Text(
+            'Are you sure you want to remove this animal from the collection?'),
         actions: <Widget>[
-
           TextButton(
             onPressed: () => Navigator.pop(context, 'Cancel'),
             child: const Text('Cancel'),
           ),
-
           TextButton(
             onPressed: () {
               removeFromFaves(animal, faves, data);
@@ -431,11 +431,9 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             },
             child: const Text('OK'),
           ),
-
         ],
       ),
     );
-
   }
 
   Widget _buildBody(BuildContext context) {
@@ -571,7 +569,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .update({
       "names": FieldValue.arrayRemove([animalCollection]),
     });
-
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data,
@@ -679,15 +676,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                         onPressed: () async {
                                           // _showMyDialog(animal, favorite, data);
                                           if (isInFaves) {
-
-                                            _confirmRemoveFromFaves(context, animal, favorite, data);
+                                            _confirmRemoveFromFaves(context,
+                                                animal, favorite, data);
 
                                             // removeFromFaves(animal, favorite, data);
 
                                             setState(() {
                                               isInFaves = false;
                                             });
-
                                           } else {
                                             showModalBottomSheet<void>(
                                               context: context,
