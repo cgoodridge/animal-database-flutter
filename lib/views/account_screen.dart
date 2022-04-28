@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/models/user_model.dart';
@@ -16,6 +17,7 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   final AuthService _auth = AuthService();
+  final userAnon = FirebaseAuth.instance.currentUser.isAnonymous;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class _AccountScreenState extends State<AccountScreen> {
       body: StreamBuilder<CustomUserData>(
           stream: DatabaseService(uid: user.uid).userData,
           builder: (context, snapshot) {
-            if (snapshot.hasData || user.uid != null) {
+            if (snapshot.hasData) {
               CustomUserData userData = snapshot.data;
               return Column(children: [
                 Container(
@@ -81,7 +83,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         children: [
                           ListTile(
                             title: Text("Account Name"),
-                            subtitle: userData != null
+                            subtitle: !userAnon
                                 ? Text(userData.firstName +
                                     " " +
                                     userData.lastName)

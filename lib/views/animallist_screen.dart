@@ -237,7 +237,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           return SizedBox(
               width: 50, height: 50, child: CircularProgressIndicator());
         } else {
-          //print(snapshots.item1.data.);
           return _buildCollectionList(context, snapshot.data.docs, animal);
         }
       },
@@ -272,87 +271,96 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     }
 
     final collection = Collection.fromSnapshot(data);
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Column(
-        children: [
-          Container(
-            width: 130,
-            height: 130,
-            child: InkWell(
-              onTap: () {
-                saveToExistingCollection(animal, collection.name, data);
-                Navigator.of(context).pop();
-              },
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white54, width: 0.35),
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        color: Color(0xff2c2c2c),
-                        child: Image.network(collection.imgURL,
-                            fit: BoxFit.fitHeight)),
-                  ),
+    if (collection.names.length == 0) {
+      print("This is a test");
+      return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          children: [
+            Text(
+              "No collections available",
+            )
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          children: [
+            Container(
+              width: 130,
+              height: 130,
+              child: InkWell(
+                onTap: () {
+                  saveToExistingCollection(animal, collection.name, data);
+                  Navigator.of(context).pop();
+                },
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          shape: RoundedRectangleBorder(
+                            side:
+                                BorderSide(color: Colors.white54, width: 0.35),
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          color: Color(0xff2c2c2c),
+                          child: Image.network(collection.imgURL,
+                              fit: BoxFit.fitHeight)),
+                    ),
 
-                  /// Part of code to make animals save-able to multiple collections
-                  // Row(
-                  //   mainAxisSize: MainAxisSize.min,
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Checkbox(
-                  //       checkColor: Colors.white,
-                  //       fillColor: MaterialStateProperty.resolveWith(getColor),
-                  //       value: isChecked,
-                  //       onChanged: (bool value) {
-                  //         setState(() {
-                  //           isChecked = value;
-                  //         });
-                  //       },
-                  //     ),
-                  //     Text(
-                  //       collection.name,
-                  //       overflow: TextOverflow.ellipsis,
-                  //     )
-                  //   ],
-                  // ),
-                  Text(
-                    collection.name,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ],
+                    /// Part of code to make animals save-able to multiple collections
+                    // Row(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Checkbox(
+                    //       checkColor: Colors.white,
+                    //       fillColor: MaterialStateProperty.resolveWith(getColor),
+                    //       value: isChecked,
+                    //       onChanged: (bool value) {
+                    //         setState(() {
+                    //           isChecked = value;
+                    //         });
+                    //       },
+                    //     ),
+                    //     Text(
+                    //       collection.name,
+                    //       overflow: TextOverflow.ellipsis,
+                    //     )
+                    //   ],
+                    // ),
+                    Text(
+                      collection.name,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
   void saveToNewCollection(
       Animal animal, CollectionReference faves, DocumentSnapshot data) async {
     var stringVal;
+    final user = Provider.of<CustomUser>(context, listen: false);
+
     List collectionNameList = [];
-    // colName.add(collectionNameField.text);
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection("collectionNames").get();
     snapshot.docs.forEach((document) async {
       if (document.exists) {
-        //print('Documents exist');
-
         Map<String, dynamic> val = document.data();
-        // print("The value is " + document.get("name"));
-
         collectionNameList.add(document.get("name"));
-
         var tempVal =
             val.values.toString().replaceAll(new RegExp(r'[^\w\s]+'), '');
-
-        //await Firestore.instance.collection("favourites").document().collection(playlistName.text);
       } else {
         print("Document doesn't exist");
       }
@@ -365,14 +373,17 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     } else {
       await FirebaseFirestore.instance
           .collection("collections")
-          .doc("collectionLists")
+          .doc(user.uid)
           .collection(collectionNameField.text)
           .doc(data.id)
           .set(animalData);
       await FirebaseFirestore.instance
           .collection("collectionNames")
-          .doc()
-          .set({"name": collectionNameField.text, "imgURL": "animal.imgUrl"});
+          .doc(user.uid)
+          .set({
+        "names": FieldValue.arrayUnion([collectionNameField.text]),
+        "imgURL": animal.imgURLS.first
+      });
       await FirebaseFirestore.instance
           .collection('animals')
           .doc(data.id)
@@ -382,14 +393,14 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
 
   void saveToExistingCollection(
       Animal animal, String collectionName, DocumentSnapshot data) async {
-    var stringVal;
     List colName = [];
     colName.add(collectionName);
     Map<String, dynamic> animalData = animal.toJson();
+    final user = Provider.of<CustomUser>(context, listen: false);
 
     await FirebaseFirestore.instance
         .collection("collections")
-        .doc("collectionLists")
+        .doc(user.uid)
         .collection(collectionName)
         .doc(data.id)
         .set(animalData);
@@ -398,6 +409,31 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .collection("animals")
         .doc(data.id)
         .update({'collection': collectionName});
+  }
+
+  Future<String> _confirmRemoveFromFaves(BuildContext context, Animal animal,
+      CollectionReference faves, DocumentSnapshot data) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Confirm Remove'),
+        content: const Text(
+            'Are you sure you want to remove this animal from the collection?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              removeFromFaves(animal, faves, data);
+              Navigator.pop(context, 'Cancel');
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildBody(BuildContext context) {
@@ -492,21 +528,47 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
             .toList());
   }
 
-  void addToFaves(
-      Animal animal, CollectionReference faves, DocumentSnapshot data) {
-    Map<String, dynamic> animalData = animal.toJson();
-    faves.doc(data.id).set(animalData);
-  }
+  // void addToFaves(
+  //     Animal animal, CollectionReference faves, DocumentSnapshot data) {
+  //   Map<String, dynamic> animalData = animal.toJson();
+  //   faves.doc(data.id).set(animalData);
+  // }
 
   void removeFromFaves(
       Animal animal, CollectionReference faves, DocumentSnapshot data) async {
+    final user = Provider.of<CustomUser>(context, listen: false);
+
+    String animalCollection = "";
     await faves.doc(data.id).delete();
+
+    await FirebaseFirestore.instance
+        .collection("animals")
+        .doc(data.id)
+        .snapshots()
+        .first
+        .then((value) {
+      final animal = Animal.fromSnapshot(value);
+      animalCollection = animal.collection;
+    });
+
     await FirebaseFirestore.instance
         .collection("animals")
         .doc(data.id)
         .update({"collection": FieldValue.delete()});
 
-    print('Removed from faves ' + data.id);
+    await FirebaseFirestore.instance
+        .collection("collections")
+        .doc(user.uid)
+        .collection(animalCollection)
+        .doc(data.id)
+        .delete();
+
+    await FirebaseFirestore.instance
+        .collection("collectionNames")
+        .doc(user.uid)
+        .update({
+      "names": FieldValue.arrayRemove([animalCollection]),
+    });
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data,
@@ -517,11 +579,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
     bool faveIcon = false;
     var collectionNameRef;
     Animal faveList;
-
-    //This works, but we'll look for a more efficient way to do it later
-    // if (animal.collections != null) {
-    //   faveIcon = true;
-    // }
 
     if (animal.collection != null) {
       isInFaves = true;
@@ -539,12 +596,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
         .collection('collections')
         .doc("collectionLists")
         .collection("collectionPath");
-
-    // if (animal.isActive) { activeAlien = animal.species.toString(); }
-    // if (animal.environment == "space") { shadowColor = Colors.white; }
-    // else if (animal.environment == "land") { shadowColor = Colors.brown; }
-    // else if (animal.environment == "ice") { shadowColor = Colors.blueAccent; }
-    // else if (animal.environment == "water") { shadowColor = Colors.blue; }
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
@@ -595,7 +646,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           AutoSizeText(
-
                             animal.scientificName,
                             style: GoogleFonts.sarpanch(
                                 color: Colors.orange,
@@ -626,8 +676,11 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                         onPressed: () async {
                                           // _showMyDialog(animal, favorite, data);
                                           if (isInFaves) {
-                                            removeFromFaves(
+                                            _confirmRemoveFromFaves(context,
                                                 animal, favorite, data);
+
+                                            // removeFromFaves(animal, favorite, data);
+
                                             setState(() {
                                               isInFaves = false;
                                             });
@@ -732,8 +785,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                                                                             "Save"),
                                                                         onPressed:
                                                                             () {
-                                                                          print(
-                                                                              "save button clicked");
                                                                           saveToNewCollection(
                                                                               animal,
                                                                               favorite,

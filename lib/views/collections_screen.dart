@@ -117,7 +117,6 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
       //padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
         crossAxisCount: 2,
         children:snapshot.map((data) => _buildListItem(context, data)).toList()
-
     );
   }
 

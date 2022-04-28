@@ -28,7 +28,8 @@ import 'package:flutter/services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
+
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -589,23 +590,27 @@ class _FormDialogState extends State<FormDialog> {
         'imgURL': imgURL,
         'dateAdded': DateTime.now(),
       }).then((value) async {
-        await FirebaseFirestore.instance.collection("locations").doc(location.text).update({
+        await FirebaseFirestore.instance
+            .collection("locations")
+            .doc(location.text)
+            .update({
           'locationName': "",
-          'animals': [{
-            'kingdom': kingdom.text,
-            'phylum': phylum.text,
-            'class': kingdomClass.text,
-            'order': order.text,
-            'family': family.text,
-            'genus': genus.text,
-            'scientificName': scientificName.text,
-            'commonName': commonName.text,
-            'addedBy': user.uid,
-            'location': location.text,
-            'imgURL': imgURL,
-            'dateAdded': DateTime.now(),
-          }],
-
+          'animals': [
+            {
+              'kingdom': kingdom.text,
+              'phylum': phylum.text,
+              'class': kingdomClass.text,
+              'order': order.text,
+              'family': family.text,
+              'genus': genus.text,
+              'scientificName': scientificName.text,
+              'commonName': commonName.text,
+              'addedBy': user.uid,
+              'location': location.text,
+              'imgURL': imgURL,
+              'dateAdded': DateTime.now(),
+            }
+          ],
         });
       });
     }
