@@ -6,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 class Location {
   final String locationName;
   final String locationColour;
+  final Map coordinates;
   final List animalList;
   final DocumentReference reference;
 
@@ -13,7 +14,9 @@ class Location {
       : assert(map['locationColour'] != null),
         assert(map['name'] != null),
         assert(map['animals'] != null),
+        assert(map['coordinates'] != null),
         locationColour = map['locationColour'],
+        coordinates = map['coordinates'],
         animalList = map['animals'],
         locationName = map['name'];
 
@@ -26,6 +29,7 @@ class Location {
   Map<String, dynamic> toJson() => {
         'name': locationName,
         'locationColour': locationColour,
+        'coordinates': coordinates,
         'animals': animalList,
       };
 }

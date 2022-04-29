@@ -84,16 +84,19 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   Widget _buildBody(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    // TODO: get actual snapshot from Cloud Firestore
+
     return StreamBuilder<QuerySnapshot>(
-      stream:FirebaseFirestore.instance.collection('collectionNames').snapshots(),
+      stream:FirebaseFirestore.instance.collection('collectionNames').snapshots(), //Refactor to user database service
 
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()));
+        if (snapshot.hasData && snapshot.data.docs.length == 0) {
+          return Center(child: Text("No Collections available"));
+        }
+        else if (snapshot.hasData && snapshot.data.docs.length > 0){
+          return (_width > 600)? _buildGridList(context, snapshot.data.docs) : _buildList(context, snapshot.data.docs);
         }
         else {
-          return (_width > 600)? _buildGridList(context, snapshot.data.docs) : _buildList(context, snapshot.data.docs);
+          return Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()));
         }
       },
     );
@@ -121,6 +124,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+
     final collection = Collection.fromSnapshot(data);
 
     return Padding(

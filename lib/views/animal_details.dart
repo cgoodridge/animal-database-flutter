@@ -32,7 +32,6 @@ class AnimalDetails extends StatelessWidget {
         ),
         body: Column(
           children: [
-            ListView(),
             Hero(
                 tag: animal.commonName,
                 child: Container(
@@ -127,15 +126,17 @@ class AnimalDetails extends StatelessWidget {
                   ),
                 ),
                 body: TabBarView(children: [
-                  ListView(children: [
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32.0, vertical: 20.0),
-                        child: Text(
-                          animal.description,
-                          style: TextStyle(height: 2, color: Colors.black),
-                        )),
-                  ]),
+                  Flexible(
+                    child: ListView(children: [
+                      Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32.0, vertical: 20.0),
+                          child: Text(
+                            animal.description,
+                            style: TextStyle(height: 2, color: Colors.black),
+                          )),
+                    ]),
+                  ),
                   ListView(children: [
                     ListTile(
                       title: Row(

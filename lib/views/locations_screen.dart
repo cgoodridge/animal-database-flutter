@@ -93,7 +93,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
         stream: DatabaseService().locationData,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           } else {
             return DefaultTabController(
               length: 2,
@@ -172,43 +172,44 @@ class _LocationsScreenState extends State<LocationsScreen> {
                             physics: NeverScrollableScrollPhysics(),
                             children: [
                               _buildList(context, snapshot.data.docs),
-                              Text("Test")
-                              // Stack(
-                              //   children: [
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //           vertical: 32.0),
-                              //       child: SizedBox(
-                              //         height: 800,
-                              //         child: GoogleMap(
-                              //           onTap: (position) {
-                              //             _customInfoWindowController
-                              //                 .hideInfoWindow();
-                              //           },
-                              //           mapType: MapType.hybrid,
-                              //           compassEnabled: true,
-                              //           onCameraMove: (position) {
-                              //             _customInfoWindowController
-                              //                 .onCameraMove();
-                              //           },
-                              //           markers: getMarkers(snapshot.data.docs),
-                              //           initialCameraPosition: _firstLocation,
-                              //           onMapCreated: (GoogleMapController
-                              //               controller) async {
-                              //             _customInfoWindowController
-                              //                 .googleMapController = controller;
-                              //           },
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     CustomInfoWindow(
-                              //       controller: _customInfoWindowController,
-                              //       height: 75,
-                              //       width: 150,
-                              //       offset: 30,
-                              //     ),
-                              //   ],
-                              // ),
+                              // Text("Test")
+                              Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 32.0),
+                                    child: SizedBox(
+                                      height: 800,
+                                      child: GoogleMap(
+                                        onTap: (position) {
+                                          _customInfoWindowController
+                                              .hideInfoWindow();
+                                        },
+                                        mapType: MapType.hybrid,
+                                        compassEnabled: true,
+                                        onCameraMove: (position) {
+                                          _customInfoWindowController
+                                              .onCameraMove();
+                                        },
+                                        markers: getMarkers(snapshot.data.docs.first),
+                                        initialCameraPosition: _firstLocation,
+                                        onMapCreated: (GoogleMapController
+                                            controller) async {
+                                          _customInfoWindowController
+                                              .googleMapController = controller;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  // _buildMapPanel(context, snapshot.data.docs),
+                                  CustomInfoWindow(
+                                    controller: _customInfoWindowController,
+                                    height: 75,
+                                    width: 150,
+                                    offset: 30,
+                                  ),
+                                ],
+                              ),
                             ]),
                       ),
                     ],
@@ -266,87 +267,129 @@ class _LocationsScreenState extends State<LocationsScreen> {
     );
   }
 
+  Widget _buildMapPanel(BuildContext context, DocumentSnapshot data) {
+    final location = Location.fromSnapshot(data);
+    return ExpansionTile(
+      title: Text(location.locationName),
+      children: [
+        Column(
+          children: [
+            ListView(
+              shrinkWrap: true,
+              children: [
+                ...location.animalList.map((animalData) {
+                  final animal = Animal.fromMap(animalData);
+                  return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(animal.imgURLS.first),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.remove_red_eye),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AnimalDetails(
+                                  animal: animal,
+                                )),
+                          );
+                        },
+                      ),
+                      title: Text(animal.commonName));
+                }).toList()
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+
   Future<void> _goToTheLake() async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 
-  Set<Marker> getMarkers(List<DocumentSnapshot> animal) {
+  Set<Marker> getMarkers(DocumentSnapshot location) {
     //markers to place on map
-    // print(animal.docs.single.data());
+    print(location);
     // final animalData = Animal.fromSnapshot(animal);
-    animal.forEach((data) {
-      // print(data.get("common-name"));
-      final animal = Animal.fromSnapshot(data);
+    // final locationData = Location.fromSnapshot(location.first);
 
-      markers.add(Marker(
-        markerId: MarkerId(data.get("common-name")),
-        position: LatLng(double.parse(data.get("latitude")),
-            double.parse(data.get("longitude"))),
-        onTap: () {
-          _customInfoWindowController.addInfoWindow(
-            Column(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AnimalDetails(
-                                  animal: animal,
-                                )),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(data.get("imgURL"))),
-                            SizedBox(
-                              width: 8.0,
-                            ),
-                            Text(
-                              data.get("common-name"),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(
-                                    color: Colors.white,
-                                  ),
-                            )
-                          ],
-                        ),
-                      ),
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                  ),
-                ),
-                Triangle.isosceles(
-                  edge: Edge.BOTTOM,
-                  child: Container(
-                    color: Colors.blue,
-                    width: 20.0,
-                    height: 10.0,
-                  ),
-                ),
-              ],
-            ),
-            LatLng(double.parse(data.get("latitude")),
-                double.parse(data.get("longitude"))),
-          );
-        },
-      ));
-    });
+    //location.forEach((data) {
+      // print(data.get("common-name"));
+      // final location = Location.fromSnapshot(data);
+      // final animal = Animal.fromSnapshot(data);
+
+      // markers.add(Marker(
+      //   markerId: MarkerId(data.get("commonName")),
+      //   position: LatLng(double.parse(data.get("lat")),
+      //       double.parse(data.get("lng"))),
+      //   onTap: () {
+      //     _customInfoWindowController.addInfoWindow(
+      //       Column(
+      //         children: [
+      //           Expanded(
+      //             child: InkWell(
+      //               onTap: () {
+      //                 Navigator.push(
+      //                   context,
+      //                   MaterialPageRoute(
+      //                       builder: (context) => AnimalDetails(
+      //                             animal: animal,
+      //                           )),
+      //                 );
+      //               },
+      //               child: Container(
+      //                 decoration: BoxDecoration(
+      //                   color: Colors.blue,
+      //                   borderRadius: BorderRadius.circular(4),
+      //                 ),
+      //                 child: Padding(
+      //                   padding: const EdgeInsets.all(8.0),
+      //                   child: Row(
+      //                     mainAxisAlignment: MainAxisAlignment.center,
+      //                     children: [
+      //                       CircleAvatar(
+      //                           backgroundImage:
+      //                               NetworkImage(data.get("imgURL"))),
+      //                       SizedBox(
+      //                         width: 8.0,
+      //                       ),
+      //                       Text(
+      //                         data.get("commonName"),
+      //                         style: Theme.of(context)
+      //                             .textTheme
+      //                             .headline6
+      //                             .copyWith(
+      //                               color: Colors.white,
+      //                             ),
+      //                       )
+      //                     ],
+      //                   ),
+      //                 ),
+      //                 width: double.infinity,
+      //                 height: double.infinity,
+      //               ),
+      //             ),
+      //           ),
+      //           Triangle.isosceles(
+      //             edge: Edge.BOTTOM,
+      //             child: Container(
+      //               color: Colors.blue,
+      //               width: 20.0,
+      //               height: 10.0,
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //       LatLng(double.parse(data.get("latitude")),
+      //           double.parse(data.get("longitude"))),
+      //     );
+      //   },
+      // ));
+    //});
 
     return markers;
   }
