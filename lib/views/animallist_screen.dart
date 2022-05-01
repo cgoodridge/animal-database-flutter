@@ -603,8 +603,8 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
               clipBehavior: Clip.antiAliasWithSaveLayer,
               semanticContainer: true,
               shape: RoundedRectangleBorder(
-                side: BorderSide(color: Colors.white54, width: 0.35),
-                borderRadius: BorderRadius.circular(10.0),
+                side: BorderSide(color: Colors.transparent, width: 0.35),
+                borderRadius: BorderRadius.circular(5.0),
               ),
               color: Colors.white,
               elevation: 5,

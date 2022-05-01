@@ -95,7 +95,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           ),
                           Divider(),
                           ListTile(
-                            title: Text("Account Name"),
+                            title: Text("Change your password"),
                           ),
                           Divider(),
                           ListTile(
