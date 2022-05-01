@@ -17,16 +17,12 @@ class AnimalDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffeaeaea),
         appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.black,
+
           title: Text(
             animal.commonName,
             style: GoogleFonts.bungeeHairline(
-                color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                fontSize: 22, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
         ),
@@ -82,7 +78,6 @@ class AnimalDetails extends StatelessWidget {
           child: DefaultTabController(
               length: 4,
               child: Scaffold(
-                backgroundColor: Color(0xffffffff),
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(kToolbarHeight),
                   child: Container(
@@ -97,26 +92,22 @@ class AnimalDetails extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Description",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Description"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Classification",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Classification"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Habitat",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Habitat"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Details",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Details"),
                               ),
                             ],
                           ),
@@ -133,7 +124,7 @@ class AnimalDetails extends StatelessWidget {
                               horizontal: 32.0, vertical: 20.0),
                           child: Text(
                             animal.description,
-                            style: TextStyle(height: 2, color: Colors.black),
+                            style: TextStyle(height: 2),
                           )),
                     ]),
                   ),

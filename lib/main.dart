@@ -9,6 +9,8 @@ import 'package:sanctuary/models/user_model.dart';
 import 'package:sanctuary/services/auth.dart';
 import 'package:sanctuary/services/database.dart';
 import 'package:sanctuary/services/wrapper.dart';
+import 'package:sanctuary/utils/dark_theme_styles.dart';
+import 'package:sanctuary/utils/dart_theme_provider.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:sanctuary/views/animallist_screen.dart';
 import 'package:sanctuary/views/collections_screen.dart';
@@ -24,9 +26,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
 
   await dotenv.load(fileName: ".env");
 
@@ -49,12 +53,29 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
-
+  SharedPreferences.setMockInitialValues({});
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+
+  void initState() {
+    super.initState();
+    getCurrentAppTheme();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+    await themeChangeProvider.darkThemePreference.getTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -63,26 +84,35 @@ class MyApp extends StatelessWidget {
       systemNavigationBarDividerColor: null,
       statusBarIconBrightness: Brightness.light,
     ));
-    return StreamProvider<CustomUser>.value(
-      value: AuthService().user,
-      initialData: null,
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Project Sanctuary',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          initialRoute: '/',
-          routes: {
-            '/': (context) => Wrapper(),
-            '/collections': (context) => CollectionsScreen(),
-            '/locations': (context) => LocationsScreen(),
-            '/home': (context) => MyHomePage(),
-            '/settings': (context) => SettingsScreen(),
-            AnimalDetails.id: (context) => AnimalDetails(),
-          }
-          //home: MyHomePage(title: 'Flutter Demo Home Page'),
-          ),
+    return ChangeNotifierProvider(
+      create: (_) {
+        return themeChangeProvider;
+      },
+      child: Consumer<DarkThemeProvider>(
+        builder: (BuildContext context, value, Widget child) {
+          return StreamProvider<CustomUser>.value(
+            value: AuthService().user,
+            initialData: null,
+            child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Project Sanctuary',
+                theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+                // theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+                initialRoute: '/',
+                routes: {
+                  '/': (context) => Wrapper(),
+                  '/collections': (context) => CollectionsScreen(),
+                  '/locations': (context) => LocationsScreen(),
+                  '/home': (context) => MyHomePage(),
+                  '/settings': (context) => SettingsScreen(),
+                  AnimalDetails.id: (context) => AnimalDetails(),
+                }
+              //home: MyHomePage(title: 'Flutter Demo Home Page'),
+            ),
+          );
+        }
+
+      ),
     );
   }
 }
@@ -110,6 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   void initState() {
     super.initState();
   }
@@ -117,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<CustomUser>(context);
+    final themeChange = Provider.of<DarkThemeProvider>(context);
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
       SystemUiOverlay.bottom, //This line is used for showing the bottom bar
@@ -163,10 +195,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     : null,
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Color(0xfff1f1f1),
-                  unselectedItemColor: Colors.black,
+                  // backgroundColor: Color(0xfff1f1f1),
+                  unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
                   type: BottomNavigationBarType.fixed,
-                  items: const <BottomNavigationBarItem>[
+                  items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),
                       label: 'Home',
@@ -195,8 +227,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 body: _navBarLocations[_selectedIndex],
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Color(0xffffffff),
-                  unselectedItemColor: Colors.black,
+                  // backgroundColor: Color(0xffffffff),
+                  unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
                   type: BottomNavigationBarType.fixed,
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(

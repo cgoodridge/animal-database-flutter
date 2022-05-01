@@ -22,9 +22,6 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-
-        backgroundColor: Color(0xfff5f5f5),
-        //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
         body:_buildViewSmall(context)
 
     );
@@ -45,10 +42,10 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                       alignment: Alignment.centerLeft,
                       child: Image.asset('assets/images/logo.png', width: 40,),
                     ),
-                    Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),),
+                    Text("collections", style: GoogleFonts.bungeeHairline(fontSize: 24, fontWeight: FontWeight.bold),),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Icon(Icons.search, color: Colors.black),
+                      child: Icon(Icons.search,),
                       /*
                         child: FlatButton.icon(
                           icon: Icon(Icons.search, color: Colors.white,),
@@ -72,7 +69,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   Widget _buildViewLarge(BuildContext context)
   {
     return Scaffold(
-        backgroundColor: Colors.black,
+        // backgroundColor: Colors.black,
         body: Column(
           children: [
             Text("TEST", style: TextStyle(color: Colors.white, fontSize: 26),),

@@ -95,7 +95,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffffffff),
         body: SafeArea(child: _buildViewSmall(context)));
   }
 
@@ -126,7 +125,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                   child: Text(
                     "Sanctuary",
                     style: GoogleFonts.bungeeHairline(
-                        color: Colors.black,
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
                   ),
@@ -134,7 +132,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
-                    color: Colors.black,
                     icon: Icon(Icons.account_circle),
                     iconSize: 38,
                     onPressed: () {
@@ -160,14 +157,15 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     flex: 8,
                     child: TextField(
                       controller: searchController,
-                      style: TextStyle(color: Colors.black),
+                      // style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                           prefixIcon: Icon(
                             Icons.search,
-                            color: Colors.black,
+                            // color: Colors.black,
                           ),
                           hintText: "Search Sanctuary",
-                          hintStyle: TextStyle(color: Colors.black)),
+                          // hintStyle: TextStyle(color: Colors.black)
+                      ),
                     ),
                   ),
                   Expanded(
@@ -175,7 +173,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
                     child: PopupMenuButton<sortOption>(
                       icon: Icon(
                         Icons.sort,
-                        color: Colors.black,
+                        // color: Colors.black,
                         size: 34,
                       ),
                       onSelected: (sortOption result) {

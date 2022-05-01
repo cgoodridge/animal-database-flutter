@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/services/auth.dart';
+import 'package:sanctuary/utils/dart_theme_provider.dart';
+import 'package:provider/provider.dart';
 
 /// TODO: Add confirmation dialog for logout button
 class SettingsScreen extends StatefulWidget {
@@ -13,18 +15,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool themeVal = false;
   @override
   Widget build(BuildContext context) {
+
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+
     return Scaffold(
-      backgroundColor: Color(0xfff5f5f5),
+      // backgroundColor: Color(0xfff5f5f5),
       appBar: AppBar(
         iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
             size: 32),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         elevation: 0.0,
         title: Text(
           "settings",
           style: GoogleFonts.bungeeHairline(
-              color: Colors.black, fontSize: 34, fontWeight: FontWeight.bold),
+              fontSize: 34, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -36,7 +40,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: EdgeInsets.only(left: 16, top: 16, bottom: 16),
                   decoration: BoxDecoration(
-                    color: Color(0xffe8e8e8),
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,
@@ -51,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 ListTile(
                   title: Text('Device',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 Divider(
                   height: 1,
@@ -60,7 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 ListTile(
                   title: Text('Security',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 Divider(
                   height: 1,
@@ -69,9 +72,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 16, top: 16, bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Color(0xffe8e8e8),
-                  ),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 ListTile(
                   title: Text('Notifications',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 Divider(
                   height: 1,
@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 ListTile(
                   title: Text('Display & Sound',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 Divider(
                   height: 1,
@@ -103,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 ListTile(
                   title: Text('Data Usage',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 Divider(
                   height: 1,
@@ -111,14 +111,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   thickness: 0.1,
                 ),
                 SwitchListTile(
-                  value: themeVal,
+                  value: themeChange.darkTheme,
                   onChanged: (bool val) {
                     setState(() {
-                      themeVal = val;
+                      themeChange.darkTheme = val;
                     });
                   },
                   title: Text('Theme',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                   subtitle: Text(!themeVal ? 'Light': 'Dark'),
                 ),
                 Divider(
@@ -128,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 ListTile(
                   title: Text('About',
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 Divider(
                   height: 1,

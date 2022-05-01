@@ -51,6 +51,7 @@ dependencies:
   intl: ^0.17.0
   custom_info_window: ^1.0.1
   clippy_flutter: ^1.1.1
+  shared_preferences: ^2.0.13
   #model_viewer: 0.8.1
   #webview_flutter: 1.0.7
 

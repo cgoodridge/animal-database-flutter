@@ -98,7 +98,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
             return DefaultTabController(
               length: 2,
               child: Scaffold(
-                backgroundColor: Color(0xffffffff),
+                // backgroundColor: Color(0xffffffff),
                 body: Container(
                   margin:
                       EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
@@ -121,27 +121,26 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                 ? Text(
                                     "Location",
                                     style: GoogleFonts.bungeeHairline(
-                                        color: Colors.black,
+                                        // color: Colors.black,
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold),
                                   )
                                 : TextField(
                                     controller: searchController,
-                                    style: TextStyle(color: Colors.black),
+                                    // style: TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
                                         prefixIcon: Icon(
                                           Icons.search,
-                                          color: Colors.black,
+                                          // color: Colors.black,
                                         ),
                                         hintText: "Search Sanctuary",
-                                        hintStyle:
-                                            TextStyle(color: Colors.black)),
+                                        hintStyle: TextStyle(color: Colors.black)),
                                   ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: IconButton(
-                              color: Colors.black,
+                              // color: Colors.black,
                               icon: !isSearching
                                   ? Icon(Icons.search)
                                   : Icon(Icons.cancel),
@@ -159,12 +158,12 @@ class _LocationsScreenState extends State<LocationsScreen> {
                         Tab(
                             icon: Icon(
                           Icons.location_on_rounded,
-                          color: Colors.black,
+                          // color: Colors.black,
                         )),
                         Tab(
                             icon: Icon(
                           Icons.map,
-                          color: Colors.black,
+                          // color: Colors.black,
                         )),
                       ]),
                       Expanded(
@@ -182,8 +181,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                       height: 800,
                                       child: GoogleMap(
                                         onTap: (position) {
-                                          _customInfoWindowController
-                                              .hideInfoWindow();
+                                          _customInfoWindowController.hideInfoWindow();
                                         },
                                         mapType: MapType.hybrid,
                                         compassEnabled: true,
@@ -313,7 +311,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
 
   Set<Marker> getMarkers(DocumentSnapshot location) {
     //markers to place on map
-    print(location);
+    // print(location);
     // final animalData = Animal.fromSnapshot(animal);
     // final locationData = Location.fromSnapshot(location.first);
 
