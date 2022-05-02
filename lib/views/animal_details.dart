@@ -1,16 +1,28 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:custom_info_window/custom_info_window.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sanctuary/models/animal-model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sanctuary/models/location_model.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class AnimalDetails extends StatelessWidget {
   static const String id = 'animal_details';
   final Animal animal;
   final double widgetHeight = 350.0;
+
+  final Completer<GoogleMapController> _controller = Completer();
+  final Set<Marker> markers = new Set();
+  CustomInfoWindowController _customInfoWindowController = CustomInfoWindowController();
+
+  static final CameraPosition _firstLocation = CameraPosition(
+    target: LatLng(7.710992, 26.104868),
+    zoom: 3,
+  );
 
   AnimalDetails({this.animal});
 
@@ -297,7 +309,28 @@ class AnimalDetails extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Center(child: Text("Map goes here"))
+                    SizedBox(
+                      height: 800,
+                      width: 600,
+                      child: GoogleMap(
+                        onTap: (position) {
+                          _customInfoWindowController.hideInfoWindow();
+                        },
+                        mapType: MapType.hybrid,
+                        compassEnabled: true,
+                        onCameraMove: (position) {
+                          _customInfoWindowController
+                              .onCameraMove();
+                        },
+                        markers: getMarkers(animal.locations),
+                        initialCameraPosition: _firstLocation,
+                        onMapCreated: (GoogleMapController
+                        controller) async {
+                          _customInfoWindowController
+                              .googleMapController = controller;
+                        },
+                      ),
+                    )
                   ]),
                   ListView(children: [
                     ListTile(
@@ -384,4 +417,29 @@ class AnimalDetails extends StatelessWidget {
               )))
     ]));
   }
+
+  Set<Marker> getMarkers(List locations) {
+    //markers to place on map
+    // final animalData = Animal.fromSnapshot(animal);
+    // final locationData = Location.fromSnapshot(location.first);
+
+    locations.forEach((data) {
+      print(data);
+      markers.add(Marker(
+          markerId: MarkerId(data["lat"].toString()),
+          position: LatLng(data["lat"], data["lng"]),
+          onTap: () {
+            // _customInfoWindowController.addInfoWindow(
+            //
+            //   LatLng(double.parse(data.get("latitude")),
+            //       double.parse(data.get("longitude"))),
+            // );
+          },
+        ));
+      }
+    );
+
+    return markers;
+  }
 }
+

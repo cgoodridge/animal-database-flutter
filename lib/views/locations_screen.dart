@@ -76,7 +76,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
 
   static final CameraPosition _firstLocation = CameraPosition(
     target: LatLng(7.710992, 26.104868),
-    zoom: 0,
+    zoom: 3,
   );
 
   static final CameraPosition _kLake = CameraPosition(
@@ -303,91 +303,79 @@ class _LocationsScreenState extends State<LocationsScreen> {
     );
   }
 
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
-
   Set<Marker> getMarkers(DocumentSnapshot location) {
     //markers to place on map
-    // print(location);
+
     // final animalData = Animal.fromSnapshot(animal);
-    // final locationData = Location.fromSnapshot(location.first);
+    final locationData = Location.fromSnapshot(location);
 
-    //location.forEach((data) {
-      // print(data.get("common-name"));
-      // final location = Location.fromSnapshot(data);
-      // final animal = Animal.fromSnapshot(data);
+      markers.add(Marker(
+        markerId: MarkerId(locationData.locationName),
+        position: LatLng(double.parse(locationData.coordinates["lat"]), double.parse(locationData.coordinates["lng"])),
+        onTap: () {
+          // _customInfoWindowController.addInfoWindow(
+          //   Column(
+          //     children: [
+          //       Expanded(
+          //         child: InkWell(
+          //           onTap: () {
+          //             Navigator.push(
+          //               context,
+          //               MaterialPageRoute(
+          //                   builder: (context) => AnimalDetails(
+          //                         animal: animal,
+          //                       )),
+          //             );
+          //           },
+          //           child: Container(
+          //             decoration: BoxDecoration(
+          //               color: Colors.blue,
+          //               borderRadius: BorderRadius.circular(4),
+          //             ),
+          //             child: Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Row(
+          //                 mainAxisAlignment: MainAxisAlignment.center,
+          //                 children: [
+          //                   CircleAvatar(
+          //                       backgroundImage:
+          //                           NetworkImage(data.get("imgURL"))),
+          //                   SizedBox(
+          //                     width: 8.0,
+          //                   ),
+          //                   Text(
+          //                     data.get("commonName"),
+          //                     style: Theme.of(context)
+          //                         .textTheme
+          //                         .headline6
+          //                         .copyWith(
+          //                           color: Colors.white,
+          //                         ),
+          //                   )
+          //                 ],
+          //               ),
+          //             ),
+          //             width: double.infinity,
+          //             height: double.infinity,
+          //           ),
+          //         ),
+          //       ),
+          //       Triangle.isosceles(
+          //         edge: Edge.BOTTOM,
+          //         child: Container(
+          //           color: Colors.blue,
+          //           width: 20.0,
+          //           height: 10.0,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          //   LatLng(double.parse(data.get("latitude")),
+          //       double.parse(data.get("longitude"))),
+          // );
+        },
+      ));
 
-      // markers.add(Marker(
-      //   markerId: MarkerId(data.get("commonName")),
-      //   position: LatLng(double.parse(data.get("lat")),
-      //       double.parse(data.get("lng"))),
-      //   onTap: () {
-      //     _customInfoWindowController.addInfoWindow(
-      //       Column(
-      //         children: [
-      //           Expanded(
-      //             child: InkWell(
-      //               onTap: () {
-      //                 Navigator.push(
-      //                   context,
-      //                   MaterialPageRoute(
-      //                       builder: (context) => AnimalDetails(
-      //                             animal: animal,
-      //                           )),
-      //                 );
-      //               },
-      //               child: Container(
-      //                 decoration: BoxDecoration(
-      //                   color: Colors.blue,
-      //                   borderRadius: BorderRadius.circular(4),
-      //                 ),
-      //                 child: Padding(
-      //                   padding: const EdgeInsets.all(8.0),
-      //                   child: Row(
-      //                     mainAxisAlignment: MainAxisAlignment.center,
-      //                     children: [
-      //                       CircleAvatar(
-      //                           backgroundImage:
-      //                               NetworkImage(data.get("imgURL"))),
-      //                       SizedBox(
-      //                         width: 8.0,
-      //                       ),
-      //                       Text(
-      //                         data.get("commonName"),
-      //                         style: Theme.of(context)
-      //                             .textTheme
-      //                             .headline6
-      //                             .copyWith(
-      //                               color: Colors.white,
-      //                             ),
-      //                       )
-      //                     ],
-      //                   ),
-      //                 ),
-      //                 width: double.infinity,
-      //                 height: double.infinity,
-      //               ),
-      //             ),
-      //           ),
-      //           Triangle.isosceles(
-      //             edge: Edge.BOTTOM,
-      //             child: Container(
-      //               color: Colors.blue,
-      //               width: 20.0,
-      //               height: 10.0,
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //       LatLng(double.parse(data.get("latitude")),
-      //           double.parse(data.get("longitude"))),
-      //     );
-      //   },
-      // ));
-    //});
 
     return markers;
   }
