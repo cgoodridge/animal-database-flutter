@@ -48,7 +48,6 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Text(
                             "Account",
                             style: GoogleFonts.bungeeHairline(
-                                color: Colors.black,
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold),
                           )),
@@ -109,23 +108,17 @@ class _AccountScreenState extends State<AccountScreen> {
                             },
                           ),
                           Divider(),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(color: Colors.orange)),
-                          child: Text('LOGOUT',
+                          ListTile(
+                            title: Text('Logout',
                               style: GoogleFonts.montserrat(
-                                  color: Colors.black,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.normal)),
-                          onPressed: () async {
-                            await _auth.signOut();
-                          },
-                        ),
+                              color: Colors.red,
+                              // fontSize: 22,
+                              fontWeight: FontWeight.w300)),
+                            onTap: () async {
+                              _confirmLogout(context);
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -139,6 +132,30 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: CircularProgressIndicator()));
             }
           }),
+    );
+  }
+
+  Future<String> _confirmLogout(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Confirm Logout'),
+        content: const Text(
+            'Are you sure you want to logout?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await _auth.signOut();
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
     );
   }
 }
