@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +19,11 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   final AuthService _auth = AuthService();
   final userAnon = FirebaseAuth.instance.currentUser.isAnonymous;
+  final currentUserUID = FirebaseAuth.instance.currentUser.uid;
+  bool editState = false;
+
+  String firstName = '';
+  String lastName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -52,19 +58,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                 fontWeight: FontWeight.bold),
                           )),
 
-                          // Align(
-                          //   alignment: Alignment.centerRight,
-                          //   child: IconButton(
-                          //     color: Colors.black,
-                          //     icon: !isSearching ? Icon(Icons.search) : Icon(Icons.cancel),
-                          //     onPressed: () {
-                          //       // Expand search Field
-                          //       setState(() {
-                          //         isSearching = !isSearching;
-                          //       });
-                          //     },
-                          //   ),
-                          // )
 
                           Align(
                             alignment: Alignment.centerRight,
@@ -80,7 +73,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       ListView(
                         shrinkWrap: true,
                         children: [
-                          ListTile(
+                          !editState ? ListTile(
                             title: Text("Account Name"),
                             subtitle: !userAnon
                                 ? Text(userData.firstName +
@@ -89,7 +82,71 @@ class _AccountScreenState extends State<AccountScreen> {
                                 : Text("Anonymous"),
                             trailing: IconButton(
                               icon: Icon(Icons.edit),
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  editState = true;
+                                });
+                              },
+                            ),
+                          ) :
+                          Container(
+                            width: 300,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: TextFormField(
+                                      decoration: InputDecoration(
+                                        hintText: 'First Name',
+                                        hintStyle: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      initialValue: userData.firstName,
+                                      validator: (val) =>
+                                      val.isEmpty ? "Enter a First Name" : null,
+                                      onChanged: (val) {
+                                        setState(() => firstName = val);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: TextFormField(
+                                      decoration: InputDecoration(
+                                        hintText: 'Last Name',
+                                        hintStyle: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      initialValue: userData.lastName,
+                                      validator: (val) =>
+                                      val.isEmpty ? "Enter a Last Name" : null,
+                                      onChanged: (val) {
+                                        setState(() => lastName = val);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                IconButton(onPressed: () {
+                                    _confirmUpdateUser(context);
+                                    editState = false;
+                                  },
+                                  icon: Icon(Icons.save)
+                                ),
+                                IconButton(onPressed: () {
+                                  setState(() {
+                                    editState = false;
+                                  });
+                                },
+                                    icon: Icon(Icons.close)
+                                ),
+                              ],
                             ),
                           ),
                           Divider(),
@@ -132,6 +189,39 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: CircularProgressIndicator()));
             }
           }),
+    );
+  }
+
+  void updateUser () async {
+
+    await FirebaseFirestore.instance.collection("users").doc(currentUserUID).update({
+      'firstName': firstName,
+      'lastName': lastName,
+    });
+
+  }
+
+  Future<String> _confirmUpdateUser(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Confirm Update'),
+        content: const Text(
+            'Update name?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              updateUser();
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
     );
   }
 
