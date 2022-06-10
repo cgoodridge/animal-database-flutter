@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class Animal {
-
   final String kingdomClass;
   final String family;
   final String genus;
@@ -48,7 +47,7 @@ class Animal {
         assert(map['diet'] != null),
         assert(map['lifespan'] != null),
         assert(map['lifestyle'] != null),
-        assert(map['locations'] != null),
+        // assert(map['locations'] != null),
         assert(map['nameOfYoung'] != null),
         assert(map['description'] != null),
         assert(map['redListStatus'] != null),

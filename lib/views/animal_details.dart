@@ -18,7 +18,8 @@ class AnimalDetails extends StatelessWidget {
 
   final Completer<GoogleMapController> _controller = Completer();
   final Set<Marker> markers = new Set();
-  CustomInfoWindowController _customInfoWindowController = CustomInfoWindowController();
+  CustomInfoWindowController _customInfoWindowController =
+      CustomInfoWindowController();
 
   static final CameraPosition _firstLocation = CameraPosition(
     target: LatLng(7.710992, 26.104868),
@@ -31,7 +32,6 @@ class AnimalDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-
           title: Text(
             animal.commonName,
             style: GoogleFonts.bungeeHairline(
@@ -46,17 +46,19 @@ class AnimalDetails extends StatelessWidget {
                 child: Container(
                   height: 300,
                   child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                      PointerDeviceKind.touch,
-                      PointerDeviceKind.mouse,
-                    },),
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                      },
+                    ),
                     child: ListView(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
-                        ...animal.imgURLS.map((data) =>
-                          Padding(
+                        ...animal.imgURLS.map(
+                          (data) => Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
@@ -76,17 +78,14 @@ class AnimalDetails extends StatelessWidget {
                   ),
                 )),
             // _buildDetails(context),
-            Expanded(
-                child: _buildDetails(context)
-            )
+            Expanded(child: _buildDetails(context))
           ],
         ));
   }
 
   Widget _buildDetails(BuildContext context) {
     return SafeArea(
-      child: Column(
-          children: <Widget>[
+        child: Column(children: <Widget>[
       Expanded(
           child: DefaultTabController(
               length: 4,
@@ -320,15 +319,13 @@ class AnimalDetails extends StatelessWidget {
                         mapType: MapType.hybrid,
                         compassEnabled: true,
                         onCameraMove: (position) {
-                          _customInfoWindowController
-                              .onCameraMove();
+                          _customInfoWindowController.onCameraMove();
                         },
                         markers: getMarkers(animal.locations),
                         initialCameraPosition: _firstLocation,
-                        onMapCreated: (GoogleMapController
-                        controller) async {
-                          _customInfoWindowController
-                              .googleMapController = controller;
+                        onMapCreated: (GoogleMapController controller) async {
+                          _customInfoWindowController.googleMapController =
+                              controller;
                         },
                       ),
                     )
@@ -427,20 +424,18 @@ class AnimalDetails extends StatelessWidget {
     locations.forEach((data) {
       print(data);
       markers.add(Marker(
-          markerId: MarkerId(data["lat"].toString()),
-          position: LatLng(data["lat"], data["lng"]),
-          onTap: () {
-            // _customInfoWindowController.addInfoWindow(
-            //
-            //   LatLng(double.parse(data.get("latitude")),
-            //       double.parse(data.get("longitude"))),
-            // );
-          },
-        ));
-      }
-    );
+        markerId: MarkerId(data["lat"].toString()),
+        position: LatLng(data["lat"], data["lng"]),
+        onTap: () {
+          // _customInfoWindowController.addInfoWindow(
+          //
+          //   LatLng(double.parse(data.get("latitude")),
+          //       double.parse(data.get("longitude"))),
+          // );
+        },
+      ));
+    });
 
     return markers;
   }
 }
-
