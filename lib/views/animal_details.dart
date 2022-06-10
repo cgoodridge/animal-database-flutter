@@ -32,23 +32,25 @@ class AnimalDetails extends StatelessWidget {
         ),
         body: Column(
           children: [
-            ListView(),
+            // ListView(),
             Hero(
                 tag: animal.commonName,
                 child: Container(
                   height: 300,
                   child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                      PointerDeviceKind.touch,
-                      PointerDeviceKind.mouse,
-                    },),
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                      },
+                    ),
                     child: ListView(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
-                        ...animal.imgURLS.map((data) =>
-                          Padding(
+                        ...animal.imgURLS.map(
+                          (data) => Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
@@ -68,17 +70,14 @@ class AnimalDetails extends StatelessWidget {
                   ),
                 )),
             // _buildDetails(context),
-            Expanded(
-                child: _buildDetails(context)
-            )
+            Expanded(child: _buildDetails(context))
           ],
         ));
   }
 
   Widget _buildDetails(BuildContext context) {
     return SafeArea(
-      child: Column(
-          children: <Widget>[
+        child: Column(children: <Widget>[
       Expanded(
           child: DefaultTabController(
               length: 4,
