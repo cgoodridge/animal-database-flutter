@@ -1,5 +1,9 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:custom_info_window/custom_info_window.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sanctuary/models/animal-model.dart';
@@ -12,45 +16,47 @@ class AnimalDetails extends StatelessWidget {
   final Animal animal;
   final double widgetHeight = 350.0;
 
+  final Completer<GoogleMapController> _controller = Completer();
+  final Set<Marker> markers = new Set();
+  CustomInfoWindowController _customInfoWindowController = CustomInfoWindowController();
+
+  static final CameraPosition _firstLocation = CameraPosition(
+    target: LatLng(7.710992, 26.104868),
+    zoom: 3,
+  );
+
   AnimalDetails({this.animal});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffeaeaea),
         appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.white, //change your color here
-          ),
-          backgroundColor: Colors.black,
+
           title: Text(
             animal.commonName,
             style: GoogleFonts.bungeeHairline(
-                color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                fontSize: 22, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
         ),
         body: Column(
           children: [
-            // ListView(),
             Hero(
                 tag: animal.commonName,
                 child: Container(
                   height: 300,
                   child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                      },
-                    ),
+                    behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                      PointerDeviceKind.touch,
+                      PointerDeviceKind.mouse,
+                    },),
                     child: ListView(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
-                        ...animal.imgURLS.map(
-                          (data) => Padding(
+                        ...animal.imgURLS.map((data) =>
+                          Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
@@ -70,19 +76,21 @@ class AnimalDetails extends StatelessWidget {
                   ),
                 )),
             // _buildDetails(context),
-            Expanded(child: _buildDetails(context))
+            Expanded(
+                child: _buildDetails(context)
+            )
           ],
         ));
   }
 
   Widget _buildDetails(BuildContext context) {
     return SafeArea(
-        child: Column(children: <Widget>[
+      child: Column(
+          children: <Widget>[
       Expanded(
           child: DefaultTabController(
               length: 4,
               child: Scaffold(
-                backgroundColor: Color(0xffffffff),
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(kToolbarHeight),
                   child: Container(
@@ -97,26 +105,22 @@ class AnimalDetails extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Description",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Description"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Classification",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Classification"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Habitat",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Habitat"),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 15.0, top: 15.0),
-                                child: Text("Details",
-                                    style: TextStyle(color: Colors.black)),
+                                child: Text("Details"),
                               ),
                             ],
                           ),
@@ -126,15 +130,17 @@ class AnimalDetails extends StatelessWidget {
                   ),
                 ),
                 body: TabBarView(children: [
-                  ListView(children: [
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32.0, vertical: 20.0),
-                        child: Text(
-                          animal.description,
-                          style: TextStyle(height: 2, color: Colors.black),
-                        )),
-                  ]),
+                  Flexible(
+                    child: ListView(children: [
+                      Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32.0, vertical: 20.0),
+                          child: Text(
+                            animal.description,
+                            style: TextStyle(height: 2),
+                          )),
+                    ]),
+                  ),
                   ListView(children: [
                     ListTile(
                       title: Row(
@@ -304,7 +310,28 @@ class AnimalDetails extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Center(child: Text("Map goes here"))
+                    SizedBox(
+                      height: 800,
+                      width: 600,
+                      child: GoogleMap(
+                        onTap: (position) {
+                          _customInfoWindowController.hideInfoWindow();
+                        },
+                        mapType: MapType.hybrid,
+                        compassEnabled: true,
+                        onCameraMove: (position) {
+                          _customInfoWindowController
+                              .onCameraMove();
+                        },
+                        markers: getMarkers(animal.locations),
+                        initialCameraPosition: _firstLocation,
+                        onMapCreated: (GoogleMapController
+                        controller) async {
+                          _customInfoWindowController
+                              .googleMapController = controller;
+                        },
+                      ),
+                    )
                   ]),
                   ListView(children: [
                     ListTile(
@@ -391,4 +418,29 @@ class AnimalDetails extends StatelessWidget {
               )))
     ]));
   }
+
+  Set<Marker> getMarkers(List locations) {
+    //markers to place on map
+    // final animalData = Animal.fromSnapshot(animal);
+    // final locationData = Location.fromSnapshot(location.first);
+
+    locations.forEach((data) {
+      print(data);
+      markers.add(Marker(
+          markerId: MarkerId(data["lat"].toString()),
+          position: LatLng(data["lat"], data["lng"]),
+          onTap: () {
+            // _customInfoWindowController.addInfoWindow(
+            //
+            //   LatLng(double.parse(data.get("latitude")),
+            //       double.parse(data.get("longitude"))),
+            // );
+          },
+        ));
+      }
+    );
+
+    return markers;
+  }
 }
+

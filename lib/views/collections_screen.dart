@@ -22,9 +22,6 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-
-        backgroundColor: Color(0xfff5f5f5),
-        //body:(_width > 500)? _buildViewLarge(context) : _buildViewSmall(context)
         body:_buildViewSmall(context)
 
     );
@@ -45,10 +42,10 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                       alignment: Alignment.centerLeft,
                       child: Image.asset('assets/images/logo.png', width: 40,),
                     ),
-                    Text("collections", style: GoogleFonts.bungeeHairline(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),),
+                    Text("collections", style: GoogleFonts.bungeeHairline(fontSize: 24, fontWeight: FontWeight.bold),),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Icon(Icons.search, color: Colors.black),
+                      child: Icon(Icons.search,),
                       /*
                         child: FlatButton.icon(
                           icon: Icon(Icons.search, color: Colors.white,),
@@ -72,7 +69,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   Widget _buildViewLarge(BuildContext context)
   {
     return Scaffold(
-        backgroundColor: Colors.black,
+        // backgroundColor: Colors.black,
         body: Column(
           children: [
             Text("TEST", style: TextStyle(color: Colors.white, fontSize: 26),),
@@ -84,16 +81,19 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   Widget _buildBody(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    // TODO: get actual snapshot from Cloud Firestore
+
     return StreamBuilder<QuerySnapshot>(
-      stream:FirebaseFirestore.instance.collection('collectionNames').snapshots(),
+      stream:FirebaseFirestore.instance.collection('collectionNames').snapshots(), //Refactor to user database service
 
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()));
+        if (snapshot.hasData && snapshot.data.docs.length == 0) {
+          return Center(child: Text("No Collections available"));
+        }
+        else if (snapshot.hasData && snapshot.data.docs.length > 0){
+          return (_width > 600)? _buildGridList(context, snapshot.data.docs) : _buildList(context, snapshot.data.docs);
         }
         else {
-          return (_width > 600)? _buildGridList(context, snapshot.data.docs) : _buildList(context, snapshot.data.docs);
+          return Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator()));
         }
       },
     );
@@ -121,6 +121,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+
     final collection = Collection.fromSnapshot(data);
 
     return Padding(

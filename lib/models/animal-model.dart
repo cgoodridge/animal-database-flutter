@@ -16,7 +16,7 @@ class Animal {
   final String diet;
   final String lifespan;
   final String lifestyle;
-  // final List locations;
+  final List locations;
   // final String location;
   final String nameOfYoung;
   final String description;
@@ -48,7 +48,7 @@ class Animal {
         assert(map['diet'] != null),
         assert(map['lifespan'] != null),
         assert(map['lifestyle'] != null),
-        // assert(map['locations'] != null),
+        assert(map['locations'] != null),
         assert(map['nameOfYoung'] != null),
         assert(map['description'] != null),
         assert(map['redListStatus'] != null),
@@ -64,7 +64,7 @@ class Animal {
         diet = map['diet'],
         lifespan = map['lifespan'],
         lifestyle = map['lifestyle'],
-        // locations = map['locations'],
+        locations = map['locations'],
         nameOfYoung = map['nameOfYoung'],
         description = map['description'],
         redListStatus = map['redListStatus'],
@@ -92,7 +92,7 @@ class Animal {
         'diet': diet,
         'lifespan': lifespan,
         'lifestyle': lifestyle,
-        // 'locations': locations,
+        'locations': locations,
         'description': description,
         'redListStatus': redListStatus,
         'nameOfYoung': nameOfYoung,

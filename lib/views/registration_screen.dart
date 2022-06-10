@@ -32,7 +32,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      // backgroundColor: Color(0xffffffff),
       // resizeToAvoidBottomInset: false,
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),

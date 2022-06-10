@@ -9,6 +9,8 @@ import 'package:sanctuary/models/user_model.dart';
 import 'package:sanctuary/services/auth.dart';
 import 'package:sanctuary/services/database.dart';
 import 'package:sanctuary/services/wrapper.dart';
+import 'package:sanctuary/utils/dark_theme_styles.dart';
+import 'package:sanctuary/utils/dart_theme_provider.dart';
 import 'package:sanctuary/views/animal_details.dart';
 import 'package:sanctuary/views/animallist_screen.dart';
 import 'package:sanctuary/views/collections_screen.dart';
@@ -24,9 +26,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
 
   await dotenv.load(fileName: ".env");
 
@@ -49,12 +53,29 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
-
+  SharedPreferences.setMockInitialValues({});
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+
+  void initState() {
+    super.initState();
+    getCurrentAppTheme();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+    await themeChangeProvider.darkThemePreference.getTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -63,26 +84,35 @@ class MyApp extends StatelessWidget {
       systemNavigationBarDividerColor: null,
       statusBarIconBrightness: Brightness.light,
     ));
-    return StreamProvider<CustomUser>.value(
-      value: AuthService().user,
-      initialData: null,
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Project Sanctuary',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          initialRoute: '/',
-          routes: {
-            '/': (context) => Wrapper(),
-            '/collections': (context) => CollectionsScreen(),
-            '/locations': (context) => LocationsScreen(),
-            '/home': (context) => MyHomePage(),
-            '/settings': (context) => SettingsScreen(),
-            AnimalDetails.id: (context) => AnimalDetails(),
-          }
-          //home: MyHomePage(title: 'Flutter Demo Home Page'),
-          ),
+    return ChangeNotifierProvider(
+      create: (_) {
+        return themeChangeProvider;
+      },
+      child: Consumer<DarkThemeProvider>(
+        builder: (BuildContext context, value, Widget child) {
+          return StreamProvider<CustomUser>.value(
+            value: AuthService().user,
+            initialData: null,
+            child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Project Sanctuary',
+                theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+                // theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+                initialRoute: '/',
+                routes: {
+                  '/': (context) => Wrapper(),
+                  '/collections': (context) => CollectionsScreen(),
+                  '/locations': (context) => LocationsScreen(),
+                  '/home': (context) => MyHomePage(),
+                  '/settings': (context) => SettingsScreen(),
+                  AnimalDetails.id: (context) => AnimalDetails(),
+                }
+              //home: MyHomePage(title: 'Flutter Demo Home Page'),
+            ),
+          );
+        }
+
+      ),
     );
   }
 }
@@ -93,13 +123,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  final userAnon = FirebaseAuth.instance.currentUser.isAnonymous;
+
+  int _selectedIndex =  0;
+
 
   //PickedFile image;
 
   final List<Widget> _navBarLocations = [
     AnimalListScreen(),
     CollectionsScreen(),
+    LocationsScreen(),
+    SettingsScreen(),
+  ];
+  final List<Widget> _anonNavBarLocations = [
+    AnimalListScreen(),
     LocationsScreen(),
     SettingsScreen(),
   ];
@@ -110,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   void initState() {
     super.initState();
   }
@@ -117,6 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<CustomUser>(context);
+    final themeChange = Provider.of<DarkThemeProvider>(context);
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
       SystemUiOverlay.bottom, //This line is used for showing the bottom bar
@@ -163,10 +203,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     : null,
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Color(0xfff1f1f1),
-                  unselectedItemColor: Colors.black,
+                  // backgroundColor: Color(0xfff1f1f1),
+                  unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
                   type: BottomNavigationBarType.fixed,
-                  items: const <BottomNavigationBarItem>[
+                  items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),
                       label: 'Home',
@@ -190,37 +230,68 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               );
             } else {
-              return Scaffold(
-                extendBody: true,
-                body: _navBarLocations[_selectedIndex],
-                //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-                bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: Color(0xffffffff),
-                  unselectedItemColor: Colors.black,
-                  type: BottomNavigationBarType.fixed,
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.collections),
-                      label: 'Collections',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.location_on),
-                      label: 'Locations',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings),
-                      label: 'Settings',
-                    ),
-                  ],
-                  currentIndex: _selectedIndex,
-                  selectedItemColor: Colors.orange,
-                  onTap: _onItemTapped,
-                ),
-              );
+              if (userAnon) {
+                return Scaffold(
+                  extendBody: true,
+                  body: _anonNavBarLocations[_selectedIndex],
+                  //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                  bottomNavigationBar: BottomNavigationBar(
+                    // backgroundColor: Color(0xffffffff),
+                    unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
+                    type: BottomNavigationBarType.fixed,
+                    items: const <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.home),
+                        label: 'Home',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.location_on),
+                        label: 'Locations',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.settings),
+                        label: 'Settings',
+                      ),
+                    ],
+                    currentIndex: _selectedIndex,
+                    selectedItemColor: Colors.orange,
+                    onTap: _onItemTapped,
+                  ),
+                );
+              } else {
+                return Scaffold(
+                  extendBody: true,
+                  body: _navBarLocations[_selectedIndex],
+                  //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                  bottomNavigationBar: BottomNavigationBar(
+                    // backgroundColor: Color(0xffffffff),
+                    unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
+                    type: BottomNavigationBarType.fixed,
+                    items: const <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.home),
+                        label: 'Home',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.collections),
+                        label: 'Collections',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.location_on),
+                        label: 'Locations',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.settings),
+                        label: 'Settings',
+                      ),
+                    ],
+                    currentIndex: _selectedIndex,
+                    selectedItemColor: Colors.orange,
+                    onTap: _onItemTapped,
+                  ),
+                );
+              }
+
             }
           } else {
             return CircularProgressIndicator();
@@ -319,11 +390,8 @@ class _FormDialogState extends State<FormDialog> {
                                 horizontal: 10.0, vertical: 15.0),
                             child: TextFormField(
                               controller: kingdom,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Kingdom" : null,
                               decoration: InputDecoration(hintText: "Kingdom"),
                             ),
                           ),
@@ -335,11 +403,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: phylum,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Phylum" : null,
                               decoration: InputDecoration(hintText: "Phylum"),
                             ),
                           ),
@@ -354,11 +419,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: kingdomClass,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Class" : null,
                               decoration: InputDecoration(hintText: "Class"),
                             ),
                           ),
@@ -369,11 +431,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: order,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Order" : null,
                               decoration: InputDecoration(hintText: "Order"),
                             ),
                           ),
@@ -388,11 +447,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: family,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Family" : null,
                               decoration: InputDecoration(hintText: "Family"),
                             ),
                           ),
@@ -403,11 +459,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: genus,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Genus" : null,
                               decoration: InputDecoration(hintText: "Genus"),
                             ),
                           ),
@@ -422,11 +475,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: scientificName,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Species" : null,
                               decoration: InputDecoration(hintText: "Species"),
                             ),
                           ),
@@ -437,11 +487,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: commonName,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a Common Name" : null,
                               decoration:
                                   InputDecoration(hintText: "Common Name"),
                             ),
@@ -457,11 +504,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: nameOfYoung,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter name of young" : null,
                               decoration:
                                   InputDecoration(hintText: "Name of Young"),
                             ),
@@ -473,11 +517,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: diet,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter diet" : null,
                               decoration: InputDecoration(hintText: "Diet"),
                             ),
                           ),
@@ -492,11 +533,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: lifespan,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a lifespan" : null,
                               decoration: InputDecoration(hintText: "Lifespan"),
                             ),
                           ),
@@ -507,11 +545,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: lifestyle,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter lifestyle" : null,
                               decoration:
                                   InputDecoration(hintText: "LifeStyle"),
                             ),
@@ -527,11 +562,8 @@ class _FormDialogState extends State<FormDialog> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextFormField(
                               controller: description,
-                              validator: (value) {
-                                return value.isNotEmpty
-                                    ? null
-                                    : "Invalid Field";
-                              },
+                              validator: (val) =>
+                              val.isEmpty ? "Enter a description" : null,
                               decoration:
                                   InputDecoration(hintText: "Description"),
                             ),

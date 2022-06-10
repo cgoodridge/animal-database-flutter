@@ -45,11 +45,13 @@ dependencies:
   multiple_stream_builder: ^2.0.0
   image_picker: ^0.8.4+8
   auto_size_text: ^3.0.0
+  google_maps_flutter_web: ^0.3.2+1
   firebase_storage: ^10.2.7
   permission_handler: ^9.2.0
   intl: ^0.17.0
   custom_info_window: ^1.0.1
   clippy_flutter: ^1.1.1
+  shared_preferences: ^2.0.13
   #model_viewer: 0.8.1
   #webview_flutter: 1.0.7
 

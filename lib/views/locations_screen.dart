@@ -76,7 +76,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
 
   static final CameraPosition _firstLocation = CameraPosition(
     target: LatLng(7.710992, 26.104868),
-    zoom: 0,
+    zoom: 3,
   );
 
   static final CameraPosition _kLake = CameraPosition(
@@ -93,12 +93,12 @@ class _LocationsScreenState extends State<LocationsScreen> {
         stream: DatabaseService().locationData,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           } else {
             return DefaultTabController(
               length: 2,
               child: Scaffold(
-                backgroundColor: Color(0xffffffff),
+                // backgroundColor: Color(0xffffffff),
                 body: Container(
                   margin:
                       EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
@@ -121,27 +121,26 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                 ? Text(
                                     "Location",
                                     style: GoogleFonts.bungeeHairline(
-                                        color: Colors.black,
+                                        // color: Colors.black,
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold),
                                   )
                                 : TextField(
                                     controller: searchController,
-                                    style: TextStyle(color: Colors.black),
+                                    // style: TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
                                         prefixIcon: Icon(
                                           Icons.search,
-                                          color: Colors.black,
+                                          // color: Colors.black,
                                         ),
                                         hintText: "Search Sanctuary",
-                                        hintStyle:
-                                            TextStyle(color: Colors.black)),
+                                        hintStyle: TextStyle(color: Colors.black)),
                                   ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: IconButton(
-                              color: Colors.black,
+                              // color: Colors.black,
                               icon: !isSearching
                                   ? Icon(Icons.search)
                                   : Icon(Icons.cancel),
@@ -159,12 +158,12 @@ class _LocationsScreenState extends State<LocationsScreen> {
                         Tab(
                             icon: Icon(
                           Icons.location_on_rounded,
-                          color: Colors.black,
+                          // color: Colors.black,
                         )),
                         Tab(
                             icon: Icon(
                           Icons.map,
-                          color: Colors.black,
+                          // color: Colors.black,
                         )),
                       ]),
                       Expanded(
@@ -172,43 +171,43 @@ class _LocationsScreenState extends State<LocationsScreen> {
                             physics: NeverScrollableScrollPhysics(),
                             children: [
                               _buildList(context, snapshot.data.docs),
-                              Text("Test")
-                              // Stack(
-                              //   children: [
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //           vertical: 32.0),
-                              //       child: SizedBox(
-                              //         height: 800,
-                              //         child: GoogleMap(
-                              //           onTap: (position) {
-                              //             _customInfoWindowController
-                              //                 .hideInfoWindow();
-                              //           },
-                              //           mapType: MapType.hybrid,
-                              //           compassEnabled: true,
-                              //           onCameraMove: (position) {
-                              //             _customInfoWindowController
-                              //                 .onCameraMove();
-                              //           },
-                              //           markers: getMarkers(snapshot.data.docs),
-                              //           initialCameraPosition: _firstLocation,
-                              //           onMapCreated: (GoogleMapController
-                              //               controller) async {
-                              //             _customInfoWindowController
-                              //                 .googleMapController = controller;
-                              //           },
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     CustomInfoWindow(
-                              //       controller: _customInfoWindowController,
-                              //       height: 75,
-                              //       width: 150,
-                              //       offset: 30,
-                              //     ),
-                              //   ],
-                              // ),
+                              // Text("Test")
+                              Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 32.0),
+                                    child: SizedBox(
+                                      height: 800,
+                                      child: GoogleMap(
+                                        onTap: (position) {
+                                          _customInfoWindowController.hideInfoWindow();
+                                        },
+                                        mapType: MapType.hybrid,
+                                        compassEnabled: true,
+                                        onCameraMove: (position) {
+                                          _customInfoWindowController
+                                              .onCameraMove();
+                                        },
+                                        markers: getMarkers(snapshot.data.docs.first),
+                                        initialCameraPosition: _firstLocation,
+                                        onMapCreated: (GoogleMapController
+                                            controller) async {
+                                          _customInfoWindowController
+                                              .googleMapController = controller;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  // _buildMapPanel(context, snapshot.data.docs),
+                                  CustomInfoWindow(
+                                    controller: _customInfoWindowController,
+                                    height: 75,
+                                    width: 150,
+                                    offset: 30,
+                                  ),
+                                ],
+                              ),
                             ]),
                       ),
                     ],
@@ -266,87 +265,117 @@ class _LocationsScreenState extends State<LocationsScreen> {
     );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
-
-  Set<Marker> getMarkers(List<DocumentSnapshot> animal) {
-    //markers to place on map
-    // print(animal.docs.single.data());
-    // final animalData = Animal.fromSnapshot(animal);
-    animal.forEach((data) {
-      // print(data.get("common-name"));
-      final animal = Animal.fromSnapshot(data);
-
-      markers.add(Marker(
-        markerId: MarkerId(data.get("common-name")),
-        position: LatLng(double.parse(data.get("latitude")),
-            double.parse(data.get("longitude"))),
-        onTap: () {
-          _customInfoWindowController.addInfoWindow(
-            Column(
+  Widget _buildMapPanel(BuildContext context, DocumentSnapshot data) {
+    final location = Location.fromSnapshot(data);
+    return ExpansionTile(
+      title: Text(location.locationName),
+      children: [
+        Column(
+          children: [
+            ListView(
+              shrinkWrap: true,
               children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AnimalDetails(
+                ...location.animalList.map((animalData) {
+                  final animal = Animal.fromMap(animalData);
+                  return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(animal.imgURLS.first),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.remove_red_eye),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AnimalDetails(
                                   animal: animal,
                                 )),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(4),
+                          );
+                        },
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(data.get("imgURL"))),
-                            SizedBox(
-                              width: 8.0,
-                            ),
-                            Text(
-                              data.get("common-name"),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(
-                                    color: Colors.white,
-                                  ),
-                            )
-                          ],
-                        ),
-                      ),
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                  ),
-                ),
-                Triangle.isosceles(
-                  edge: Edge.BOTTOM,
-                  child: Container(
-                    color: Colors.blue,
-                    width: 20.0,
-                    height: 10.0,
-                  ),
-                ),
+                      title: Text(animal.commonName));
+                }).toList()
               ],
             ),
-            LatLng(double.parse(data.get("latitude")),
-                double.parse(data.get("longitude"))),
-          );
+          ],
+        ),
+      ],
+    );
+  }
+
+  Set<Marker> getMarkers(DocumentSnapshot location) {
+    //markers to place on map
+
+    // final animalData = Animal.fromSnapshot(animal);
+    final locationData = Location.fromSnapshot(location);
+
+      markers.add(Marker(
+        markerId: MarkerId(locationData.locationName),
+        position: LatLng(double.parse(locationData.coordinates["lat"]), double.parse(locationData.coordinates["lng"])),
+        onTap: () {
+          // _customInfoWindowController.addInfoWindow(
+          //   Column(
+          //     children: [
+          //       Expanded(
+          //         child: InkWell(
+          //           onTap: () {
+          //             Navigator.push(
+          //               context,
+          //               MaterialPageRoute(
+          //                   builder: (context) => AnimalDetails(
+          //                         animal: animal,
+          //                       )),
+          //             );
+          //           },
+          //           child: Container(
+          //             decoration: BoxDecoration(
+          //               color: Colors.blue,
+          //               borderRadius: BorderRadius.circular(4),
+          //             ),
+          //             child: Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Row(
+          //                 mainAxisAlignment: MainAxisAlignment.center,
+          //                 children: [
+          //                   CircleAvatar(
+          //                       backgroundImage:
+          //                           NetworkImage(data.get("imgURL"))),
+          //                   SizedBox(
+          //                     width: 8.0,
+          //                   ),
+          //                   Text(
+          //                     data.get("commonName"),
+          //                     style: Theme.of(context)
+          //                         .textTheme
+          //                         .headline6
+          //                         .copyWith(
+          //                           color: Colors.white,
+          //                         ),
+          //                   )
+          //                 ],
+          //               ),
+          //             ),
+          //             width: double.infinity,
+          //             height: double.infinity,
+          //           ),
+          //         ),
+          //       ),
+          //       Triangle.isosceles(
+          //         edge: Edge.BOTTOM,
+          //         child: Container(
+          //           color: Colors.blue,
+          //           width: 20.0,
+          //           height: 10.0,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          //   LatLng(double.parse(data.get("latitude")),
+          //       double.parse(data.get("longitude"))),
+          // );
         },
       ));
-    });
+
 
     return markers;
   }

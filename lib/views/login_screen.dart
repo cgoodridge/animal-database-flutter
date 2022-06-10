@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     double _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      // backgroundColor: Color(0xffffffff),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
         child: Column(
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "Project Sanctuary",
               style: GoogleFonts.orbitron(
                   fontWeight: FontWeight.normal,
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontSize: 30),
             ),
             SizedBox(height: 40.0),
