@@ -31,7 +31,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
   await dotenv.load(fileName: ".env");
 
   if (kIsWeb) {
@@ -73,7 +72,7 @@ class _MyAppState extends State<MyApp> {
 
   void getCurrentAppTheme() async {
     themeChangeProvider.darkTheme =
-    await themeChangeProvider.darkThemePreference.getTheme();
+        await themeChangeProvider.darkThemePreference.getTheme();
   }
 
   @override
@@ -89,30 +88,28 @@ class _MyAppState extends State<MyApp> {
         return themeChangeProvider;
       },
       child: Consumer<DarkThemeProvider>(
-        builder: (BuildContext context, value, Widget child) {
-          return StreamProvider<CustomUser>.value(
-            value: AuthService().user,
-            initialData: null,
-            child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'Project Sanctuary',
-                theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-                // theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-                initialRoute: '/',
-                routes: {
-                  '/': (context) => Wrapper(),
-                  '/collections': (context) => CollectionsScreen(),
-                  '/locations': (context) => LocationsScreen(),
-                  '/home': (context) => MyHomePage(),
-                  '/settings': (context) => SettingsScreen(),
-                  AnimalDetails.id: (context) => AnimalDetails(),
-                }
+          builder: (BuildContext context, value, Widget child) {
+        return StreamProvider<CustomUser>.value(
+          value: AuthService().user,
+          initialData: null,
+          child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Project Sanctuary',
+              theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+              // theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+              initialRoute: '/',
+              routes: {
+                '/': (context) => Wrapper(),
+                '/collections': (context) => CollectionsScreen(),
+                '/locations': (context) => LocationsScreen(),
+                '/home': (context) => MyHomePage(),
+                '/settings': (context) => SettingsScreen(),
+                AnimalDetails.id: (context) => AnimalDetails(),
+              }
               //home: MyHomePage(title: 'Flutter Demo Home Page'),
-            ),
-          );
-        }
-
-      ),
+              ),
+        );
+      }),
     );
   }
 }
@@ -125,8 +122,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final userAnon = FirebaseAuth.instance.currentUser.isAnonymous;
 
-  int _selectedIndex =  0;
-
+  int _selectedIndex = 0;
 
   //PickedFile image;
 
@@ -147,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
   }
-
 
   void initState() {
     super.initState();
@@ -204,7 +199,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: BottomNavigationBar(
                   // backgroundColor: Color(0xfff1f1f1),
-                  unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
+                  unselectedItemColor:
+                      themeChange.darkTheme ? Colors.white : Colors.black,
                   type: BottomNavigationBarType.fixed,
                   items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
@@ -237,7 +233,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                   bottomNavigationBar: BottomNavigationBar(
                     // backgroundColor: Color(0xffffffff),
-                    unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
+                    unselectedItemColor:
+                        themeChange.darkTheme ? Colors.white : Colors.black,
                     type: BottomNavigationBarType.fixed,
                     items: const <BottomNavigationBarItem>[
                       BottomNavigationBarItem(
@@ -265,7 +262,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                   bottomNavigationBar: BottomNavigationBar(
                     // backgroundColor: Color(0xffffffff),
-                    unselectedItemColor: themeChange.darkTheme ? Colors.white : Colors.black,
+                    unselectedItemColor:
+                        themeChange.darkTheme ? Colors.white : Colors.black,
                     type: BottomNavigationBarType.fixed,
                     items: const <BottomNavigationBarItem>[
                       BottomNavigationBarItem(
@@ -291,7 +289,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 );
               }
-
             }
           } else {
             return CircularProgressIndicator();
@@ -299,6 +296,8 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 }
+
+/// Responsible for 'add animal' form
 
 class FormDialog extends StatefulWidget {
   @override
@@ -354,7 +353,7 @@ class _FormDialogState extends State<FormDialog> {
         child: Form(
           child: Stepper(
             elevation: 0.0,
-            type: StepperType.horizontal,
+            type: StepperType.vertical,
             currentStep: _index,
             onStepCancel:
                 _index == 0 ? null : () => setState(() => _index -= 1),
@@ -391,7 +390,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: kingdom,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Kingdom" : null,
+                                  val.isEmpty ? "Enter a Kingdom" : null,
                               decoration: InputDecoration(hintText: "Kingdom"),
                             ),
                           ),
@@ -404,7 +403,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: phylum,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Phylum" : null,
+                                  val.isEmpty ? "Enter a Phylum" : null,
                               decoration: InputDecoration(hintText: "Phylum"),
                             ),
                           ),
@@ -420,7 +419,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: kingdomClass,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Class" : null,
+                                  val.isEmpty ? "Enter a Class" : null,
                               decoration: InputDecoration(hintText: "Class"),
                             ),
                           ),
@@ -432,7 +431,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: order,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Order" : null,
+                                  val.isEmpty ? "Enter a Order" : null,
                               decoration: InputDecoration(hintText: "Order"),
                             ),
                           ),
@@ -448,7 +447,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: family,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Family" : null,
+                                  val.isEmpty ? "Enter a Family" : null,
                               decoration: InputDecoration(hintText: "Family"),
                             ),
                           ),
@@ -460,7 +459,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: genus,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Genus" : null,
+                                  val.isEmpty ? "Enter a Genus" : null,
                               decoration: InputDecoration(hintText: "Genus"),
                             ),
                           ),
@@ -476,7 +475,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: scientificName,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Species" : null,
+                                  val.isEmpty ? "Enter a Species" : null,
                               decoration: InputDecoration(hintText: "Species"),
                             ),
                           ),
@@ -488,7 +487,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: commonName,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a Common Name" : null,
+                                  val.isEmpty ? "Enter a Common Name" : null,
                               decoration:
                                   InputDecoration(hintText: "Common Name"),
                             ),
@@ -505,7 +504,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: nameOfYoung,
                               validator: (val) =>
-                              val.isEmpty ? "Enter name of young" : null,
+                                  val.isEmpty ? "Enter name of young" : null,
                               decoration:
                                   InputDecoration(hintText: "Name of Young"),
                             ),
@@ -518,7 +517,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: diet,
                               validator: (val) =>
-                              val.isEmpty ? "Enter diet" : null,
+                                  val.isEmpty ? "Enter diet" : null,
                               decoration: InputDecoration(hintText: "Diet"),
                             ),
                           ),
@@ -534,7 +533,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: lifespan,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a lifespan" : null,
+                                  val.isEmpty ? "Enter a lifespan" : null,
                               decoration: InputDecoration(hintText: "Lifespan"),
                             ),
                           ),
@@ -546,7 +545,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: lifestyle,
                               validator: (val) =>
-                              val.isEmpty ? "Enter lifestyle" : null,
+                                  val.isEmpty ? "Enter lifestyle" : null,
                               decoration:
                                   InputDecoration(hintText: "LifeStyle"),
                             ),
@@ -563,7 +562,7 @@ class _FormDialogState extends State<FormDialog> {
                             child: TextFormField(
                               controller: description,
                               validator: (val) =>
-                              val.isEmpty ? "Enter a description" : null,
+                                  val.isEmpty ? "Enter a description" : null,
                               decoration:
                                   InputDecoration(hintText: "Description"),
                             ),
